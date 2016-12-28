@@ -81,4 +81,13 @@ public class BooksControllerTest {
                     fieldWithPath("[].pages").description("Number of pages")
                 )));
     }
+
+    @Test
+    public void userBooksUnexpectedError() throws Exception {
+        when(booksDao.getUserBooks("johndoe")).thenThrow(new RuntimeException("Something bad happened"));
+
+        this.mockMvc.perform(get("/users/{user}/books", "johndoe"))
+            .andExpect(status().is5xxServerError())
+            .andDo(document("{class-name}/{method-name}"));
+    }
 }

@@ -27,3 +27,13 @@ include::{snippets}/books-controller-test/user-books/response-fields.adoc[]
 ==== Example response
 
 include::{snippets}/books-controller-test/user-books/http-response.adoc[]
+
+=== Retrieve user's books with unexpected server side error
+
+==== Request structure
+
+include::{snippets}/books-controller-test/user-books-unexpected-error/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/books-controller-test/user-books-unexpected-error/http-response.adoc[]
