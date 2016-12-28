@@ -12,28 +12,50 @@
 
 === Retrieve user's books
 
-==== Request structure
-
-include::{snippets}/books-controller-test/user-books/http-request.adoc[]
-
 ==== Path parameters
 
-include::{snippets}/books-controller-test/user-books/path-parameters.adoc[]
+include::{snippets}/books-controller-test/get-user-books/path-parameters.adoc[]
+
+==== Example request
+
+include::{snippets}/books-controller-test/get-user-books/http-request.adoc[]
 
 ==== Response fields
 
-include::{snippets}/books-controller-test/user-books/response-fields.adoc[]
+include::{snippets}/books-controller-test/get-user-books/response-fields.adoc[]
 
 ==== Example response
 
-include::{snippets}/books-controller-test/user-books/http-response.adoc[]
+include::{snippets}/books-controller-test/get-user-books/http-response.adoc[]
 
 === Retrieve user's books with unexpected server side error
 
-==== Request structure
+==== Example request
 
-include::{snippets}/books-controller-test/user-books-unexpected-error/http-request.adoc[]
+include::{snippets}/books-controller-test/get-user-books-unexpected-error/http-request.adoc[]
 
 ==== Example response
 
-include::{snippets}/books-controller-test/user-books-unexpected-error/http-response.adoc[]
+include::{snippets}/books-controller-test/get-user-books-unexpected-error/http-response.adoc[]
+
+=== Add a new book for a user
+
+==== Path parameters
+
+include::{snippets}/books-controller-test/create-user-book/path-parameters.adoc[]
+
+==== Request fields
+
+include::{snippets}/books-controller-test/create-user-book/request-fields.adoc[]
+
+==== Example request
+
+include::{snippets}/books-controller-test/create-user-book/http-request.adoc[]
+
+==== Response headers
+
+include::{snippets}/books-controller-test/create-user-book/response-headers.adoc[]
+
+==== Example response
+
+include::{snippets}/books-controller-test/create-user-book/http-response.adoc[]

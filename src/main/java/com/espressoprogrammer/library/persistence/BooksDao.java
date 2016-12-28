@@ -8,4 +8,6 @@ public interface BooksDao {
 
     List<Book> getUserBooks(String user);
 
+    String createBook(String user, Book book);
+
 }
