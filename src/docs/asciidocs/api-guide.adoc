@@ -1,0 +1,29 @@
+= Library REST Service API Guide
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+= Resources
+
+== Library REST Service
+
+=== Retrieve user's books
+
+==== Request structure
+
+include::{snippets}/books-controller-test/user-books/http-request.adoc[]
+
+==== Path parameters
+
+include::{snippets}/books-controller-test/user-books/path-parameters.adoc[]
+
+==== Response fields
+
+include::{snippets}/books-controller-test/user-books/response-fields.adoc[]
+
+==== Example response
+
+include::{snippets}/books-controller-test/user-books/http-response.adoc[]

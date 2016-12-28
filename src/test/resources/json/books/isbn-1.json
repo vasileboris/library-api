@@ -1,0 +1,12 @@
+{
+  "isbn10": "isbn10-1",
+  "isbn13": "isbn13-1",
+  "title": "Title 1",
+  "authors": [
+    {
+      "firstName": "First1",
+      "lastName": "Last1"
+    }
+  ],
+  "pages": 100
+}
