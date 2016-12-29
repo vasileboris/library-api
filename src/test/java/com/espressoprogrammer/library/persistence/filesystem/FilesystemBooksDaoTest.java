@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static com.espressoprogrammer.library.LibraryTestUtil.copyBook;
 import static com.espressoprogrammer.library.LibraryTestUtil.getBook;
@@ -47,12 +48,12 @@ public class FilesystemBooksDaoTest {
     }
 
     @Test
-    public void getNoBooks() throws Exception {
+    public void getNoUserBooks() throws Exception {
         assertThat(booksDao.getUserBooks(JOHN_DOE_USER)).isEmpty();
     }
 
     @Test
-    public void getOneBook() throws Exception {
+    public void getOneUserBook() throws Exception {
         createBooksFolder(JOHN_DOE_USER);
         copyBook("isbn10-1.json", getUserBooksFolder(JOHN_DOE_USER));
 
@@ -67,7 +68,7 @@ public class FilesystemBooksDaoTest {
     }
 
     @Test
-    public void getTwoBooks() throws Exception {
+    public void getTwoUserBooks() throws Exception {
         createBooksFolder(JOHN_DOE_USER);
         copyBook("isbn10-1.json", getUserBooksFolder(JOHN_DOE_USER));
         copyBook("isbn10-2.json", getUserBooksFolder(JOHN_DOE_USER));
@@ -88,11 +89,11 @@ public class FilesystemBooksDaoTest {
     }
 
     @Test
-    public void createBook() throws Exception {
+    public void createUserBook() throws Exception {
         List<Book> userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(userBooks).isEmpty();
 
-        String isbn = booksDao.createBook(JOHN_DOE_USER, getBook("isbn10-1.json"));
+        String isbn = booksDao.createUserBook(JOHN_DOE_USER, getBook("isbn10-1.json"));
         assertThat(isbn).isEqualTo("isbn13-1");
 
         userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
@@ -106,11 +107,11 @@ public class FilesystemBooksDaoTest {
     }
 
     @Test
-    public void createBookWithIsbn13Null() throws Exception {
+    public void createUserBookWithIsbn13Null() throws Exception {
         List<Book> userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(userBooks).isEmpty();
 
-        String isbn = booksDao.createBook(JOHN_DOE_USER, getBook("isbn10-3.json"));
+        String isbn = booksDao.createUserBook(JOHN_DOE_USER, getBook("isbn10-3.json"));
         assertThat(isbn).isEqualTo("isbn10-3");
 
         userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
@@ -121,6 +122,26 @@ public class FilesystemBooksDaoTest {
                 "Title 3",
                 Arrays.asList(new Author("First3", "Last3")),
                 300));
+    }
+
+    @Test
+    public void getUserBook() throws Exception {
+        String isbn = booksDao.createUserBook(JOHN_DOE_USER, getBook("isbn10-1.json"));
+        assertThat(isbn).isEqualTo("isbn13-1");
+
+        Optional<Book> optionalBook = booksDao.getUserBook(JOHN_DOE_USER, isbn);
+        assertThat(optionalBook.isPresent()).isTrue();
+        assertThat(optionalBook.get()).isEqualTo(new Book("isbn10-1",
+                "isbn13-1",
+                "Title 1",
+                Arrays.asList(new Author("First1", "Last1")),
+                100));
+    }
+
+    @Test
+    public void getUserMissingBook() throws Exception {
+        Optional<Book> optionalBook = booksDao.getUserBook(JOHN_DOE_USER, "missing-isbn-1");
+        assertThat(optionalBook.isPresent()).isFalse();
     }
 
     private void createBooksFolder(String user) throws Exception {

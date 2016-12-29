@@ -4,6 +4,9 @@ GET
 POST - add a book
 /users/user/books
 
+GET
+/users/user/books/isbn
+
 PUT
 /users/user/books/isbn
 

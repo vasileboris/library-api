@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class BooksController {
@@ -26,7 +25,7 @@ public class BooksController {
     private BooksDao booksDao;
 
     @GetMapping(value = "/users/{user}/books")
-    ResponseEntity<List<Book>> getUserBooks(@PathVariable("user") String user)  {
+    public ResponseEntity<List<Book>> getUserBooks(@PathVariable("user") String user)  {
         try {
             logger.debug("Looking for books for user {}", user);
 
@@ -34,23 +33,43 @@ public class BooksController {
             return new ResponseEntity<>(userBooks, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for books", ex);
-            throw new InternalServerError();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping(value = "/users/{user}/books")
-    ResponseEntity createUserBook(@PathVariable("user") String user, @RequestBody Book book)  {
+    public ResponseEntity createUserBook(@PathVariable("user") String user, @RequestBody Book book)  {
         try {
             logger.debug("Adding new book for user {}", user);
 
-            String isbn = booksDao.createBook(user, book);
+            if(booksDao.getUserBook(user, book).isPresent()) {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
+            String isbn = booksDao.createUserBook(user, book);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(HttpHeaders.LOCATION, String.format("/users/%s/books/%s", user, isbn));
             return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
         } catch (Exception ex) {
             logger.error("Error on adding new book", ex);
-            throw new InternalServerError();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @GetMapping(value = "/users/{user}/books/{isbn}")
+    public ResponseEntity<Book> getUserBooks(@PathVariable("user") String user, @PathVariable("isbn") String isbn)  {
+        try {
+            logger.debug("Looking for book with isbn {} for user {}", isbn, user);
+
+            Optional<Book> optionalBook = booksDao.getUserBook(user, isbn);
+            if(optionalBook.isPresent()) {
+                return new ResponseEntity<>(optionalBook.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception ex) {
+            logger.error("Error on looking for books", ex);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

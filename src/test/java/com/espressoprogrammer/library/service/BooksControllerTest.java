@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static com.espressoprogrammer.library.LibraryTestUtil.getBook;
 import static org.hamcrest.CoreMatchers.is;
@@ -72,6 +73,11 @@ public class BooksControllerTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$[0].isbn10", is("1-61729-310-5")))
+            .andExpect(jsonPath("$[0].isbn13", is("978-1-61729-310-8")))
+            .andExpect(jsonPath("$[0].title", is("Get Programming with JavaScript")))
+            .andExpect(jsonPath("$[0].authors[0].firstName", is("John R.")))
+            .andExpect(jsonPath("$[0].authors[0].lastName", is("Larsen")))
+            .andExpect(jsonPath("$[0].pages", is(406)))
             .andDo(document("{class-name}/{method-name}",
                 pathParameters(parameterWithName("user").description("User id")),
                 responseFields(
@@ -86,18 +92,10 @@ public class BooksControllerTest {
     }
 
     @Test
-    public void getUserBooksUnexpectedError() throws Exception {
-        when(booksDao.getUserBooks(JOHN_DOE_USER)).thenThrow(new RuntimeException("Something bad happened"));
-
-        this.mockMvc.perform(get("/users/{user}/books", JOHN_DOE_USER))
-            .andExpect(status().is5xxServerError())
-            .andDo(document("{class-name}/{method-name}"));
-    }
-
-    @Test
     public void createUserBook() throws Exception {
         Book book = getBook("978-1-61729-310-8.json");
-        when(booksDao.createBook(JOHN_DOE_USER, book)).thenReturn("978-1-61729-310-8");
+        when(booksDao.getUserBook(JOHN_DOE_USER, book)).thenReturn(Optional.empty());
+        when(booksDao.createUserBook(JOHN_DOE_USER, book)).thenReturn("978-1-61729-310-8");
 
         this.mockMvc.perform(post("/users/{user}/books", JOHN_DOE_USER)
                 .content(getBookJson("978-1-61729-310-8.json"))
@@ -118,5 +116,58 @@ public class BooksControllerTest {
                 responseHeaders(
                     headerWithName(HttpHeaders.LOCATION).description("New added book's resource")
                 )));
+    }
+
+    @Test
+    public void createUserExistingBook() throws Exception {
+        Book book = getBook("978-1-61729-310-8.json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, book)).thenReturn(Optional.of(book));
+
+        this.mockMvc.perform(post("/users/{user}/books", JOHN_DOE_USER)
+            .content(getBookJson("978-1-61729-310-8.json"))
+            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(status().isForbidden())
+            .andDo(document("{class-name}/{method-name}"));
+    }
+
+    @Test
+    public void getUserBook() throws Exception {
+        String isbn = "978-1-61729-310-8";
+        Book book = getBook(isbn + ".json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, isbn)).thenReturn(Optional.of(book));
+
+        this.mockMvc.perform(get("/users/{user}/books/{isbn}", JOHN_DOE_USER, isbn))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("isbn10", is("1-61729-310-5")))
+            .andExpect(jsonPath("isbn13", is("978-1-61729-310-8")))
+            .andExpect(jsonPath("title", is("Get Programming with JavaScript")))
+            .andExpect(jsonPath("authors[0].firstName", is("John R.")))
+            .andExpect(jsonPath("authors[0].lastName", is("Larsen")))
+            .andExpect(jsonPath("pages", is(406)))
+            .andDo(document("{class-name}/{method-name}",
+                pathParameters(
+                    parameterWithName("user").description("User id"),
+                    parameterWithName("isbn").description("If the book has both isbn 13 and isbn 10 then it is isbn 13, " +
+                        "otherwise it is isbn 10")),
+                responseFields(
+                    fieldWithPath("isbn10").description("10 digits ISBN"),
+                    fieldWithPath("isbn13").description("13 digits ISBN"),
+                    fieldWithPath("title").description("Book title"),
+                    fieldWithPath("authors").description("Book authors"),
+                    fieldWithPath("authors[].firstName").description("First name"),
+                    fieldWithPath("authors[].firstName").description("Last name"),
+                    fieldWithPath("pages").description("Number of pages")
+                )));
+    }
+
+    @Test
+    public void getUserMissingBook() throws Exception {
+        String isbn = "missing-isbn-1";
+        when(booksDao.getUserBook(JOHN_DOE_USER, isbn)).thenReturn(Optional.empty());
+
+        this.mockMvc.perform(get("/users/{user}/books/{isbn}", JOHN_DOE_USER, isbn))
+            .andExpect(status().isNotFound())
+            .andDo(document("{class-name}/{method-name}"));
     }
 }
