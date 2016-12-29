@@ -1,0 +1,13 @@
+{
+  "uuid": "1e4014b1-a551-4310-9f30-590c3140b695",
+  "isbn10": "1-61729-310-5",
+  "isbn13": "978-1-61729-310-8",
+  "title": "Get Programming with JavaScript",
+  "authors": [
+    {
+      "firstName": "John R.",
+      "lastName": "Larsen"
+    }
+  ],
+  "pages": 406
+}

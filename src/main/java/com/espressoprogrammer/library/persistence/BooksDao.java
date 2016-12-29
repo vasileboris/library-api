@@ -11,7 +11,7 @@ public interface BooksDao {
 
     String createUserBook(String user, Book book);
 
-    Optional<Book> getUserBook(String user, String isbn);
+    Optional<Book> getUserBook(String user, String uuid);
 
-    Optional<Book> getUserBook(String user, Book book);
+    String updateUserBook(String user, Book book);
 }

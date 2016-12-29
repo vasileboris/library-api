@@ -55,12 +55,13 @@ public class FilesystemBooksDaoTest {
     @Test
     public void getOneUserBook() throws Exception {
         createBooksFolder(JOHN_DOE_USER);
-        copyBook("isbn10-1.json", getUserBooksFolder(JOHN_DOE_USER));
+        copyBook("uuid-1.json", getUserBooksFolder(JOHN_DOE_USER));
 
         List<Book> userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(userBooks)
             .hasSize(1)
-            .contains(new Book("isbn10-1",
+            .contains(new Book("uuid-1",
+                "isbn10-1",
                 "isbn13-1",
                 "Title 1",
                 Arrays.asList(new Author("First1", "Last1")),
@@ -70,18 +71,20 @@ public class FilesystemBooksDaoTest {
     @Test
     public void getTwoUserBooks() throws Exception {
         createBooksFolder(JOHN_DOE_USER);
-        copyBook("isbn10-1.json", getUserBooksFolder(JOHN_DOE_USER));
-        copyBook("isbn10-2.json", getUserBooksFolder(JOHN_DOE_USER));
+        copyBook("uuid-1.json", getUserBooksFolder(JOHN_DOE_USER));
+        copyBook("uuid-2.json", getUserBooksFolder(JOHN_DOE_USER));
 
         List<Book> userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(userBooks)
             .hasSize(2)
-            .contains(new Book("isbn10-1",
+            .contains(new Book("uuid-1",
+                "isbn10-1",
                 "isbn13-1",
                 "Title 1",
                 Arrays.asList(new Author("First1", "Last1")),
                 100))
-            .contains(new Book("isbn10-2",
+            .contains(new Book("uuid-2",
+                "isbn10-2",
                 "isbn13-2",
                 "Title 2",
                 Arrays.asList(new Author("First21", "Last21"), new Author("First22", "Last22")),
@@ -93,13 +96,14 @@ public class FilesystemBooksDaoTest {
         List<Book> userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(userBooks).isEmpty();
 
-        String isbn = booksDao.createUserBook(JOHN_DOE_USER, getBook("isbn10-1.json"));
-        assertThat(isbn).isEqualTo("isbn13-1");
+        String isbn = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
+        assertThat(isbn).isNotNull();
 
         userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(userBooks)
             .hasSize(1)
-            .contains(new Book("isbn10-1",
+            .contains(new Book(userBooks.get(0).getUuid(),
+                "isbn10-1",
                 "isbn13-1",
                 "Title 1",
                 Arrays.asList(new Author("First1", "Last1")),
@@ -111,13 +115,14 @@ public class FilesystemBooksDaoTest {
         List<Book> userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(userBooks).isEmpty();
 
-        String isbn = booksDao.createUserBook(JOHN_DOE_USER, getBook("isbn10-3.json"));
-        assertThat(isbn).isEqualTo("isbn10-3");
+        String isbn = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-3.json"));
+        assertThat(isbn).isNotNull();
 
         userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(userBooks)
             .hasSize(1)
-            .contains(new Book("isbn10-3",
+            .contains(new Book(userBooks.get(0).getUuid(),
+                "isbn10-3",
                 null,
                 "Title 3",
                 Arrays.asList(new Author("First3", "Last3")),
@@ -126,16 +131,17 @@ public class FilesystemBooksDaoTest {
 
     @Test
     public void getUserBook() throws Exception {
-        String isbn = booksDao.createUserBook(JOHN_DOE_USER, getBook("isbn10-1.json"));
-        assertThat(isbn).isEqualTo("isbn13-1");
+        String isbn = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
+        assertThat(isbn).isNotNull();
 
         Optional<Book> optionalBook = booksDao.getUserBook(JOHN_DOE_USER, isbn);
         assertThat(optionalBook.isPresent()).isTrue();
-        assertThat(optionalBook.get()).isEqualTo(new Book("isbn10-1",
-                "isbn13-1",
-                "Title 1",
-                Arrays.asList(new Author("First1", "Last1")),
-                100));
+        assertThat(optionalBook.get()).isEqualTo(new Book(optionalBook.get().getUuid(),
+            "isbn10-1",
+            "isbn13-1",
+            "Title 1",
+            Arrays.asList(new Author("First1", "Last1")),
+            100));
     }
 
     @Test

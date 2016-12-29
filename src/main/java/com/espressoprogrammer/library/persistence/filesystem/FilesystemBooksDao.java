@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
@@ -45,21 +46,21 @@ public class FilesystemBooksDao extends FilesystemAbstractDao implements BooksDa
             String booksFolder = createBooksFolderIfMissing(user);
             logger.debug("Adding new book into {}", booksFolder);
 
-            String isbn = getIsbn(book);
-            Files.write(Paths.get(booksFolder, isbn + FILE_EXTENSION), toJson(book).getBytes());
-            return isbn;
+            String uuid = UUID.randomUUID().toString();
+            Files.write(Paths.get(booksFolder, uuid + FILE_EXTENSION), toJson(book).getBytes());
+            return uuid;
         } catch(Exception ex) {
             throw new FilesystemDaoException(ex);
         }
     }
 
     @Override
-    public Optional<Book> getUserBook(String user, String isbn) {
+    public Optional<Book> getUserBook(String user, String uuid) {
         try {
             String booksFolder = createBooksFolderIfMissing(user);
-            logger.debug("Looking for book with isbn {} into {}", isbn, booksFolder);
+            logger.debug("Looking for book with uuid {} into {}", uuid, booksFolder);
 
-            Path pathToBook = Paths.get(booksFolder, isbn + FILE_EXTENSION);
+            Path pathToBook = Paths.get(booksFolder, uuid + FILE_EXTENSION);
             if(pathToBook.toFile().exists()) {
                 return Optional.of(fromJson(pathToBook));
             } else {
@@ -71,12 +72,8 @@ public class FilesystemBooksDao extends FilesystemAbstractDao implements BooksDa
     }
 
     @Override
-    public Optional<Book> getUserBook(String user, Book book) {
-        return getUserBook(user, getIsbn(book));
-    }
-
-    private String getIsbn(Book book) {
-        return book.getIsbn13() != null ? book.getIsbn13() : book.getIsbn10();
+    public String updateUserBook(String user, Book book) {
+        return null;
     }
 
     private Book fromJson(Path path) {
