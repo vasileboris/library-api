@@ -47,7 +47,7 @@ public class FilesystemBooksDao extends FilesystemAbstractDao implements BooksDa
             logger.debug("Add new book into {}", booksFolder);
 
             String uuid = UUID.randomUUID().toString();
-            Book persistedBook = new Book(book.getUuid(),
+            Book persistedBook = new Book(uuid,
                 book.getIsbn10(),
                 book.getIsbn13(),
                 book.getTitle(),

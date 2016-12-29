@@ -100,6 +100,7 @@ public class FilesystemBooksDaoTest {
         assertThat(uuid).isNotNull();
 
         userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
+        assertThat(userBooks.get(0).getUuid()).isNotNull();
         assertThat(userBooks)
             .hasSize(1)
             .contains(new Book(userBooks.get(0).getUuid(),
