@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +28,7 @@ public class BooksController {
     @GetMapping(value = "/users/{user}/books")
     public ResponseEntity<List<Book>> getUserBooks(@PathVariable("user") String user)  {
         try {
-            logger.debug("Looking for books for user {}", user);
+            logger.debug("Look for books for user {}", user);
 
             List<Book> userBooks = booksDao.getUserBooks(user);
             return new ResponseEntity<>(userBooks, HttpStatus.OK);
@@ -38,9 +39,10 @@ public class BooksController {
     }
 
     @PostMapping(value = "/users/{user}/books")
-    public ResponseEntity createUserBook(@PathVariable("user") String user, @RequestBody Book book)  {
+    public ResponseEntity createUserBook(@PathVariable("user") String user,
+                                         @RequestBody Book book)  {
         try {
-            logger.debug("Adding new book for user {}", user);
+            logger.debug("Add new book for user {}", user);
 
             if(hasUseTheBook(user, book)) {
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
@@ -57,13 +59,39 @@ public class BooksController {
     }
 
     @GetMapping(value = "/users/{user}/books/{uuid}")
-    public ResponseEntity<Book> getUserBooks(@PathVariable("user") String user, @PathVariable("uuid") String uuid)  {
+    public ResponseEntity<Book> getUserBook(@PathVariable("user") String user,
+                                            @PathVariable("uuid") String uuid)  {
         try {
-            logger.debug("Looking for book with uuid {} for user {}", uuid, user);
+            logger.debug("Look for book with uuid {} for user {}", uuid, user);
 
             Optional<Book> optionalBook = booksDao.getUserBook(user, uuid);
             if(optionalBook.isPresent()) {
                 return new ResponseEntity<>(optionalBook.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception ex) {
+            logger.error("Error on looking for books", ex);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping(value = "/users/{user}/books/{uuid}")
+    public ResponseEntity updateUserBook(@PathVariable("user") String user,
+                                         @PathVariable("uuid") String uuid,
+                                         @RequestBody Book book)  {
+        try {
+            logger.debug("Update book with uuid {} for user {}", uuid, user);
+
+            Optional<Book> optionalBook = booksDao.getUserBook(user, uuid);
+            if(optionalBook.isPresent()) {
+                booksDao.updateUserBook(user, new Book(uuid,
+                    book.getIsbn10(),
+                    book.getIsbn13(),
+                    book.getTitle(),
+                    book.getAuthors(),
+                    book.getPages()));
+                return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }

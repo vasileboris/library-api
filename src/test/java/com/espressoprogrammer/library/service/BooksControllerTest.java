@@ -28,6 +28,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -171,6 +172,44 @@ public class BooksControllerTest {
         when(booksDao.getUserBook(JOHN_DOE_USER, uuid)).thenReturn(Optional.empty());
 
         this.mockMvc.perform(get("/users/{user}/books/{uuid}", JOHN_DOE_USER, uuid))
+            .andExpect(status().isNotFound())
+            .andDo(document("{class-name}/{method-name}"));
+    }
+
+    @Test
+    public void updateUserBook() throws Exception {
+        Book bookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
+        Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.of(book));
+
+        this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid())
+            .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
+            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(status().isOk())
+            .andDo(document("{class-name}/{method-name}",
+                pathParameters(
+                    parameterWithName("user").description("User id"),
+                    parameterWithName("uuid").description("Book uuid")),
+                requestFields(
+                    fieldWithPath("isbn10").description("10 digits ISBN"),
+                    fieldWithPath("isbn13").description("13 digits ISBN"),
+                    fieldWithPath("title").description("Book title"),
+                    fieldWithPath("authors").description("Book authors"),
+                    fieldWithPath("authors[].firstName").description("First name"),
+                    fieldWithPath("authors[].firstName").description("Last name"),
+                    fieldWithPath("pages").description("Number of pages")
+                )));
+    }
+
+    @Test
+    public void updateUserMissingBook() throws Exception {
+        Book bookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
+        Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.empty());
+
+        this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid())
+            .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
+            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isNotFound())
             .andDo(document("{class-name}/{method-name}"));
     }

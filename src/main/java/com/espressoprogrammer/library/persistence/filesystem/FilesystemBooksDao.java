@@ -27,7 +27,7 @@ public class FilesystemBooksDao extends FilesystemAbstractDao implements BooksDa
     public List<Book> getUserBooks(String user) {
         try {
             String booksFolder = createBooksFolderIfMissing(user);
-            logger.debug("Looking for books into {}", booksFolder);
+            logger.debug("Look for books into {}", booksFolder);
 
             return Files.list(Paths.get(booksFolder))
                 .filter(p -> p.getFileName().toFile().getName().endsWith(FILE_EXTENSION))
@@ -44,10 +44,16 @@ public class FilesystemBooksDao extends FilesystemAbstractDao implements BooksDa
     public String createUserBook(String user, Book book) {
         try {
             String booksFolder = createBooksFolderIfMissing(user);
-            logger.debug("Adding new book into {}", booksFolder);
+            logger.debug("Add new book into {}", booksFolder);
 
             String uuid = UUID.randomUUID().toString();
-            Files.write(Paths.get(booksFolder, uuid + FILE_EXTENSION), toJson(book).getBytes());
+            Book persistedBook = new Book(book.getUuid(),
+                book.getIsbn10(),
+                book.getIsbn13(),
+                book.getTitle(),
+                book.getAuthors(),
+                book.getPages());
+            Files.write(Paths.get(booksFolder, uuid + FILE_EXTENSION), toJson(persistedBook).getBytes());
             return uuid;
         } catch(Exception ex) {
             throw new FilesystemDaoException(ex);
@@ -58,7 +64,7 @@ public class FilesystemBooksDao extends FilesystemAbstractDao implements BooksDa
     public Optional<Book> getUserBook(String user, String uuid) {
         try {
             String booksFolder = createBooksFolderIfMissing(user);
-            logger.debug("Looking for book with uuid {} into {}", uuid, booksFolder);
+            logger.debug("Look for book with uuid {} into {}", uuid, booksFolder);
 
             Path pathToBook = Paths.get(booksFolder, uuid + FILE_EXTENSION);
             if(pathToBook.toFile().exists()) {
@@ -72,8 +78,21 @@ public class FilesystemBooksDao extends FilesystemAbstractDao implements BooksDa
     }
 
     @Override
-    public String updateUserBook(String user, Book book) {
-        return null;
+    public Optional<Book> updateUserBook(String user, Book book) {
+        try {
+            String booksFolder = createBooksFolderIfMissing(user);
+            logger.debug("Update book with uuid {} for user {}", book.getUuid(), user);
+
+            Path pathToBook = Paths.get(booksFolder, book.getUuid() + FILE_EXTENSION);
+            if(pathToBook.toFile().exists()) {
+                Files.write(pathToBook, toJson(book).getBytes());
+                return Optional.of(book);
+            } else {
+                return Optional.empty();
+            }
+        } catch(Exception ex) {
+            throw new FilesystemDaoException(ex);
+        }
     }
 
     private Book fromJson(Path path) {

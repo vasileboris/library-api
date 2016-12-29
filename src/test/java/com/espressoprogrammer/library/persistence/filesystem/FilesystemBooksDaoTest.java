@@ -96,8 +96,8 @@ public class FilesystemBooksDaoTest {
         List<Book> userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(userBooks).isEmpty();
 
-        String isbn = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
-        assertThat(isbn).isNotNull();
+        String uuid = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
+        assertThat(uuid).isNotNull();
 
         userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(userBooks)
@@ -115,8 +115,8 @@ public class FilesystemBooksDaoTest {
         List<Book> userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(userBooks).isEmpty();
 
-        String isbn = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-3.json"));
-        assertThat(isbn).isNotNull();
+        String uuid = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-3.json"));
+        assertThat(uuid).isNotNull();
 
         userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(userBooks)
@@ -131,10 +131,10 @@ public class FilesystemBooksDaoTest {
 
     @Test
     public void getUserBook() throws Exception {
-        String isbn = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
-        assertThat(isbn).isNotNull();
+        String uuid = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
+        assertThat(uuid).isNotNull();
 
-        Optional<Book> optionalBook = booksDao.getUserBook(JOHN_DOE_USER, isbn);
+        Optional<Book> optionalBook = booksDao.getUserBook(JOHN_DOE_USER, uuid);
         assertThat(optionalBook.isPresent()).isTrue();
         assertThat(optionalBook.get()).isEqualTo(new Book(optionalBook.get().getUuid(),
             "isbn10-1",
@@ -148,6 +148,54 @@ public class FilesystemBooksDaoTest {
     public void getUserMissingBook() throws Exception {
         Optional<Book> optionalBook = booksDao.getUserBook(JOHN_DOE_USER, "missing-isbn-1");
         assertThat(optionalBook.isPresent()).isFalse();
+    }
+
+    @Test
+    public void updateUserBook() throws Exception {
+        List<Book> userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
+        assertThat(userBooks).isEmpty();
+
+        Book userBook = getBook("uuid-1.json");
+        String uuid = booksDao.createUserBook(JOHN_DOE_USER, userBook);
+        assertThat(uuid).isNotNull();
+
+        userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
+        assertThat(userBooks)
+            .hasSize(1)
+            .contains(new Book(userBooks.get(0).getUuid(),
+                "isbn10-1",
+                "isbn13-1",
+                "Title 1",
+                Arrays.asList(new Author("First1", "Last1")),
+                100));
+
+        Book updatedUserBook = new Book(uuid,
+            userBook.getIsbn10(),
+            userBook.getIsbn13(),
+            "Updated " + userBook.getTitle(),
+            userBook.getAuthors(),
+            userBook.getPages());
+
+        Optional<Book> optional = booksDao.updateUserBook(JOHN_DOE_USER, updatedUserBook);
+        assertThat(optional.isPresent()).isTrue();
+
+        userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
+        assertThat(userBooks)
+            .hasSize(1)
+            .contains(new Book(userBooks.get(0).getUuid(),
+                "isbn10-1",
+                "isbn13-1",
+                "Updated Title 1",
+                Arrays.asList(new Author("First1", "Last1")),
+                100));
+    }
+
+    @Test
+    public void updateUserMisingBook() throws Exception {
+        Book userBook = getBook("uuid-1.json");
+        Optional<Book> optional = booksDao.updateUserBook(JOHN_DOE_USER, userBook);
+        assertThat(optional.isPresent()).isFalse();
+
     }
 
     private void createBooksFolder(String user) throws Exception {
