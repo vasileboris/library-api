@@ -95,6 +95,21 @@ public class FilesystemBooksDao extends FilesystemAbstractDao implements BooksDa
         }
     }
 
+    @Override
+    public void deleteUserBook(String user, String uuid) {
+        try {
+            String booksFolder = createBooksFolderIfMissing(user);
+            logger.debug("Delete book with uuid {} for user {}", uuid, user);
+
+            Path pathToBook = Paths.get(booksFolder, uuid + FILE_EXTENSION);
+            if(pathToBook.toFile().exists()) {
+                pathToBook.toFile().delete();
+            }
+        } catch(Exception ex) {
+            throw new FilesystemDaoException(ex);
+        }
+    }
+
     private Book fromJson(Path path) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {

@@ -24,11 +24,14 @@ import java.util.Optional;
 import static com.espressoprogrammer.library.LibraryTestUtil.getBook;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -178,12 +181,11 @@ public class BooksControllerTest {
 
     @Test
     public void updateUserBook() throws Exception {
-        Book bookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
         Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
         when(booksDao.getUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.of(book));
 
         this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid())
-            .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
+            .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isOk())
             .andDo(document("{class-name}/{method-name}",
@@ -199,18 +201,50 @@ public class BooksControllerTest {
                     fieldWithPath("authors[].firstName").description("Last name"),
                     fieldWithPath("pages").description("Number of pages")
                 )));
+
+        Book updateBook = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
+        verify(booksDao).updateUserBook(JOHN_DOE_USER, updateBook);
     }
 
     @Test
     public void updateUserMissingBook() throws Exception {
-        Book bookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
         Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
         when(booksDao.getUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.empty());
 
         this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid())
-            .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
+            .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isNotFound())
             .andDo(document("{class-name}/{method-name}"));
+
+        Book updateBook = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
+        verify(booksDao, times(0)).updateUserBook(JOHN_DOE_USER, updateBook);
+    }
+
+    @Test
+    public void deleteUserBook() throws Exception {
+        Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.of(book));
+
+        this.mockMvc.perform(delete("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid()))
+            .andExpect(status().isOk())
+            .andDo(document("{class-name}/{method-name}",
+                pathParameters(
+                    parameterWithName("user").description("User id"),
+                    parameterWithName("uuid").description("Book uuid"))));
+
+        verify(booksDao).deleteUserBook(JOHN_DOE_USER, book.getUuid());
+    }
+
+    @Test
+    public void deleteUserMissingBook() throws Exception {
+        Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.empty());
+
+        this.mockMvc.perform(delete("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid()))
+            .andExpect(status().isNotFound())
+            .andDo(document("{class-name}/{method-name}"));
+
+        verify(booksDao, times(0)).deleteUserBook(JOHN_DOE_USER, book.getUuid());
     }
 }

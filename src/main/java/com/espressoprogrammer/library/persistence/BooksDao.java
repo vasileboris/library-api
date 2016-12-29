@@ -14,4 +14,6 @@ public interface BooksDao {
     Optional<Book> getUserBook(String user, String uuid);
 
     Optional<Book> updateUserBook(String user, Book book);
+
+    void deleteUserBook(String user, String uuid);
 }

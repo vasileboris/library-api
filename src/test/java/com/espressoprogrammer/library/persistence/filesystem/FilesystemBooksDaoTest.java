@@ -198,6 +198,20 @@ public class FilesystemBooksDaoTest {
 
     }
 
+    @Test
+    public void deleteUserBook() throws Exception {
+        String uuid = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
+        assertThat(uuid).isNotNull();
+
+        Optional<Book> optionalBook = booksDao.getUserBook(JOHN_DOE_USER, uuid);
+        assertThat(optionalBook.isPresent()).isTrue();
+
+        booksDao.deleteUserBook(JOHN_DOE_USER, uuid);
+
+        optionalBook = booksDao.getUserBook(JOHN_DOE_USER, uuid);
+        assertThat(optionalBook.isPresent()).isFalse();
+    }
+
     private void createBooksFolder(String user) throws Exception {
         Path path = Paths.get(getUserBooksFolder(user));
         if(!path.toFile().exists()) {
