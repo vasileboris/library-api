@@ -1,0 +1,16 @@
+{
+  "uuid": "uuid-2",
+  "bookUuid": "book-uuid-2",
+  "readingSessions": [
+    {
+      "date": "2017-02-01",
+      "lastReadPage": "201",
+      "bookmark": "bookmark-201"
+    },
+    {
+      "date": "2017-02-02",
+      "lastReadPage": "202",
+      "bookmark": "bookmark-202"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ package com.espressoprogrammer.library.persistence.filesystem;
 import com.espressoprogrammer.library.dto.ReadingSession;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,9 +38,7 @@ public class FilesystemReadingSessionsDao extends FilesystemAbstractDao<ReadingS
     protected ReadingSession createItem(String uuid, ReadingSession readingSession) {
         return new ReadingSession(uuid,
             readingSession.getBookUuid(),
-            readingSession.getDate(),
-            readingSession.getLastReadPage(),
-            readingSession.getBookmark());
+            new ArrayList<>(readingSession.getReadingSessions()));
     }
 
     @Override

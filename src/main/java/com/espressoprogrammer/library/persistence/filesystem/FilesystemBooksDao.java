@@ -4,6 +4,7 @@ import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.persistence.BooksDao;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +42,7 @@ public class FilesystemBooksDao extends FilesystemAbstractDao<Book> implements B
             book.getIsbn10(),
             book.getIsbn13(),
             book.getTitle(),
-            book.getAuthors(),
+            new ArrayList<>(book.getAuthors()),
             book.getPages());
     }
 
