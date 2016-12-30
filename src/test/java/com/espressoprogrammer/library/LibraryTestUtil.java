@@ -36,4 +36,8 @@ public class LibraryTestUtil {
             .collect(joining("\n"));
     }
 
+    public static String getReadingSessionJson(String fileName) throws IOException, URISyntaxException {
+        return Files.readAllLines(Paths.get(LibraryTestUtil.class.getResource("/json/reading-sessions/" + fileName).toURI())).stream()
+            .collect(joining("\n"));
+    }
 }

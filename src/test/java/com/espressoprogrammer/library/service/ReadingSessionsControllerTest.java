@@ -1,8 +1,6 @@
 package com.espressoprogrammer.library.service;
 
-import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.dto.ReadingSession;
-import com.espressoprogrammer.library.persistence.BooksDao;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -20,18 +19,23 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 
-import static com.espressoprogrammer.library.LibraryTestUtil.getBook;
 import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSession;
+import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSessionJson;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -77,10 +81,34 @@ public class ReadingSessionsControllerTest {
                 responseFields(
                     fieldWithPath("[].uuid").description("UUID used to identify a reading session"),
                     fieldWithPath("[].bookUuid").description("UUID used to identify a book"),
-                    fieldWithPath("[].readingSessions").description("Reading sessions"),
+                    fieldWithPath("[].readingSessions").description("Reading sessions (optional)").optional(),
                     fieldWithPath("[].readingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("[].readingSessions[].lastReadPage").description("Last page that was read"),
-                    fieldWithPath("[].readingSessions[].bookmark").description("Where to start next")
+                    fieldWithPath("[].readingSessions[].bookmark").description("Where to start next (optional)").optional()
+                )));
+    }
+
+    @Test
+    public void createUserReadingSession() throws Exception {
+        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
+        when(readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, readingSession)).thenReturn("1e4014b1-a551-4310-9f30-590c3140b695");
+
+        this.mockMvc.perform(post("/users/{user}/reading-sessions", JOHN_DOE_USER)
+            .content(getReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
+            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(status().isCreated())
+            .andExpect(header().string(HttpHeaders.LOCATION, "/users/" + JOHN_DOE_USER + "/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695"))
+            .andDo(document("{class-name}/{method-name}",
+                pathParameters(parameterWithName("user").description("User id")),
+                requestFields(
+                    fieldWithPath("bookUuid").description("UUID used to identify a book"),
+                    fieldWithPath("readingSessions").description("Reading sessions (optional)").optional(),
+                    fieldWithPath("readingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
+                    fieldWithPath("readingSessions[].lastReadPage").description("Last page that was read"),
+                    fieldWithPath("readingSessions[].bookmark").description("Where to start next (optional)").optional()
+                ),
+                responseHeaders(
+                    headerWithName(HttpHeaders.LOCATION).description("New added reading session resource")
                 )));
     }
 
