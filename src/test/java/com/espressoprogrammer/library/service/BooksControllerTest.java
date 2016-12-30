@@ -181,10 +181,12 @@ public class BooksControllerTest {
 
     @Test
     public void updateUserBook() throws Exception {
-        Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(booksDao.getUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.of(book));
+        Book updateBook = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
+        Book updateBookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
+        when(booksDao.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest))
+            .thenReturn(Optional.of(updateBook.getUuid()));
 
-        this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid())
+        this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, updateBook.getUuid())
             .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isOk())
@@ -201,24 +203,19 @@ public class BooksControllerTest {
                     fieldWithPath("authors[].firstName").description("Last name"),
                     fieldWithPath("pages").description("Number of pages")
                 )));
-
-        Book updateBook = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
-        verify(booksDao).updateUserBook(JOHN_DOE_USER, updateBook);
     }
 
     @Test
     public void updateUserMissingBook() throws Exception {
-        Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(booksDao.getUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.empty());
+        Book updateBook = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
+        Book updateBookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
+        when(booksDao.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest)).thenReturn(Optional.empty());
 
-        this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid())
+        this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, updateBook.getUuid())
             .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isNotFound())
             .andDo(document("{class-name}/{method-name}"));
-
-        Book updateBook = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
-        verify(booksDao, times(0)).updateUserBook(JOHN_DOE_USER, updateBook);
     }
 
     @Test

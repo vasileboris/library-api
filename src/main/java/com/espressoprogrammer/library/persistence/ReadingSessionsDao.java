@@ -13,7 +13,7 @@ public interface ReadingSessionsDao {
 
     Optional<ReadingSession> getUserReadingSession(String user, String uuid);
 
-    Optional<ReadingSession> updateUserReadingSession(String user, ReadingSession readingSession);
+    Optional<String> updateUserReadingSession(String user, String uuid, ReadingSession readingSession);
 
     void deleteUserReadingSession(String user, String uuid);
 }

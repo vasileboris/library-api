@@ -13,7 +13,7 @@ public interface BooksDao {
 
     Optional<Book> getUserBook(String user, String uuid);
 
-    Optional<Book> updateUserBook(String user, Book book);
+    Optional<String> updateUserBook(String user, String uuid, Book book);
 
     void deleteUserBook(String user, String uuid);
 }

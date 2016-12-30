@@ -2,39 +2,44 @@ package com.espressoprogrammer.library.persistence.filesystem;
 
 import com.espressoprogrammer.library.dto.ReadingSession;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 public class FilesystemReadingSessionsDao extends FilesystemAbstractDao<ReadingSession> implements ReadingSessionsDao {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public List<ReadingSession> getUserReadingSessions(String user) {
-        return null;
+        return getUserItems(user);
     }
 
     @Override
     public String createUserReadingSession(String user, ReadingSession readingSession) {
-        return null;
+        return createUserItem(user, readingSession);
     }
 
     @Override
     public Optional<ReadingSession> getUserReadingSession(String user, String uuid) {
-        return null;
+        return getUserItem(user, uuid);
     }
 
     @Override
-    public Optional<ReadingSession> updateUserReadingSession(String user, ReadingSession readingSession) {
-        return null;
+    public Optional<String> updateUserReadingSession(String user, String uuid, ReadingSession readingSession) {
+        return updateUserItem(user, uuid, readingSession);
     }
 
     @Override
     public void deleteUserReadingSession(String user, String uuid) {
+        deleteUserItem(user, uuid);
+    }
 
+    @Override
+    protected ReadingSession createItem(String uuid, ReadingSession readingSession) {
+        return new ReadingSession(uuid,
+            readingSession.getBookUuid(),
+            readingSession.getDate(),
+            readingSession.getLastReadPage(),
+            readingSession.getBookmark());
     }
 
     @Override

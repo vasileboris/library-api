@@ -84,14 +84,8 @@ public class BooksController {
         try {
             logger.debug("Update book with uuid {} for user {}", uuid, user);
 
-            Optional<Book> optionalBook = booksDao.getUserBook(user, uuid);
+            Optional<String> optionalBook = booksDao.updateUserBook(user, uuid, book);
             if(optionalBook.isPresent()) {
-                booksDao.updateUserBook(user, new Book(uuid,
-                    book.getIsbn10(),
-                    book.getIsbn13(),
-                    book.getTitle(),
-                    book.getAuthors(),
-                    book.getPages()));
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);

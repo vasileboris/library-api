@@ -170,14 +170,14 @@ public class FilesystemBooksDaoTest {
                 Arrays.asList(new Author("First1", "Last1")),
                 100));
 
-        Book updatedUserBook = new Book(uuid,
+        Book updatedUserBook = new Book(null,
             userBook.getIsbn10(),
             userBook.getIsbn13(),
             "Updated " + userBook.getTitle(),
             userBook.getAuthors(),
             userBook.getPages());
 
-        Optional<Book> optional = booksDao.updateUserBook(JOHN_DOE_USER, updatedUserBook);
+        Optional<String> optional = booksDao.updateUserBook(JOHN_DOE_USER, uuid, updatedUserBook);
         assertThat(optional.isPresent()).isTrue();
 
         userBooks = booksDao.getUserBooks(JOHN_DOE_USER);
@@ -194,9 +194,8 @@ public class FilesystemBooksDaoTest {
     @Test
     public void updateUserMisingBook() throws Exception {
         Book userBook = getBook("uuid-1.json");
-        Optional<Book> optional = booksDao.updateUserBook(JOHN_DOE_USER, userBook);
+        Optional<String> optional = booksDao.updateUserBook(JOHN_DOE_USER, "uuid-1", userBook);
         assertThat(optional.isPresent()).isFalse();
-
     }
 
     @Test
