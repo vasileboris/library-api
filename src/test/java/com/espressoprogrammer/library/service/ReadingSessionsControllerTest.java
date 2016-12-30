@@ -181,4 +181,27 @@ public class ReadingSessionsControllerTest {
         verify(readingSessionsDao, times(0)).deleteUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
     }
 
+    @Test
+    public void getDateReadingSessions() throws Exception {
+        String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
+        ReadingSession readingSession = getReadingSession(uuid + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, uuid)).thenReturn(Optional.of(readingSession));
+
+        this.mockMvc.perform(get("/users/{user}/reading-sessions/{uuid}/date-reading-sessions", JOHN_DOE_USER, uuid))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$[0].date", is("2017-01-01")))
+            .andExpect(jsonPath("$[0].lastReadPage", is(32)))
+            .andExpect(jsonPath("$[0].bookmark", is("Section 3.3")))
+            .andDo(document("{class-name}/{method-name}",
+                pathParameters(
+                    parameterWithName("user").description("User id"),
+                    parameterWithName("uuid").description("Reading session uuid")),
+                responseFields(
+                    fieldWithPath("[].date").description("Date of a reading session in the format yyyy-MM-dd"),
+                    fieldWithPath("[].lastReadPage").description("Last page that was read"),
+                    fieldWithPath("[].bookmark").description("Where to start next (optional)").optional()
+                )));
+    }
+
 }

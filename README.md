@@ -13,7 +13,7 @@ GET & DELETE
 /users/{user}/reading-sessions/{uuid}
 
 GET & POST
-/users/{user}/reading-sessions/{uuid}/sessions
+/users/{user}/reading-sessions/{uuid}/date-reading-sessions
 
 PUT & DELETE
-/users/{user}/reading-sessions/{uuid}/sessions/{uuid}
+/users/{user}/reading-sessions/{uuid}/date-reading-sessions/{uuid}

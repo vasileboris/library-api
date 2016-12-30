@@ -231,3 +231,21 @@ include::{snippets}/reading-sessions-controller-test/delete-user-missing-reading
 ==== Example response
 
 include::{snippets}/reading-sessions-controller-test/delete-user-missing-reading-session/http-response.adoc[]
+
+=== Retrieve a user date reading sessions
+
+==== Path parameters
+
+include::{snippets}/reading-sessions-controller-test/get-date-reading-sessions/path-parameters.adoc[]
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/get-date-reading-sessions/http-request.adoc[]
+
+==== Response fields
+
+include::{snippets}/reading-sessions-controller-test/get-date-reading-sessions/response-fields.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/get-date-reading-sessions/http-response.adoc[]

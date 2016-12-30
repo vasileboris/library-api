@@ -1,6 +1,7 @@
 package com.espressoprogrammer.library.service;
 
 import com.espressoprogrammer.library.dto.Book;
+import com.espressoprogrammer.library.dto.DateReadingSession;
 import com.espressoprogrammer.library.dto.ReadingSession;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
 import org.slf4j.Logger;
@@ -57,8 +58,8 @@ public class ReadingSessionsController {
     }
 
     @GetMapping(value = "/users/{user}/reading-sessions/{uuid}")
-    public ResponseEntity<ReadingSession> getUseReadingSession(@PathVariable("user") String user,
-                                                               @PathVariable("uuid") String uuid)  {
+    public ResponseEntity<ReadingSession> getUserReadingSession(@PathVariable("user") String user,
+                                                                @PathVariable("uuid") String uuid)  {
         try {
             logger.debug("Look for reading session with uuid {} for user {}", uuid, user);
 
@@ -69,7 +70,7 @@ public class ReadingSessionsController {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
         } catch (Exception ex) {
-            logger.error("Error on looking for books", ex);
+            logger.error("Error on looking for reading session", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -88,10 +89,27 @@ public class ReadingSessionsController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (Exception ex) {
-            logger.error("Error on looking for books", ex);
+            logger.error("Error on looking for reading sessions", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @GetMapping(value = "/users/{user}/reading-sessions/{uuid}/date-reading-sessions")
+    public ResponseEntity<List<DateReadingSession>> getDateReadingSessions(@PathVariable("user") String user,
+                                                                           @PathVariable("uuid") String uuid)  {
+        try {
+            logger.debug("Look for date reading sessions with uuid {} for user {}", uuid, user);
+
+            Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
+            if(optionalReadingSession.isPresent()) {
+                return new ResponseEntity<>(optionalReadingSession.get().getReadingSessions(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception ex) {
+            logger.error("Error on looking for reading sessions", ex);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
