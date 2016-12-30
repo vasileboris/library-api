@@ -77,18 +77,18 @@ public class ReadingSessionsControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$[0].uuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
             .andExpect(jsonPath("$[0].bookUuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
-            .andExpect(jsonPath("$[0].readingSessions[0].date", is("2017-01-01")))
-            .andExpect(jsonPath("$[0].readingSessions[0].lastReadPage", is(32)))
-            .andExpect(jsonPath("$[0].readingSessions[0].bookmark", is("Section 3.3")))
+            .andExpect(jsonPath("$[0].dateReadingSessions[0].date", is("2017-01-01")))
+            .andExpect(jsonPath("$[0].dateReadingSessions[0].lastReadPage", is(32)))
+            .andExpect(jsonPath("$[0].dateReadingSessions[0].bookmark", is("Section 3.3")))
             .andDo(document("{class-name}/{method-name}",
                 pathParameters(parameterWithName("user").description("User id")),
                 responseFields(
                     fieldWithPath("[].uuid").description("UUID used to identify a reading session"),
                     fieldWithPath("[].bookUuid").description("UUID used to identify a book"),
-                    fieldWithPath("[].readingSessions").description("Reading sessions (optional)").optional(),
-                    fieldWithPath("[].readingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
-                    fieldWithPath("[].readingSessions[].lastReadPage").description("Last page that was read"),
-                    fieldWithPath("[].readingSessions[].bookmark").description("Where to start next (optional)").optional()
+                    fieldWithPath("[].dateReadingSessions").description("Reading sessions (optional)").optional(),
+                    fieldWithPath("[].dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
+                    fieldWithPath("[].dateReadingSessions[].lastReadPage").description("Last page that was read"),
+                    fieldWithPath("[].dateReadingSessions[].bookmark").description("Where to start next (optional)").optional()
                 )));
     }
 
@@ -106,10 +106,10 @@ public class ReadingSessionsControllerTest {
                 pathParameters(parameterWithName("user").description("User id")),
                 requestFields(
                     fieldWithPath("bookUuid").description("UUID used to identify a book"),
-                    fieldWithPath("readingSessions").description("Reading sessions (optional)").optional(),
-                    fieldWithPath("readingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
-                    fieldWithPath("readingSessions[].lastReadPage").description("Last page that was read"),
-                    fieldWithPath("readingSessions[].bookmark").description("Where to start next (optional)").optional()
+                    fieldWithPath("dateReadingSessions").description("Reading sessions (optional)").optional(),
+                    fieldWithPath("dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
+                    fieldWithPath("dateReadingSessions[].lastReadPage").description("Last page that was read"),
+                    fieldWithPath("dateReadingSessions[].bookmark").description("Where to start next (optional)").optional()
                 ),
                 responseHeaders(
                     headerWithName(HttpHeaders.LOCATION).description("New added reading session resource")
@@ -127,9 +127,9 @@ public class ReadingSessionsControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("uuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
             .andExpect(jsonPath("bookUuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
-            .andExpect(jsonPath("readingSessions[0].date", is("2017-01-01")))
-            .andExpect(jsonPath("readingSessions[0].lastReadPage", is(32)))
-            .andExpect(jsonPath("readingSessions[0].bookmark", is("Section 3.3")))
+            .andExpect(jsonPath("dateReadingSessions[0].date", is("2017-01-01")))
+            .andExpect(jsonPath("dateReadingSessions[0].lastReadPage", is(32)))
+            .andExpect(jsonPath("dateReadingSessions[0].bookmark", is("Section 3.3")))
             .andDo(document("{class-name}/{method-name}",
                 pathParameters(
                     parameterWithName("user").description("User id"),
@@ -137,10 +137,10 @@ public class ReadingSessionsControllerTest {
                 responseFields(
                     fieldWithPath("uuid").description("UUID used to identify a reading session"),
                     fieldWithPath("bookUuid").description("UUID used to identify a book"),
-                    fieldWithPath("readingSessions").description("Reading sessions (optional)").optional(),
-                    fieldWithPath("readingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
-                    fieldWithPath("readingSessions[].lastReadPage").description("Last page that was read"),
-                    fieldWithPath("readingSessions[].bookmark").description("Where to start next (optional)").optional()
+                    fieldWithPath("dateReadingSessions").description("Reading sessions (optional)").optional(),
+                    fieldWithPath("dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
+                    fieldWithPath("dateReadingSessions[].lastReadPage").description("Last page that was read"),
+                    fieldWithPath("dateReadingSessions[].bookmark").description("Where to start next (optional)").optional()
                 )));
     }
 
@@ -229,6 +229,10 @@ public class ReadingSessionsControllerTest {
                 responseHeaders(
                     headerWithName(HttpHeaders.LOCATION).description("New added reading session resource")
                 )));
+
+        verify(readingSessionsDao).updateUserReadingSession(JOHN_DOE_USER,
+            "1e4014b1-a551-4310-9f30-590c3140b695",
+            getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-update.json"));
     }
 
     @Test

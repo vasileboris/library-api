@@ -1,7 +1,7 @@
 {
   "uuid": "uuid-1",
   "bookUuid": "book-uuid-1",
-  "readingSessions": [
+  "dateReadingSessions": [
     {
       "date": "2017-01-01",
       "lastReadPage": "101",

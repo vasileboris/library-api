@@ -40,7 +40,7 @@ public class FilesystemReadingSessionsDao extends FilesystemAbstractDao<ReadingS
     protected ReadingSession createItem(String uuid, ReadingSession readingSession) {
         return new ReadingSession(uuid,
             readingSession.getBookUuid(),
-            new ArrayList<>(readingSession.getReadingSessions()));
+            new ArrayList<>(readingSession.getDateReadingSessions()));
     }
 
     @Override

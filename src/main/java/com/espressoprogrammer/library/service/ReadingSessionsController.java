@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,7 +103,7 @@ public class ReadingSessionsController {
 
             Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
             if(optionalReadingSession.isPresent()) {
-                return new ResponseEntity<>(optionalReadingSession.get().getReadingSessions(), HttpStatus.OK);
+                return new ResponseEntity<>(optionalReadingSession.get().getDateReadingSessions(), HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
@@ -123,11 +124,20 @@ public class ReadingSessionsController {
             if(optionalReadingSession.isPresent()) {
                 ReadingSession readingSession = optionalReadingSession.get();
 
-                for(DateReadingSession existingDateReadingSession : readingSession.getReadingSessions()) {
+                for(DateReadingSession existingDateReadingSession : readingSession.getDateReadingSessions()) {
                     if(existingDateReadingSession.getDate().equals(dateReadingSession.getDate())) {
                         return new ResponseEntity(HttpStatus.FORBIDDEN);
                     }
                 }
+
+                List<DateReadingSession> updatedDateReadingSessions = new ArrayList<>(readingSession.getDateReadingSessions());
+                updatedDateReadingSessions.add(dateReadingSession);
+                updatedDateReadingSessions.sort((drs1, drs2) -> drs1.getDate().compareTo(drs2.getDate()));
+                readingSessionsDao.updateUserReadingSession(user,
+                    uuid,
+                    new ReadingSession(readingSession.getUuid(),
+                        readingSession.getBookUuid(),
+                        updatedDateReadingSessions));
 
                 HttpHeaders httpHeaders = new HttpHeaders();
                 httpHeaders.add(HttpHeaders.LOCATION,
