@@ -1,6 +1,5 @@
 package com.espressoprogrammer.library.service;
 
-import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.dto.ReadingSession;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
 import org.junit.Before;
@@ -21,15 +20,17 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static com.espressoprogrammer.library.LibraryTestUtil.getBook;
 import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSession;
 import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSessionJson;
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -151,6 +152,33 @@ public class ReadingSessionsControllerTest {
         this.mockMvc.perform(get("/users/{user}/reading-sessions/{uuid}", JOHN_DOE_USER, uuid))
             .andExpect(status().isNotFound())
             .andDo(document("{class-name}/{method-name}"));
+    }
+
+    @Test
+    public void deleteUserReadingSession() throws Exception {
+        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, readingSession.getUuid())).thenReturn(Optional.of(readingSession));
+
+        this.mockMvc.perform(delete("/users/{user}/reading-sessions/{uuid}", JOHN_DOE_USER, readingSession.getUuid()))
+            .andExpect(status().isOk())
+            .andDo(document("{class-name}/{method-name}",
+                pathParameters(
+                    parameterWithName("user").description("User id"),
+                    parameterWithName("uuid").description("Reading session uuid"))));
+
+        verify(readingSessionsDao).deleteUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
+    }
+
+    @Test
+    public void deleteUserMissingReadingSession() throws Exception {
+        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, readingSession.getUuid())).thenReturn(Optional.empty());
+
+        this.mockMvc.perform(delete("/users/{user}/reading-sessions/{uuid}", JOHN_DOE_USER, readingSession.getUuid()))
+            .andExpect(status().isNotFound())
+            .andDo(document("{class-name}/{method-name}"));
+
+        verify(readingSessionsDao, times(0)).deleteUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
     }
 
 }

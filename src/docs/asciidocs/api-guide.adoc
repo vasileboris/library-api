@@ -207,3 +207,27 @@ include::{snippets}/reading-sessions-controller-test/get-user-missing-reading-se
 ==== Example response
 
 include::{snippets}/reading-sessions-controller-test/get-user-missing-reading-session/http-response.adoc[]
+
+=== Delete a user reading session
+
+==== Path parameters
+
+include::{snippets}/reading-sessions-controller-test/delete-user-reading-session/path-parameters.adoc[]
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/delete-user-reading-session/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/delete-user-reading-session/http-response.adoc[]
+
+=== Delete a user missing reading session
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/delete-user-missing-reading-session/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/delete-user-missing-reading-session/http-response.adoc[]

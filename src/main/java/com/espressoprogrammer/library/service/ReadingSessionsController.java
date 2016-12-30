@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,5 +73,25 @@ public class ReadingSessionsController {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping(value= "/users/{user}/reading-sessions/{uuid}")
+    public ResponseEntity<Book> deleteUserReadingSession(@PathVariable("user") String user,
+                                                         @PathVariable("uuid") String uuid)  {
+        try {
+            logger.debug("Delete a reading session with uuid {} for user {}", uuid, user);
+
+            Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
+            if(optionalReadingSession.isPresent()) {
+                readingSessionsDao.deleteUserReadingSession(user, uuid);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception ex) {
+            logger.error("Error on looking for books", ex);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }
