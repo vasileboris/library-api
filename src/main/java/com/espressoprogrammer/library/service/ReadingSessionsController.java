@@ -112,4 +112,36 @@ public class ReadingSessionsController {
         }
     }
 
+    @PostMapping(value = "/users/{user}/reading-sessions/{uuid}/date-reading-sessions")
+    public ResponseEntity createDateReadingSession(@PathVariable("user") String user,
+                                                   @PathVariable("uuid") String uuid,
+                                                   @RequestBody DateReadingSession dateReadingSession)  {
+        try {
+            logger.debug("Add new date reading session with uuid {} for user {}", uuid, user);
+
+            Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
+            if(optionalReadingSession.isPresent()) {
+                ReadingSession readingSession = optionalReadingSession.get();
+
+                for(DateReadingSession existingDateReadingSession : readingSession.getReadingSessions()) {
+                    if(existingDateReadingSession.getDate().equals(dateReadingSession.getDate())) {
+                        return new ResponseEntity(HttpStatus.FORBIDDEN);
+                    }
+                }
+
+                HttpHeaders httpHeaders = new HttpHeaders();
+                httpHeaders.add(HttpHeaders.LOCATION,
+                    String.format("/users/%s/reading-sessions/%s/date-reading-sessions/%s",
+                        user, uuid, dateReadingSession.getDate()));
+                return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception ex) {
+            logger.error("Error on adding new reading session", ex);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

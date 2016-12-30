@@ -204,4 +204,42 @@ public class ReadingSessionsControllerTest {
                 )));
     }
 
+    @Test
+    public void createDateReadingSession() throws Exception {
+        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+
+        this.mockMvc.perform(post("/users/{user}/reading-sessions/{uuid}/date-reading-sessions", JOHN_DOE_USER, "1e4014b1-a551-4310-9f30-590c3140b695")
+            .content(getReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-new-date-reading-session.json"))
+            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(status().isCreated())
+            .andExpect(header().string(HttpHeaders.LOCATION, "/users/" + JOHN_DOE_USER
+                + "/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695"
+                + "/date-reading-sessions/2017-01-02"))
+            .andDo(document("{class-name}/{method-name}",
+                pathParameters(
+                    parameterWithName("user").description("User id"),
+                    parameterWithName("uuid").description("Reading session uuid")
+                ),
+                requestFields(
+                    fieldWithPath("date").description("Date of a reading session in the format yyyy-MM-dd"),
+                    fieldWithPath("lastReadPage").description("Last page that was read"),
+                    fieldWithPath("bookmark").description("Where to start next (optional)").optional()
+                ),
+                responseHeaders(
+                    headerWithName(HttpHeaders.LOCATION).description("New added reading session resource")
+                )));
+    }
+
+    @Test
+    public void createDateReadingSessionExistingDate() throws Exception {
+        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+
+        this.mockMvc.perform(post("/users/{user}/reading-sessions/{uuid}/date-reading-sessions", JOHN_DOE_USER, "1e4014b1-a551-4310-9f30-590c3140b695")
+            .content(getReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-existing-date-reading-session.json"))
+            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(status().isForbidden())
+            .andDo(document("{class-name}/{method-name}"));
+    }
 }

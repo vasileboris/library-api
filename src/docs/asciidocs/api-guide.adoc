@@ -249,3 +249,35 @@ include::{snippets}/reading-sessions-controller-test/get-date-reading-sessions/r
 ==== Example response
 
 include::{snippets}/reading-sessions-controller-test/get-date-reading-sessions/http-response.adoc[]
+
+=== Add a new date reading session for a user
+
+==== Path parameters
+
+include::{snippets}/reading-sessions-controller-test/create-date-reading-session/path-parameters.adoc[]
+
+==== Request fields
+
+include::{snippets}/reading-sessions-controller-test/create-date-reading-session/request-fields.adoc[]
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/create-date-reading-session/http-request.adoc[]
+
+==== Response headers
+
+include::{snippets}/reading-sessions-controller-test/create-date-reading-session/response-headers.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/create-date-reading-session/http-response.adoc[]
+
+=== Add existing date reading session for a user
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/create-date-reading-session-existing-date/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/create-date-reading-session-existing-date/http-response.adoc[]
