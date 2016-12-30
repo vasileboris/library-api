@@ -2,11 +2,13 @@ package com.espressoprogrammer.library.persistence.filesystem;
 
 import com.espressoprogrammer.library.dto.ReadingSession;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class FilesystemReadingSessionsDao extends FilesystemAbstractDao<ReadingSession> implements ReadingSessionsDao {
 
     @Override
