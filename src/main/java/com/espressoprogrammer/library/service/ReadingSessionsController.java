@@ -65,11 +65,11 @@ public class ReadingSessionsController {
             logger.debug("Look for reading session with uuid {} for user {}", uuid, user);
 
             Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
-            if(optionalReadingSession.isPresent()) {
-                return new ResponseEntity<>(optionalReadingSession.get(), HttpStatus.OK);
-            } else {
+            if(!optionalReadingSession.isPresent()) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
+
+            return new ResponseEntity<>(optionalReadingSession.get(), HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for reading session", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -83,12 +83,12 @@ public class ReadingSessionsController {
             logger.debug("Delete a reading session with uuid {} for user {}", uuid, user);
 
             Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
-            if(optionalReadingSession.isPresent()) {
-                readingSessionsDao.deleteUserReadingSession(user, uuid);
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
+            if(!optionalReadingSession.isPresent()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+
+            readingSessionsDao.deleteUserReadingSession(user, uuid);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for reading sessions", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -102,11 +102,11 @@ public class ReadingSessionsController {
             logger.debug("Look for date reading sessions with uuid {} for user {}", uuid, user);
 
             Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
-            if(optionalReadingSession.isPresent()) {
-                return new ResponseEntity<>(optionalReadingSession.get().getDateReadingSessions(), HttpStatus.OK);
-            } else {
+            if(!optionalReadingSession.isPresent()) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
+
+            return new ResponseEntity<>(optionalReadingSession.get().getDateReadingSessions(), HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for reading sessions", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -121,33 +121,31 @@ public class ReadingSessionsController {
             logger.debug("Add new date reading session with uuid {} for user {}", uuid, user);
 
             Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
-            if(optionalReadingSession.isPresent()) {
-                ReadingSession readingSession = optionalReadingSession.get();
-
-                for(DateReadingSession existingDateReadingSession : readingSession.getDateReadingSessions()) {
-                    if(existingDateReadingSession.getDate().equals(dateReadingSession.getDate())) {
-                        return new ResponseEntity(HttpStatus.FORBIDDEN);
-                    }
-                }
-
-                List<DateReadingSession> updatedDateReadingSessions = new ArrayList<>(readingSession.getDateReadingSessions());
-                updatedDateReadingSessions.add(dateReadingSession);
-                updatedDateReadingSessions.sort((drs1, drs2) -> drs1.getDate().compareTo(drs2.getDate()));
-                readingSessionsDao.updateUserReadingSession(user,
-                    uuid,
-                    new ReadingSession(readingSession.getUuid(),
-                        readingSession.getBookUuid(),
-                        updatedDateReadingSessions));
-
-                HttpHeaders httpHeaders = new HttpHeaders();
-                httpHeaders.add(HttpHeaders.LOCATION,
-                    String.format("/users/%s/reading-sessions/%s/date-reading-sessions/%s",
-                        user, uuid, dateReadingSession.getDate()));
-                return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
-            } else {
+            if(!optionalReadingSession.isPresent()) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
 
+            ReadingSession readingSession = optionalReadingSession.get();
+            for(DateReadingSession existingDateReadingSession : readingSession.getDateReadingSessions()) {
+                if(existingDateReadingSession.getDate().equals(dateReadingSession.getDate())) {
+                    return new ResponseEntity(HttpStatus.FORBIDDEN);
+                }
+            }
+
+            List<DateReadingSession> updatedDateReadingSessions = new ArrayList<>(readingSession.getDateReadingSessions());
+            updatedDateReadingSessions.add(dateReadingSession);
+            updatedDateReadingSessions.sort((drs1, drs2) -> drs1.getDate().compareTo(drs2.getDate()));
+            readingSessionsDao.updateUserReadingSession(user,
+                uuid,
+                new ReadingSession(readingSession.getUuid(),
+                    readingSession.getBookUuid(),
+                    updatedDateReadingSessions));
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add(HttpHeaders.LOCATION,
+                String.format("/users/%s/reading-sessions/%s/date-reading-sessions/%s",
+                    user, uuid, dateReadingSession.getDate()));
+            return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
         } catch (Exception ex) {
             logger.error("Error on adding new reading session", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);

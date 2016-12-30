@@ -15,5 +15,5 @@ GET & DELETE
 GET & POST
 /users/{user}/reading-sessions/{uuid}/date-reading-sessions
 
-PUT & DELETE
-/users/{user}/reading-sessions/{uuid}/date-reading-sessions/{uuid}
+GET & PUT & DELETE
+/users/{user}/reading-sessions/{uuid}/date-reading-sessions/{date}

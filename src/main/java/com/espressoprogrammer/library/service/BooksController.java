@@ -66,11 +66,11 @@ public class BooksController {
             logger.debug("Look for book with uuid {} for user {}", uuid, user);
 
             Optional<Book> optionalBook = booksDao.getUserBook(user, uuid);
-            if(optionalBook.isPresent()) {
-                return new ResponseEntity<>(optionalBook.get(), HttpStatus.OK);
-            } else {
+            if(!optionalBook.isPresent()) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
+
+            return new ResponseEntity<>(optionalBook.get(), HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for books", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -85,11 +85,11 @@ public class BooksController {
             logger.debug("Update book with uuid {} for user {}", uuid, user);
 
             Optional<String> optionalBook = booksDao.updateUserBook(user, uuid, book);
-            if(optionalBook.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
+            if(!optionalBook.isPresent()) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
+
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for books", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -103,12 +103,12 @@ public class BooksController {
             logger.debug("Delete book with uuid {} for user {}", uuid, user);
 
             Optional<Book> optionalBook = booksDao.getUserBook(user, uuid);
-            if(optionalBook.isPresent()) {
-                booksDao.deleteUserBook(user, uuid);
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
+            if(!optionalBook.isPresent()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+
+            booksDao.deleteUserBook(user, uuid);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for books", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
