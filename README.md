@@ -1,23 +1,13 @@
-GET
-/users/user/books
+Rest API that expose the following resources:
 
-POST - add a book
-/users/user/books
+GET & POST
+/users/{user}/books
 
-GET
-/users/user/books/isbn
+GET & PUT & DELETE
+/users/{user}/books/{uuid}
 
-PUT
-/users/user/books/isbn
-
-DELETE
-/users/user/books/isbn
-
-POST
+GET & POST
 /users/user/reading-sessions
 
-PUT
-/users/user/reading-sessions/id
-
-DELETE
-/users/user/reading-sessions/id
+GET & PUT & DELETE
+/users/{user}/reading-sessions/{uuid}
