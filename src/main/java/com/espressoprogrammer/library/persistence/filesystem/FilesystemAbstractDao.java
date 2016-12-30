@@ -1,41 +1,55 @@
 package com.espressoprogrammer.library.persistence.filesystem;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Function;
 
-abstract class FilesystemAbstractDao {
+abstract class FilesystemAbstractDao<T> {
     protected static final String FILE_EXTENSION = ".json";
 
     @Autowired
     protected FilesystemConfiguration filesystemConfiguration;
 
 
-    protected String createBooksFolderIfMissing(String user) throws IOException {
-        return createFolderIfMissing(user, u -> getBooksFolder(u));
+    protected T fromJson(Path path) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(path.toFile(),
+                (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+        } catch (IOException ex) {
+            throw new FilesystemDaoException(ex);
+        }
     }
 
-    protected String createReadingSessionsFolderIfMissing(String user) throws IOException {
-        return createFolderIfMissing(user, u -> getReadingSessionsFolder(u));
+    protected String toJson(T t) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            objectMapper.writeValue(out, t);
+            return out.toString();
+        } catch (IOException ex) {
+            throw new FilesystemDaoException(ex);
+        }
     }
 
-    private String createFolderIfMissing(String user, Function<String, String> getFolder) throws IOException {
+    protected String createStorageFolderIfMissing(String user) throws IOException {
+        return createFolderIfMissing(user, u -> getStorageFolder(u));
+    }
+
+    protected String createFolderIfMissing(String user, Function<String, String> getFolder) throws IOException {
         String folder = getFolder.apply(user);
         createFolderIfMissing(folder);
         return folder;
     }
 
-    private String getBooksFolder(String user) {
-        return filesystemConfiguration.getLibraryFolder() + "/" + user + "/books";
-    }
-
-    private String getReadingSessionsFolder(String user) {
-        return filesystemConfiguration.getLibraryFolder() + "/" + user + "/reading-sessions";
-    }
+    protected abstract String getStorageFolder(String user);
 
     private void createFolderIfMissing(String folder) throws IOException {
         Path path = Paths.get(folder);
