@@ -9,5 +9,11 @@ GET & PUT & DELETE
 GET & POST
 /users/user/reading-sessions
 
-GET & PUT & DELETE
+GET & DELETE
 /users/{user}/reading-sessions/{uuid}
+
+GET & POST
+/users/{user}/reading-sessions/{uuid}/sessions
+
+PUT & DELETE
+/users/{user}/reading-sessions/{uuid}/sessions/{uuid}
