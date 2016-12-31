@@ -102,12 +102,11 @@ public class BooksController {
         try {
             logger.debug("Delete book for user {} with uuid {}", user, uuid);
 
-            Optional<Book> optionalBook = booksDao.getUserBook(user, uuid);
+            Optional<String> optionalBook = booksDao.deleteUserBook(user, uuid);
             if(!optionalBook.isPresent()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
-            booksDao.deleteUserBook(user, uuid);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for books", ex);

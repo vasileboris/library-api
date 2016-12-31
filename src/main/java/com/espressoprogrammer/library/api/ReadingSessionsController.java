@@ -93,12 +93,11 @@ public class ReadingSessionsController {
         try {
             logger.debug("Delete a reading session for user {} with uuid {} ", user, uuid);
 
-            Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
+            Optional<String> optionalReadingSession = readingSessionsDao.deleteUserReadingSession(user, uuid);
             if(!optionalReadingSession.isPresent()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
-            readingSessionsDao.deleteUserReadingSession(user, uuid);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for reading sessions", ex);

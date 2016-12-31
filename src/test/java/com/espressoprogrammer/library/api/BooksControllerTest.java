@@ -221,7 +221,7 @@ public class BooksControllerTest {
     @Test
     public void deleteUserBook() throws Exception {
         Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(booksDao.getUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.of(book));
+        when(booksDao.deleteUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.of(book.getUuid()));
 
         this.mockMvc.perform(delete("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid()))
             .andExpect(status().isOk())
@@ -229,19 +229,15 @@ public class BooksControllerTest {
                 pathParameters(
                     parameterWithName("user").description("User id"),
                     parameterWithName("uuid").description("Book uuid"))));
-
-        verify(booksDao).deleteUserBook(JOHN_DOE_USER, book.getUuid());
     }
 
     @Test
     public void deleteMissingUserBook() throws Exception {
         Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(booksDao.getUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.empty());
+        when(booksDao.deleteUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.empty());
 
         this.mockMvc.perform(delete("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid()))
             .andExpect(status().isNotFound())
             .andDo(document("{class-name}/{method-name}"));
-
-        verify(booksDao, times(0)).deleteUserBook(JOHN_DOE_USER, book.getUuid());
     }
 }

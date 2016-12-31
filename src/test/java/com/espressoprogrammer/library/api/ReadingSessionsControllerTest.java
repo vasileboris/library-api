@@ -158,7 +158,7 @@ public class ReadingSessionsControllerTest {
     @Test
     public void deleteUserReadingSession() throws Exception {
         ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, readingSession.getUuid())).thenReturn(Optional.of(readingSession));
+        when(readingSessionsDao.deleteUserReadingSession(JOHN_DOE_USER, readingSession.getUuid())).thenReturn(Optional.of(readingSession.getUuid()));
 
         this.mockMvc.perform(delete("/users/{user}/reading-sessions/{uuid}", JOHN_DOE_USER, readingSession.getUuid()))
             .andExpect(status().isOk())
@@ -166,20 +166,16 @@ public class ReadingSessionsControllerTest {
                 pathParameters(
                     parameterWithName("user").description("User id"),
                     parameterWithName("uuid").description("Reading session uuid"))));
-
-        verify(readingSessionsDao).deleteUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
     }
 
     @Test
     public void deleteMissingUserReadingSession() throws Exception {
         ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, readingSession.getUuid())).thenReturn(Optional.empty());
+        when(readingSessionsDao.deleteUserReadingSession(JOHN_DOE_USER, readingSession.getUuid())).thenReturn(Optional.empty());
 
         this.mockMvc.perform(delete("/users/{user}/reading-sessions/{uuid}", JOHN_DOE_USER, readingSession.getUuid()))
             .andExpect(status().isNotFound())
             .andDo(document("{class-name}/{method-name}"));
-
-        verify(readingSessionsDao, times(0)).deleteUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
     }
 
     @Test
