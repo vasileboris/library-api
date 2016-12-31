@@ -23,7 +23,6 @@ import java.util.Optional;
 import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSession;
 import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSessionJson;
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
