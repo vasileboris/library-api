@@ -309,3 +309,27 @@ include::{snippets}/reading-sessions-controller-test/get-missing-date-reading-se
 ==== Example response
 
 include::{snippets}/reading-sessions-controller-test/get-missing-date-reading-session/http-response.adoc[]
+
+=== Update a date reading session
+
+==== Path parameters
+
+include::{snippets}/reading-sessions-controller-test/update-date-reading-session/path-parameters.adoc[]
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/update-date-reading-session/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/update-date-reading-session/http-response.adoc[]
+
+=== Update a missing date reading session
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/update-missing-date-reading-session/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/update-missing-date-reading-session/http-response.adoc[]

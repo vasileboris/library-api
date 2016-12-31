@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -187,4 +188,44 @@ public class ReadingSessionsController {
         }
     }
 
+    @PutMapping(value = "/users/{user}/reading-sessions/{uuid}/date-reading-sessions/{date}")
+    public ResponseEntity updateDateReadingSession(@PathVariable("user") String user,
+                                                   @PathVariable("uuid") String uuid,
+                                                   @PathVariable("date") String date,
+                                                   @RequestBody DateReadingSession dateReadingSession)  {
+        try {
+            logger.debug("Update date reading session for user {} with uuid {} and date {}", user, uuid, date);
+
+            Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
+            if(!optionalReadingSession.isPresent()) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+
+            boolean update = false;
+            List<DateReadingSession> updateDateReadingSessions = new ArrayList<>();
+            ReadingSession existingReadingSession = optionalReadingSession.get();
+            for(DateReadingSession existingDateReadingSession : existingReadingSession.getDateReadingSessions()) {
+                if(existingDateReadingSession.getDate().equals(date)) {
+                    update = true;
+                    updateDateReadingSessions.add(new DateReadingSession(date,
+                        dateReadingSession.getLastReadPage(),
+                        dateReadingSession.getBookmark()));
+                } else {
+                    updateDateReadingSessions.add(existingDateReadingSession);
+                }
+            }
+
+            if(update) {
+                readingSessionsDao.updateUserReadingSession(user, uuid, new ReadingSession(existingReadingSession.getUuid(),
+                    existingReadingSession.getBookUuid(),
+                    updateDateReadingSessions));
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } catch (Exception ex) {
+            logger.error("Error on looking for date reading session", ex);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
