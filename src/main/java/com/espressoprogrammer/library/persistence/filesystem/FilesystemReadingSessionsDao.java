@@ -32,8 +32,8 @@ public class FilesystemReadingSessionsDao extends FilesystemAbstractDao<ReadingS
     }
 
     @Override
-    public void deleteUserReadingSession(String user, String uuid) {
-        deleteUserItem(user, uuid);
+    public Optional<String> deleteUserReadingSession(String user, String uuid) {
+        return deleteUserItem(user, uuid);
     }
 
     @Override

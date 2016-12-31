@@ -61,9 +61,9 @@ abstract class FilesystemAbstractDao<T> {
             Path pathToItem = Paths.get(storageFolder, id + FILE_EXTENSION);
             if(pathToItem.toFile().exists()) {
                 return Optional.of(fromJson(pathToItem));
-            } else {
-                return Optional.empty();
             }
+
+            return Optional.empty();
         } catch(Exception ex) {
             throw new FilesystemDaoException(ex);
         }
@@ -79,23 +79,26 @@ abstract class FilesystemAbstractDao<T> {
                 T persistedItem = createItem(uuid, item);
                 Files.write(pathToItem, toJson(persistedItem).getBytes());
                 return Optional.of(uuid);
-            } else {
-                return Optional.empty();
             }
+
+            return Optional.empty();
         } catch(Exception ex) {
             throw new FilesystemDaoException(ex);
         }
     }
 
-    protected void deleteUserItem(String user, String id) {
+    protected Optional<String> deleteUserItem(String user, String uuid) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
-            logger.debug("Delete item for user {} with uuid {}", user, id);
+            logger.debug("Delete item for user {} with uuid {}", user, uuid);
 
-            Path pathToItem = Paths.get(storageFolder, id + FILE_EXTENSION);
+            Path pathToItem = Paths.get(storageFolder, uuid + FILE_EXTENSION);
             if(pathToItem.toFile().exists()) {
                 pathToItem.toFile().delete();
+                return Optional.of(uuid);
             }
+
+            return Optional.empty();
         } catch(Exception ex) {
             throw new FilesystemDaoException(ex);
         }

@@ -32,8 +32,8 @@ public class FilesystemBooksDao extends FilesystemAbstractDao<Book> implements B
     }
 
     @Override
-    public void deleteUserBook(String user, String uuid) {
-        deleteUserItem(user, uuid);
+    public Optional<String> deleteUserBook(String user, String uuid) {
+        return deleteUserItem(user, uuid);
     }
 
     @Override

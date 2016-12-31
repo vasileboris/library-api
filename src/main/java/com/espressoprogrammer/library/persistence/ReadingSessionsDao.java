@@ -15,5 +15,5 @@ public interface ReadingSessionsDao {
 
     Optional<String> updateUserReadingSession(String user, String uuid, ReadingSession readingSession);
 
-    void deleteUserReadingSession(String user, String uuid);
+    Optional<String> deleteUserReadingSession(String user, String uuid);
 }
