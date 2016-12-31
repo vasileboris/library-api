@@ -1,4 +1,4 @@
-package com.espressoprogrammer.library.service;
+package com.espressoprogrammer.library.api;
 
 import com.espressoprogrammer.library.dto.ReadingSession;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
