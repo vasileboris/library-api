@@ -54,11 +54,11 @@ include::{snippets}/books-controller-test/create-user-book/http-response.adoc[]
 
 ==== Example request
 
-include::{snippets}/books-controller-test/create-user-existing-book/http-request.adoc[]
+include::{snippets}/books-controller-test/create-existing-user-book/http-request.adoc[]
 
 ==== Example response
 
-include::{snippets}/books-controller-test/create-user-existing-book/http-response.adoc[]
+include::{snippets}/books-controller-test/create-existing-user-book/http-response.adoc[]
 
 === Retrieve a user book
 
@@ -78,15 +78,15 @@ include::{snippets}/books-controller-test/get-user-book/response-fields.adoc[]
 
 include::{snippets}/books-controller-test/get-user-book/http-response.adoc[]
 
-=== Retrieve a user missing book
+=== Retrieve a missing user book
 
 ==== Example request
 
-include::{snippets}/books-controller-test/get-user-missing-book/http-request.adoc[]
+include::{snippets}/books-controller-test/get-missing-user-book/http-request.adoc[]
 
 ==== Example response
 
-include::{snippets}/books-controller-test/get-user-missing-book/http-response.adoc[]
+include::{snippets}/books-controller-test/get-missing-user-book/http-response.adoc[]
 
 === Update a user book
 
@@ -106,15 +106,15 @@ include::{snippets}/books-controller-test/update-user-book/http-request.adoc[]
 
 include::{snippets}/books-controller-test/update-user-book/http-response.adoc[]
 
-=== Update a user missing book
+=== Update a missing user book
 
 ==== Example request
 
-include::{snippets}/books-controller-test/update-user-missing-book/http-request.adoc[]
+include::{snippets}/books-controller-test/update-missing-user-book/http-request.adoc[]
 
 ==== Example response
 
-include::{snippets}/books-controller-test/update-user-missing-book/http-response.adoc[]
+include::{snippets}/books-controller-test/update-missing-user-book/http-response.adoc[]
 
 === Delete a user book
 
@@ -130,15 +130,15 @@ include::{snippets}/books-controller-test/delete-user-book/http-request.adoc[]
 
 include::{snippets}/books-controller-test/delete-user-book/http-response.adoc[]
 
-=== Delete a user missing book
+=== Delete a missing user book
 
 ==== Example request
 
-include::{snippets}/books-controller-test/delete-user-missing-book/http-request.adoc[]
+include::{snippets}/books-controller-test/delete-missing-user-book/http-request.adoc[]
 
 ==== Example response
 
-include::{snippets}/books-controller-test/delete-user-missing-book/http-response.adoc[]
+include::{snippets}/books-controller-test/delete-missing-user-book/http-response.adoc[]
 
 === Retrieve user's reading sessions
 

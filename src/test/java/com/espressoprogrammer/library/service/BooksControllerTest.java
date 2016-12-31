@@ -126,7 +126,7 @@ public class BooksControllerTest {
     }
 
     @Test
-    public void createUserExistingBook() throws Exception {
+    public void createExistingUserBook() throws Exception {
         Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
         when(booksDao.getUserBooks(JOHN_DOE_USER)).thenReturn(Arrays.asList(book));
 
@@ -170,7 +170,7 @@ public class BooksControllerTest {
     }
 
     @Test
-    public void getUserMissingBook() throws Exception {
+    public void getMissingUserBook() throws Exception {
         String uuid = "missing-uuid-1";
         when(booksDao.getUserBook(JOHN_DOE_USER, uuid)).thenReturn(Optional.empty());
 
@@ -206,7 +206,7 @@ public class BooksControllerTest {
     }
 
     @Test
-    public void updateUserMissingBook() throws Exception {
+    public void updateMissingUserBook() throws Exception {
         Book updateBook = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
         Book updateBookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
         when(booksDao.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest)).thenReturn(Optional.empty());
@@ -234,7 +234,7 @@ public class BooksControllerTest {
     }
 
     @Test
-    public void deleteUserMissingBook() throws Exception {
+    public void deleteMissingUserBook() throws Exception {
         Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
         when(booksDao.getUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.empty());
 
