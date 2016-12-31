@@ -132,17 +132,19 @@ public class BooksControllerTest {
             .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isForbidden())
-            .andExpect(jsonPath("type", is("VALIDATION")))
-            .andExpect(jsonPath("causes[0].cause", is("isbn10")))
-            .andExpect(jsonPath("causes[0].key", is("com.espressoprogrammer.library.book.isbn10.exists")))
-            .andExpect(jsonPath("causes[1].cause", is("isbn13")))
-            .andExpect(jsonPath("causes[1].key", is("com.espressoprogrammer.library.book.isbn13.exists")))
+            .andExpect(jsonPath("type", is("DATA_VALIDATION")))
+            .andExpect(jsonPath("causes[0].causes[0]", is("isbn10")))
+            .andExpect(jsonPath("causes[0].causes[1]", is("isbn13")))
+            .andExpect(jsonPath("causes[0].key", is("book.isbn.exists")))
             .andDo(document("{class-name}/{method-name}",
                 responseFields(
                     fieldWithPath("type").description("Error type"),
                     fieldWithPath("causes").description("Error causes"),
-                    fieldWithPath("causes[].cause").description("Error cause. In case of VALIDATION it is the field that causes the validation error"),
-                    fieldWithPath("causes[].key").description("Error key. This should be used to locate the right translation for the error")
+                    fieldWithPath("causes[].causes")
+                        .description("Error causes (OPTIONAL). If present, it contains the name of the fields related with this error.")
+                        .optional(),
+                    fieldWithPath("causes[].key")
+                        .description("Error key. This should be used to locate the right translation for the error")
                 )));
     }
 

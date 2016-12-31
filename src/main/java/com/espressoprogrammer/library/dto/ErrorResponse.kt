@@ -7,7 +7,8 @@ data class ErrorResponse(val type: Type,
 
     enum class Type() {
         UNKNOWN,
-        VALIDATION
+        FIELD_VALIDATION,
+        DATA_VALIDATION
     }
 
 }

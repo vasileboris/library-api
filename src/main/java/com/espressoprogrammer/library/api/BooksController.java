@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import static com.espressoprogrammer.library.dto.ErrorResponse.Type.DATA_VALIDATION;
+import static java.util.Arrays.asList;
 
 @RestController
 public class BooksController {
@@ -49,10 +51,8 @@ public class BooksController {
             logger.debug("Add new book for user {}", user);
 
             if(hasUseTheBook(user, book)) {
-                ErrorResponse errorResponse = new ErrorResponse(ErrorResponse.Type.VALIDATION,
-                    Arrays.asList(
-                        new ErrorCause("isbn10", "com.espressoprogrammer.library.book.isbn10.exists"),
-                        new ErrorCause("isbn13", "com.espressoprogrammer.library.book.isbn13.exists")));
+                ErrorResponse errorResponse = new ErrorResponse(DATA_VALIDATION,
+                    asList(new ErrorCause(asList("isbn10", "isbn13"), "book.isbn.exists")));
 
                 return new ResponseEntity(errorResponse ,HttpStatus.FORBIDDEN);
             }

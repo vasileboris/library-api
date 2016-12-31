@@ -1,7 +1,7 @@
 package com.espressoprogrammer.library.dto
 
-data class ErrorCause(val cause: String?,
+data class ErrorCause(val causes: List<String>,
                       val key: String?) {
 
-    constructor() : this(null, null);
+    constructor() : this(emptyList(), null);
 }
