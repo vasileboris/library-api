@@ -10,7 +10,7 @@
 
 == Library REST Service
 
-=== Retrieve user's books
+=== Retrieve user books
 
 ==== Path parameters
 
@@ -140,7 +140,7 @@ include::{snippets}/books-controller-test/delete-missing-user-book/http-request.
 
 include::{snippets}/books-controller-test/delete-missing-user-book/http-response.adoc[]
 
-=== Retrieve user's reading sessions
+=== Retrieve user reading sessions
 
 ==== Path parameters
 
@@ -198,15 +198,15 @@ include::{snippets}/reading-sessions-controller-test/get-user-reading-session/re
 
 include::{snippets}/reading-sessions-controller-test/get-user-reading-session/http-response.adoc[]
 
-=== Retrieve a user missing reading session
+=== Retrieve a missing user reading session
 
 ==== Example request
 
-include::{snippets}/reading-sessions-controller-test/get-user-missing-reading-session/http-request.adoc[]
+include::{snippets}/reading-sessions-controller-test/get-missing-user-reading-session/http-request.adoc[]
 
 ==== Example response
 
-include::{snippets}/reading-sessions-controller-test/get-user-missing-reading-session/http-response.adoc[]
+include::{snippets}/reading-sessions-controller-test/get-missing-user-reading-session/http-response.adoc[]
 
 === Delete a user reading session
 
@@ -222,15 +222,15 @@ include::{snippets}/reading-sessions-controller-test/delete-user-reading-session
 
 include::{snippets}/reading-sessions-controller-test/delete-user-reading-session/http-response.adoc[]
 
-=== Delete a user missing reading session
+=== Delete a missing user reading session
 
 ==== Example request
 
-include::{snippets}/reading-sessions-controller-test/delete-user-missing-reading-session/http-request.adoc[]
+include::{snippets}/reading-sessions-controller-test/delete-missing-user-reading-session/http-request.adoc[]
 
 ==== Example response
 
-include::{snippets}/reading-sessions-controller-test/delete-user-missing-reading-session/http-response.adoc[]
+include::{snippets}/reading-sessions-controller-test/delete-missing-user-reading-session/http-response.adoc[]
 
 === Retrieve a user date reading sessions
 

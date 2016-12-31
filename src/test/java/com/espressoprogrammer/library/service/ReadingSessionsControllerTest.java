@@ -145,7 +145,7 @@ public class ReadingSessionsControllerTest {
     }
 
     @Test
-    public void getUserMissingReadingSession() throws Exception {
+    public void getMissingUserReadingSession() throws Exception {
         String uuid = "missing-uuid-1";
         when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, uuid)).thenReturn(Optional.empty());
 
@@ -170,7 +170,7 @@ public class ReadingSessionsControllerTest {
     }
 
     @Test
-    public void deleteUserMissingReadingSession() throws Exception {
+    public void deleteMissingUserReadingSession() throws Exception {
         ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
         when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, readingSession.getUuid())).thenReturn(Optional.empty());
 
