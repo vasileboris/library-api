@@ -1,6 +1,8 @@
 package com.espressoprogrammer.library.api;
 
 import com.espressoprogrammer.library.dto.Book;
+import com.espressoprogrammer.library.dto.ErrorCause;
+import com.espressoprogrammer.library.dto.ErrorResponse;
 import com.espressoprogrammer.library.persistence.BooksDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +49,12 @@ public class BooksController {
             logger.debug("Add new book for user {}", user);
 
             if(hasUseTheBook(user, book)) {
-                return new ResponseEntity(HttpStatus.FORBIDDEN);
+                ErrorResponse errorResponse = new ErrorResponse(ErrorResponse.Type.VALIDATION,
+                    Arrays.asList(
+                        new ErrorCause("isbn10", "com.espressoprogrammer.library.book.isbn10.exists"),
+                        new ErrorCause("isbn13", "com.espressoprogrammer.library.book.isbn13.exists")));
+
+                return new ResponseEntity(errorResponse ,HttpStatus.FORBIDDEN);
             }
 
             String uuid = booksDao.createUserBook(user, book);

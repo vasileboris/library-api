@@ -132,7 +132,18 @@ public class BooksControllerTest {
             .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isForbidden())
-            .andDo(document("{class-name}/{method-name}"));
+            .andExpect(jsonPath("type", is("VALIDATION")))
+            .andExpect(jsonPath("causes[0].cause", is("isbn10")))
+            .andExpect(jsonPath("causes[0].key", is("com.espressoprogrammer.library.book.isbn10.exists")))
+            .andExpect(jsonPath("causes[1].cause", is("isbn13")))
+            .andExpect(jsonPath("causes[1].key", is("com.espressoprogrammer.library.book.isbn13.exists")))
+            .andDo(document("{class-name}/{method-name}",
+                responseFields(
+                    fieldWithPath("type").description("Error type"),
+                    fieldWithPath("causes").description("Error causes"),
+                    fieldWithPath("causes[].cause").description("Error cause. In case of VALIDATION it is the field that causes the validation error"),
+                    fieldWithPath("causes[].key").description("Error key. This should be used to locate the right translation for the error")
+                )));
     }
 
     @Test

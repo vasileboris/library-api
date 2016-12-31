@@ -56,6 +56,10 @@ include::{snippets}/books-controller-test/create-user-book/http-response.adoc[]
 
 include::{snippets}/books-controller-test/create-existing-user-book/http-request.adoc[]
 
+==== Response fields
+
+include::{snippets}/books-controller-test/create-existing-user-book/response-fields.adoc[]
+
 ==== Example response
 
 include::{snippets}/books-controller-test/create-existing-user-book/http-response.adoc[]
