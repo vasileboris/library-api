@@ -26,7 +26,7 @@ abstract class FilesystemAbstractDao<T> {
     protected List<T> getUserItems(String user) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
-            logger.debug("Look for item into {}", storageFolder);
+            logger.debug("Look for item for user {} into {}", user, storageFolder);
 
             return Files.list(Paths.get(storageFolder))
                 .filter(p -> p.getFileName().toFile().getName().endsWith(FILE_EXTENSION))
@@ -42,7 +42,7 @@ abstract class FilesystemAbstractDao<T> {
     protected String createUserItem(String user, T item) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
-            logger.debug("Add new item into {}", storageFolder);
+            logger.debug("Add new item for user {} into {}", user, storageFolder);
 
             String uuid = UUID.randomUUID().toString();
             T persistedItem = createItem(uuid, item);
@@ -56,7 +56,7 @@ abstract class FilesystemAbstractDao<T> {
     protected Optional<T> getUserItem(String user, String id) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
-            logger.debug("Look for item with uuid {} into {}", id, storageFolder);
+            logger.debug("Look for item for user {} into {} with uuid {}", user, storageFolder, id);
 
             Path pathToItem = Paths.get(storageFolder, id + FILE_EXTENSION);
             if(pathToItem.toFile().exists()) {
@@ -72,7 +72,7 @@ abstract class FilesystemAbstractDao<T> {
     protected Optional<String> updateUserItem(String user, String uuid, T item) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
-            logger.debug("Update item with uuid {} for user {}", uuid, user);
+            logger.debug("Update item for user {} with uuid {}", user, uuid);
 
             Path pathToItem = Paths.get(storageFolder, uuid + FILE_EXTENSION);
             if(pathToItem.toFile().exists()) {
@@ -90,7 +90,7 @@ abstract class FilesystemAbstractDao<T> {
     protected void deleteUserItem(String user, String id) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
-            logger.debug("Delete item with uuid {} for user {}", id, user);
+            logger.debug("Delete item for user {} with uuid {}", user, id);
 
             Path pathToItem = Paths.get(storageFolder, id + FILE_EXTENSION);
             if(pathToItem.toFile().exists()) {

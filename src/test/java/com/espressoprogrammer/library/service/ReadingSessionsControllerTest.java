@@ -246,4 +246,42 @@ public class ReadingSessionsControllerTest {
             .andExpect(status().isForbidden())
             .andDo(document("{class-name}/{method-name}"));
     }
+
+    @Test
+    public void getDateReadingSession() throws Exception {
+        String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
+        ReadingSession readingSession = getReadingSession(uuid + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, uuid)).thenReturn(Optional.of(readingSession));
+        String date = "2017-01-01";
+
+        this.mockMvc.perform(get("/users/{user}/reading-sessions/{uuid}/date-reading-sessions/{date}", JOHN_DOE_USER, uuid, date))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("date", is("2017-01-01")))
+            .andExpect(jsonPath("lastReadPage", is(32)))
+            .andExpect(jsonPath("bookmark", is("Section 3.3")))
+            .andDo(document("{class-name}/{method-name}",
+                pathParameters(
+                    parameterWithName("user").description("User id"),
+                    parameterWithName("uuid").description("Reading session uuid"),
+                    parameterWithName("date").description("Reading session date in the format yyyy-MM-dd")),
+                responseFields(
+                    fieldWithPath("date").description("Date of a reading session in the format yyyy-MM-dd"),
+                    fieldWithPath("lastReadPage").description("Last page that was read"),
+                    fieldWithPath("bookmark").description("Where to start next (optional)").optional()
+                )));
+    }
+
+    @Test
+    public void getMissingDateReadingSession() throws Exception {
+        String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
+        ReadingSession readingSession = getReadingSession(uuid + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, uuid)).thenReturn(Optional.of(readingSession));
+        String date = "2017-01-02";
+
+        this.mockMvc.perform(get("/users/{user}/reading-sessions/{uuid}/date-reading-sessions/{date}", JOHN_DOE_USER, uuid, date))
+            .andExpect(status().isNotFound())
+            .andDo(document("{class-name}/{method-name}"));
+    }
+
 }

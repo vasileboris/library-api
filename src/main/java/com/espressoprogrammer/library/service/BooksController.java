@@ -63,7 +63,7 @@ public class BooksController {
     public ResponseEntity<Book> getUserBook(@PathVariable("user") String user,
                                             @PathVariable("uuid") String uuid)  {
         try {
-            logger.debug("Look for book with uuid {} for user {}", uuid, user);
+            logger.debug("Look for book for user {} with uuid {} ", user, uuid);
 
             Optional<Book> optionalBook = booksDao.getUserBook(user, uuid);
             if(!optionalBook.isPresent()) {
@@ -82,7 +82,7 @@ public class BooksController {
                                          @PathVariable("uuid") String uuid,
                                          @RequestBody Book book)  {
         try {
-            logger.debug("Update book with uuid {} for user {}", uuid, user);
+            logger.debug("Update book for user {} with uuid {} ", user, uuid);
 
             Optional<String> optionalBook = booksDao.updateUserBook(user, uuid, book);
             if(!optionalBook.isPresent()) {
@@ -100,7 +100,7 @@ public class BooksController {
     public ResponseEntity<Book> deleteUserBook(@PathVariable("user") String user,
                                                @PathVariable("uuid") String uuid)  {
         try {
-            logger.debug("Delete book with uuid {} for user {}", uuid, user);
+            logger.debug("Delete book for user {} with uuid {}", user, uuid);
 
             Optional<Book> optionalBook = booksDao.getUserBook(user, uuid);
             if(!optionalBook.isPresent()) {

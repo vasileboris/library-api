@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,7 +49,16 @@ public class ReadingSessionsController {
         try {
             logger.debug("Add new reading session for user {}", user);
 
-            String uuid = readingSessionsDao.createUserReadingSession(user, readingSession);
+            ReadingSession createdReadingSession = readingSession;
+            if(!CollectionUtils.isEmpty(createdReadingSession.getDateReadingSessions())) {
+                List<DateReadingSession> createdDateReadingSessions = new ArrayList<>(createdReadingSession.getDateReadingSessions());
+                createdDateReadingSessions.sort((drs1, drs2) -> drs1.getDate().compareTo(drs2.getDate()));
+                createdReadingSession = new ReadingSession(readingSession.getUuid(),
+                    readingSession.getBookUuid(),
+                    createdDateReadingSessions);
+            }
+
+            String uuid = readingSessionsDao.createUserReadingSession(user, createdReadingSession);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(HttpHeaders.LOCATION, String.format("/users/%s/reading-sessions/%s", user, uuid));
             return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
@@ -62,7 +72,7 @@ public class ReadingSessionsController {
     public ResponseEntity<ReadingSession> getUserReadingSession(@PathVariable("user") String user,
                                                                 @PathVariable("uuid") String uuid)  {
         try {
-            logger.debug("Look for reading session with uuid {} for user {}", uuid, user);
+            logger.debug("Look for reading session for user {} with uuid {} ", user, uuid);
 
             Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
             if(!optionalReadingSession.isPresent()) {
@@ -80,7 +90,7 @@ public class ReadingSessionsController {
     public ResponseEntity<Book> deleteUserReadingSession(@PathVariable("user") String user,
                                                          @PathVariable("uuid") String uuid)  {
         try {
-            logger.debug("Delete a reading session with uuid {} for user {}", uuid, user);
+            logger.debug("Delete a reading session for user {} with uuid {} ", user, uuid);
 
             Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
             if(!optionalReadingSession.isPresent()) {
@@ -99,7 +109,7 @@ public class ReadingSessionsController {
     public ResponseEntity<List<DateReadingSession>> getDateReadingSessions(@PathVariable("user") String user,
                                                                            @PathVariable("uuid") String uuid)  {
         try {
-            logger.debug("Look for date reading sessions with uuid {} for user {}", uuid, user);
+            logger.debug("Look for date reading sessions for user {} with uuid {}", user, uuid);
 
             Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
             if(!optionalReadingSession.isPresent()) {
@@ -118,7 +128,7 @@ public class ReadingSessionsController {
                                                    @PathVariable("uuid") String uuid,
                                                    @RequestBody DateReadingSession dateReadingSession)  {
         try {
-            logger.debug("Add new date reading session with uuid {} for user {}", uuid, user);
+            logger.debug("Add new date reading session for user {} with uuid {} ", user, uuid);
 
             Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
             if(!optionalReadingSession.isPresent()) {
@@ -147,7 +157,32 @@ public class ReadingSessionsController {
                     user, uuid, dateReadingSession.getDate()));
             return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
         } catch (Exception ex) {
-            logger.error("Error on adding new reading session", ex);
+            logger.error("Error on adding new date reading session", ex);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/users/{user}/reading-sessions/{uuid}/date-reading-sessions/{date}")
+    public ResponseEntity<DateReadingSession> getDateReadingSession(@PathVariable("user") String user,
+                                                                    @PathVariable("uuid") String uuid,
+                                                                    @PathVariable("date") String date)  {
+        try {
+            logger.debug("Look for date reading session for user {} with uuid {} and date {}", user, uuid, date);
+
+            Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
+            if(!optionalReadingSession.isPresent()) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+
+            for(DateReadingSession dateReadingSession : optionalReadingSession.get().getDateReadingSessions()) {
+                if(dateReadingSession.getDate().equals(date)) {
+                    return new ResponseEntity<>(dateReadingSession, HttpStatus.OK);
+                }
+            }
+
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } catch (Exception ex) {
+            logger.error("Error on looking for date reading session", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
