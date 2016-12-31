@@ -228,4 +228,41 @@ public class ReadingSessionsController {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping(value = "/users/{user}/reading-sessions/{uuid}/date-reading-sessions/{date}")
+    public ResponseEntity deleteDateReadingSession(@PathVariable("user") String user,
+                                                   @PathVariable("uuid") String uuid,
+                                                   @PathVariable("date") String date) {
+        try {
+            logger.debug("Delete date reading session for user {} with uuid {} and date {}", user, uuid, date);
+
+            Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, uuid);
+            if(!optionalReadingSession.isPresent()) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+
+            boolean delete = false;
+            List<DateReadingSession> updateDateReadingSessions = new ArrayList<>();
+            ReadingSession existingReadingSession = optionalReadingSession.get();
+            for(DateReadingSession existingDateReadingSession : existingReadingSession.getDateReadingSessions()) {
+                if(existingDateReadingSession.getDate().equals(date)) {
+                    delete = true;
+                } else {
+                    updateDateReadingSessions.add(existingDateReadingSession);
+                }
+            }
+
+            if(delete) {
+                readingSessionsDao.updateUserReadingSession(user, uuid, new ReadingSession(existingReadingSession.getUuid(),
+                    existingReadingSession.getBookUuid(),
+                    updateDateReadingSessions));
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } catch (Exception ex) {
+            logger.error("Error on looking for date reading session", ex);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

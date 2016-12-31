@@ -324,4 +324,35 @@ public class ReadingSessionsControllerTest {
             .andExpect(status().isNotFound())
             .andDo(document("{class-name}/{method-name}"));
     }
+
+    @Test
+    public void deleteDateReadingSession() throws Exception {
+        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+
+        String date = "2017-01-01";
+        this.mockMvc.perform(delete("/users/{user}/reading-sessions/{uuid}/date-reading-sessions/{date}", JOHN_DOE_USER, "1e4014b1-a551-4310-9f30-590c3140b695", date))
+            .andExpect(status().isOk())
+            .andDo(document("{class-name}/{method-name}",
+                pathParameters(
+                    parameterWithName("user").description("User id"),
+                    parameterWithName("uuid").description("Reading session uuid"),
+                    parameterWithName("date").description("Reading session date in the format yyyy-MM-dd")
+                )));
+
+        verify(readingSessionsDao).updateUserReadingSession(JOHN_DOE_USER,
+            "1e4014b1-a551-4310-9f30-590c3140b695",
+            getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-delete-date-reading-session.json"));
+    }
+
+    @Test
+    public void deleteMissingDateReadingSession() throws Exception {
+        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+
+        String date = "2017-01-02";
+        this.mockMvc.perform(delete("/users/{user}/reading-sessions/{uuid}/date-reading-sessions/{date}", JOHN_DOE_USER, "1e4014b1-a551-4310-9f30-590c3140b695", date))
+            .andExpect(status().isNotFound())
+            .andDo(document("{class-name}/{method-name}"));
+    }
 }
