@@ -88,7 +88,7 @@ public class ReadingSessionsControllerTest {
                     fieldWithPath("[].dateReadingSessions").description("Reading sessions (optional)").optional(),
                     fieldWithPath("[].dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("[].dateReadingSessions[].lastReadPage").description("Last page that was read"),
-                    fieldWithPath("[].dateReadingSessions[].bookmark").description("Where to start next (optional)").optional()
+                    fieldWithPath("[].dateReadingSessions[].bookmark").description("Where to start next")
                 )));
     }
 
@@ -109,7 +109,7 @@ public class ReadingSessionsControllerTest {
                     fieldWithPath("dateReadingSessions").description("Reading sessions (optional)").optional(),
                     fieldWithPath("dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("dateReadingSessions[].lastReadPage").description("Last page that was read"),
-                    fieldWithPath("dateReadingSessions[].bookmark").description("Where to start next (optional)").optional()
+                    fieldWithPath("dateReadingSessions[].bookmark").description("Where to start next")
                 ),
                 responseHeaders(
                     headerWithName(HttpHeaders.LOCATION).description("New added reading session resource")
@@ -140,7 +140,7 @@ public class ReadingSessionsControllerTest {
                     fieldWithPath("dateReadingSessions").description("Reading sessions (optional)").optional(),
                     fieldWithPath("dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("dateReadingSessions[].lastReadPage").description("Last page that was read"),
-                    fieldWithPath("dateReadingSessions[].bookmark").description("Where to start next (optional)").optional()
+                    fieldWithPath("dateReadingSessions[].bookmark").description("Where to start next")
                 )));
     }
 
@@ -196,7 +196,7 @@ public class ReadingSessionsControllerTest {
                 responseFields(
                     fieldWithPath("[].date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("[].lastReadPage").description("Last page that was read"),
-                    fieldWithPath("[].bookmark").description("Where to start next (optional)").optional()
+                    fieldWithPath("[].bookmark").description("Where to start next")
                 )));
     }
 
@@ -220,7 +220,7 @@ public class ReadingSessionsControllerTest {
                 requestFields(
                     fieldWithPath("date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("lastReadPage").description("Last page that was read"),
-                    fieldWithPath("bookmark").description("Where to start next (optional)").optional()
+                    fieldWithPath("bookmark").description("Where to start next")
                 ),
                 responseHeaders(
                     headerWithName(HttpHeaders.LOCATION).description("New added reading session resource")
@@ -264,7 +264,7 @@ public class ReadingSessionsControllerTest {
                 responseFields(
                     fieldWithPath("date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("lastReadPage").description("Last page that was read"),
-                    fieldWithPath("bookmark").description("Where to start next (optional)").optional()
+                    fieldWithPath("bookmark").description("Where to start next")
                 )));
     }
 
@@ -299,7 +299,7 @@ public class ReadingSessionsControllerTest {
                 requestFields(
                     fieldWithPath("date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("lastReadPage").description("Last page that was read"),
-                    fieldWithPath("bookmark").description("Where to start next (optional)").optional()
+                    fieldWithPath("bookmark").description("Where to start next")
                 )));
 
         verify(readingSessionsDao).updateUserReadingSession(JOHN_DOE_USER,
