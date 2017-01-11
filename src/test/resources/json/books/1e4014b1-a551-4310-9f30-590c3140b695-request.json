@@ -2,11 +2,6 @@
   "isbn10": "1-61729-310-5",
   "isbn13": "978-1-61729-310-8",
   "title": "Get Programming with JavaScript",
-  "authors": [
-    {
-      "firstName": "John R.",
-      "lastName": "Larsen"
-    }
-  ],
+  "authors": ["John R. Larsen"],
   "pages": 406
 }

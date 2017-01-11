@@ -1,6 +1,5 @@
 package com.espressoprogrammer.library.persistence.filesystem;
 
-import com.espressoprogrammer.library.dto.Author;
 import com.espressoprogrammer.library.dto.Book;
 import org.junit.After;
 import org.junit.Before;
@@ -64,7 +63,7 @@ public class FilesystemBooksDaoTest {
                 "isbn10-1",
                 "isbn13-1",
                 "Title 1",
-                Arrays.asList(new Author("First1", "Last1")),
+                Arrays.asList("First1 Last1"),
                 100));
     }
 
@@ -81,13 +80,13 @@ public class FilesystemBooksDaoTest {
                 "isbn10-1",
                 "isbn13-1",
                 "Title 1",
-                Arrays.asList(new Author("First1", "Last1")),
+                Arrays.asList("First1 Last1"),
                 100))
             .contains(new Book("uuid-2",
                 "isbn10-2",
                 "isbn13-2",
                 "Title 2",
-                Arrays.asList(new Author("First21", "Last21"), new Author("First22", "Last22")),
+                Arrays.asList("First21 Last21", "First22 Last22"),
                 200));
     }
 
@@ -107,7 +106,7 @@ public class FilesystemBooksDaoTest {
                 "isbn10-1",
                 "isbn13-1",
                 "Title 1",
-                Arrays.asList(new Author("First1", "Last1")),
+                Arrays.asList("First1 Last1"),
                 100));
     }
 
@@ -126,7 +125,7 @@ public class FilesystemBooksDaoTest {
                 "isbn10-3",
                 null,
                 "Title 3",
-                Arrays.asList(new Author("First3", "Last3")),
+                Arrays.asList("First3 Last3"),
                 300));
     }
 
@@ -141,7 +140,7 @@ public class FilesystemBooksDaoTest {
             "isbn10-1",
             "isbn13-1",
             "Title 1",
-            Arrays.asList(new Author("First1", "Last1")),
+            Arrays.asList("First1 Last1"),
             100));
     }
 
@@ -167,7 +166,7 @@ public class FilesystemBooksDaoTest {
                 "isbn10-1",
                 "isbn13-1",
                 "Title 1",
-                Arrays.asList(new Author("First1", "Last1")),
+                Arrays.asList("First1 Last1"),
                 100));
 
         Book updatedBook = new Book(null,
@@ -187,7 +186,7 @@ public class FilesystemBooksDaoTest {
                 "isbn10-1",
                 "isbn13-1",
                 "Updated Title 1",
-                Arrays.asList(new Author("First1", "Last1")),
+                Arrays.asList("First1 Last1"),
                 100));
     }
 

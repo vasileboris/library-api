@@ -3,15 +3,6 @@
   "isbn10": "isbn10-2",
   "isbn13": "isbn13-2",
   "title": "Title 2",
-  "authors": [
-    {
-      "firstName": "First21",
-      "lastName": "Last21"
-    },
-    {
-      "firstName": "First22",
-      "lastName": "Last22"
-    }
-  ],
+  "authors": ["First21 Last21", "First22 Last22"],
   "pages": 200
 }
