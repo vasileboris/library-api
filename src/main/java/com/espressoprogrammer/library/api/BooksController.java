@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -32,11 +33,12 @@ public class BooksController {
     private BooksDao booksDao;
 
     @GetMapping(value = "/users/{user}/books")
-    public ResponseEntity<List<Book>> getUserBooks(@PathVariable("user") String user)  {
+    public ResponseEntity<List<Book>> getUserBooks(@PathVariable("user") String user,
+                                                   @RequestParam(value = "searchText", required = false) String searchText)  {
         try {
             logger.debug("Look for books for user {}", user);
 
-            List<Book> userBooks = booksDao.getUserBooks(user);
+            List<Book> userBooks = booksDao.getUserBooks(user, searchText);
             return new ResponseEntity<>(userBooks, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for books", ex);

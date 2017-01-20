@@ -91,6 +91,84 @@ public class FilesystemBooksDaoTest {
     }
 
     @Test
+    public void searchOneUserBookByTitle() throws Exception {
+        createBooksFolder(JOHN_DOE_USER);
+        copyBook("uuid-1.json", getUserBooksFolder(JOHN_DOE_USER));
+        copyBook("uuid-2.json", getUserBooksFolder(JOHN_DOE_USER));
+
+        List<Book> books = booksDao.getUserBooks(JOHN_DOE_USER, "Title 1");
+        assertThat(books)
+            .hasSize(1)
+            .contains(new Book("uuid-1",
+                "isbn10-1",
+                "isbn13-1",
+                "Title 1",
+                Arrays.asList("First1 Last1"),
+                100));
+    }
+
+    @Test
+    public void searchOneUserBookByIsbn10() throws Exception {
+        createBooksFolder(JOHN_DOE_USER);
+        copyBook("uuid-1.json", getUserBooksFolder(JOHN_DOE_USER));
+        copyBook("uuid-2.json", getUserBooksFolder(JOHN_DOE_USER));
+
+        List<Book> books = booksDao.getUserBooks(JOHN_DOE_USER, "isbn10-1");
+        assertThat(books)
+            .hasSize(1)
+            .contains(new Book("uuid-1",
+                "isbn10-1",
+                "isbn13-1",
+                "Title 1",
+                Arrays.asList("First1 Last1"),
+                100));
+    }
+
+    @Test
+    public void searchOneUserBookByIsbn13() throws Exception {
+        createBooksFolder(JOHN_DOE_USER);
+        copyBook("uuid-1.json", getUserBooksFolder(JOHN_DOE_USER));
+        copyBook("uuid-2.json", getUserBooksFolder(JOHN_DOE_USER));
+
+        List<Book> books = booksDao.getUserBooks(JOHN_DOE_USER, "isbn13-1");
+        assertThat(books)
+            .hasSize(1)
+            .contains(new Book("uuid-1",
+                "isbn10-1",
+                "isbn13-1",
+                "Title 1",
+                Arrays.asList("First1 Last1"),
+                100));
+    }
+
+    @Test
+    public void searchOneUserBookByAuthor() throws Exception {
+        createBooksFolder(JOHN_DOE_USER);
+        copyBook("uuid-1.json", getUserBooksFolder(JOHN_DOE_USER));
+        copyBook("uuid-2.json", getUserBooksFolder(JOHN_DOE_USER));
+
+        List<Book> books = booksDao.getUserBooks(JOHN_DOE_USER, "First1");
+        assertThat(books)
+            .hasSize(1)
+            .contains(new Book("uuid-1",
+                "isbn10-1",
+                "isbn13-1",
+                "Title 1",
+                Arrays.asList("First1 Last1"),
+                100));
+    }
+
+    @Test
+    public void searchUserBookByMissingData() throws Exception {
+        createBooksFolder(JOHN_DOE_USER);
+        copyBook("uuid-1.json", getUserBooksFolder(JOHN_DOE_USER));
+        copyBook("uuid-2.json", getUserBooksFolder(JOHN_DOE_USER));
+
+        List<Book> books = booksDao.getUserBooks(JOHN_DOE_USER, "Missing");
+        assertThat(books).isEmpty();
+    }
+
+    @Test
     public void createUserBook() throws Exception {
         List<Book> books = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(books).isEmpty();

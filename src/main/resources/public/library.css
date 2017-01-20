@@ -1,0 +1,16 @@
+div {
+    white-space: pre;
+    font-family: monospace;
+}
+
+.left {
+    float: left;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.right {
+    float: right;
+    width: 50%;
+    box-sizing: border-box;
+}

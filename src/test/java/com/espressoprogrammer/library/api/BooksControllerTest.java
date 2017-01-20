@@ -38,6 +38,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -70,9 +71,9 @@ public class BooksControllerTest {
     public void getUserBooks() throws Exception {
         ArrayList<Book> books = new ArrayList<>();
         books.add(getBook("1e4014b1-a551-4310-9f30-590c3140b695.json"));
-        when(booksDao.getUserBooks(JOHN_DOE_USER)).thenReturn(books);
+        when(booksDao.getUserBooks(JOHN_DOE_USER, "JavaScript")).thenReturn(books);
 
-        this.mockMvc.perform(get("/users/{user}/books", JOHN_DOE_USER))
+        this.mockMvc.perform(get("/users/{user}/books?searchText={searchText}", JOHN_DOE_USER, "JavaScript"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$[0].uuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
@@ -82,7 +83,11 @@ public class BooksControllerTest {
             .andExpect(jsonPath("$[0].authors[0]", is("John R. Larsen")))
             .andExpect(jsonPath("$[0].pages", is(406)))
             .andDo(document("{class-name}/{method-name}",
-                pathParameters(parameterWithName("user").description("User id")),
+                pathParameters(
+                    parameterWithName("user").description("User id")),
+                requestParameters(
+                    parameterWithName("searchText")
+                        .description("It is used to search all book fields for this value (Optional)").optional()),
                 responseFields(
                     fieldWithPath("[].uuid").description("UUID used to identify a book"),
                     fieldWithPath("[].isbn10").description("10 digits ISBN (optional)").optional(),

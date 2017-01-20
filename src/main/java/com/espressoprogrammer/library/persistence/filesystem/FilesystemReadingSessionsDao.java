@@ -37,6 +37,11 @@ public class FilesystemReadingSessionsDao extends FilesystemAbstractDao<ReadingS
     }
 
     @Override
+    protected boolean applySearchCriteria(ReadingSession readingSession, String searchText) {
+        return true;
+    }
+
+    @Override
     protected ReadingSession createItem(String uuid, ReadingSession readingSession) {
         return new ReadingSession(uuid,
             readingSession.getBookUuid(),

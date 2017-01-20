@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Library application v-02</title>
+  <link rel="stylesheet" type="text/css" href="library.css">
+</head>
+<body>
+
+<h1>Library application</h1>
+
+<div class="left">
+  <div id="message-div"></div>
+
+  <label for="search-books-text">Search books</label>
+  <input type="text" id="search-books-text"/>
+
+  <button id="search-books-button">Search</button>
+
+  <div id="books-div"></div>
+</div>
+
+<script src="books-model.js"></script>
+<script src="books-view.js"></script>
+<script src="message-view.js"></script>
+<script src="library-templates.js"></script>
+<script src="library-controller.js"></script>
+
+<script type="text/template" id="book-template">
+  <div>
+    TITLE : {{title}}
+     ISBN : {{isbn10}} / {{isbn13}}
+  AUTHORS : {{authors}}
+    PAGES : {{pages}}
+  </div>
+</script>
+
+<script type="text/template" id="message-template">
+  <div>
+  {{message}}
+  </div>
+</script>
+
+</body>
+</html

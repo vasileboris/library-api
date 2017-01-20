@@ -24,6 +24,10 @@ abstract class FilesystemAbstractDao<T> {
     protected static final String FILE_EXTENSION = ".json";
 
     protected List<T> getUserItems(String user) {
+        return getUserItems(user, null);
+    }
+
+    protected List<T> getUserItems(String user, String searchText) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
             logger.debug("Look for item for user {} into {}", user, storageFolder);
@@ -31,6 +35,7 @@ abstract class FilesystemAbstractDao<T> {
             return Files.list(Paths.get(storageFolder))
                 .filter(p -> p.getFileName().toFile().getName().endsWith(FILE_EXTENSION))
                 .map(p -> fromJson(p))
+                .filter(t -> applySearchCriteria(t, searchText))
                 .collect(toList());
         } catch(FilesystemDaoException ex) {
             throw ex;
@@ -38,6 +43,8 @@ abstract class FilesystemAbstractDao<T> {
             throw new FilesystemDaoException(ex);
         }
     }
+
+    protected abstract boolean applySearchCriteria(T t, String searchText);
 
     protected String createUserItem(String user, T item) {
         try {

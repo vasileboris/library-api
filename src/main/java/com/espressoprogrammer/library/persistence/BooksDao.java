@@ -9,6 +9,8 @@ public interface BooksDao {
 
     List<Book> getUserBooks(String user);
 
+    List<Book> getUserBooks(String user, String searchText);
+
     String createUserBook(String user, Book book);
 
     Optional<Book> getUserBook(String user, String uuid);

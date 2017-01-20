@@ -16,6 +16,10 @@
 
 include::{snippets}/books-controller-test/get-user-books/path-parameters.adoc[]
 
+==== Request parameters
+
+include::{snippets}/books-controller-test/get-user-books/request-parameters.adoc[]
+
 ==== Example request
 
 include::{snippets}/books-controller-test/get-user-books/http-request.adoc[]
