@@ -11,7 +11,11 @@
 
     function render(message) {
         var messageDiv = document.getElementById("message-div");
-        messageDiv.innerHTML = getMessageInfo(message);
+        if(message) {
+            messageDiv.innerHTML = getMessageInfo(message);
+        } else {
+            messageDiv.innerHTML = "";
+        }
     }
 
     function getMessageInfo(message) {

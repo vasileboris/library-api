@@ -3,14 +3,17 @@ div {
     font-family: monospace;
 }
 
-.left {
+.div-left {
     float: left;
     width: 50%;
-    box-sizing: border-box;
 }
 
-.right {
-    float: right;
+.button-left {
+    float: left;
+    width: 25%;
+}
+
+.text-left {
+    float: left;
     width: 50%;
-    box-sizing: border-box;
 }

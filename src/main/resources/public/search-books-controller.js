@@ -35,7 +35,9 @@
         xhr.addEventListener("load", function(){
             if(xhr.status === 200) {
                 var booksData = JSON.parse(xhr.responseText);
-                books.addBooks(booksData);
+                if(booksData.length != 0) {
+                    books.addBooks(booksData);
+                }
             } else {
                 message = {"message": "Cannot retrieve the books from the server! (" + xhr.status + ")"};
             }

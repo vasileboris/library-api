@@ -22,25 +22,25 @@
         var items = [];
 
         this.addBooks = function(booksData) {
-            booksData.forEach(function(bookData) {
-            items.push(addBook(bookData));
-        });
-    }
+                booksData.forEach(function(bookData) {
+                items.push(addBook(bookData));
+            });
+        }
 
-    function addBook(bookData) {
-        return new bookcase.Book(bookData.uuid,
-            bookData.isbn10,
-            bookData.isbn13,
-            bookData.title,
-            bookData.authors,
-            bookData.pages);
-    };
+        function addBook(bookData) {
+            return new bookcase.Book(bookData.uuid,
+                bookData.isbn10,
+                bookData.isbn13,
+                bookData.title,
+                bookData.authors,
+                bookData.pages);
+        };
 
-    this.getData = function() {
-        return items.map(function(book){
-            return book.getData();
-        });
-    };
+        this.getData = function() {
+            return items.map(function(book){
+                return book.getData();
+            });
+        };
     }
 
 })();
