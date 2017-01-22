@@ -1,19 +1,31 @@
-div {
+.div-entries {
+    float: left;
+    width: 50%;
+    clear: both;
+    margin-bottom: 10px;
+}
+
+.div-results {
     white-space: pre;
     font-family: monospace;
 }
 
-.div-left {
-    float: left;
-    width: 50%;
+.button {
+    float: none;
+    width: 25%;
+    margin-top: 10px;
+    margin-left: 10px;
 }
 
 .button-left {
     float: left;
     width: 25%;
+    margin-top: 10px;
+    clear: both;
 }
 
-.text-left {
+.text {
     float: left;
     width: 50%;
+    margin-top: 10px;
 }

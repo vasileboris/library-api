@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="book">
+<script type="text/template" id="book-template">
+<div>
+  TITLE : {{title}}
+   ISBN : {{isbn10}} / {{isbn13}}
+AUTHORS : {{authors}}
+  PAGES : {{pages}}
+</div>
+</script>
+<script src="books-model.js"></script>
+</div>
+
+</body>
+</html>

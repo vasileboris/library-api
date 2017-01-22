@@ -7,12 +7,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LibraryController {
 
     @RequestMapping("/")
-    public String root() {
-        return "search";
+    public String index() {
+        return "search-books";
     }
 
-    @RequestMapping("/search")
-    public String search() {
-        return "search";
+    @RequestMapping("/search-books")
+    public String searchBooks() {
+        return "search-books";
+    }
+
+    @RequestMapping("/add-book")
+    public String addBook() {
+        return "add-book";
     }
 }
