@@ -52,7 +52,7 @@ public class BooksController {
         try {
             logger.debug("Add new book for user {}", user);
 
-            if(hasUseTheBook(user, book)) {
+            if(hasTheBook(user, book)) {
                 ErrorResponse errorResponse = new ErrorResponse(DATA_VALIDATION,
                     asList(new ErrorCause(asList("isbn10", "isbn13"), "book.isbn.exists")));
 
@@ -94,6 +94,13 @@ public class BooksController {
         try {
             logger.debug("Update book for user {} with uuid {} ", user, uuid);
 
+            if(hasTheBook(user, book)) {
+                ErrorResponse errorResponse = new ErrorResponse(DATA_VALIDATION,
+                    asList(new ErrorCause(asList("isbn10", "isbn13"), "book.isbn.exists")));
+
+                return new ResponseEntity(errorResponse ,HttpStatus.FORBIDDEN);
+            }
+
             Optional<String> optionalBook = booksDao.updateUserBook(user, uuid, book);
             if(!optionalBook.isPresent()) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -124,14 +131,22 @@ public class BooksController {
         }
     }
 
-    private boolean hasUseTheBook(@PathVariable("user") String user, @RequestBody Book book) {
+    private boolean hasTheBook(@PathVariable("user") String user, @RequestBody Book book) {
         List<Book> existingBooks = booksDao.getUserBooks(user);
         for(Book existingBook : existingBooks) {
-            if((existingBook.getIsbn10() != null && existingBook.getIsbn10().equals(book.getIsbn10()))
-                || (existingBook.getIsbn13() != null && existingBook.getIsbn13().equals(book.getIsbn13()))) {
+            if(areDifferentBooks(book, existingBook) && haveTheSameISBN(book, existingBook)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean areDifferentBooks(@RequestBody Book book, Book existingBook) {
+        return !existingBook.getUuid().equals(book.getUuid());
+    }
+
+    private boolean haveTheSameISBN(@RequestBody Book book, Book existingBook) {
+        return (existingBook.getIsbn10() != null && existingBook.getIsbn10().equals(book.getIsbn10()))
+            || (existingBook.getIsbn13() != null && existingBook.getIsbn13().equals(book.getIsbn13()));
     }
 }

@@ -114,6 +114,21 @@ include::{snippets}/books-controller-test/update-user-book/http-request.adoc[]
 
 include::{snippets}/books-controller-test/update-user-book/http-response.adoc[]
 
+=== Update a book with ISBN of an existing book
+
+==== Example request
+
+include::{snippets}/books-controller-test/update-existing-user-book/http-request.adoc[]
+
+==== Response fields
+
+include::{snippets}/books-controller-test/update-existing-user-book/response-fields.adoc[]
+
+==== Example response
+
+include::{snippets}/books-controller-test/update-existing-user-book/http-response.adoc[]
+
+
 === Update a missing user book
 
 ==== Example request

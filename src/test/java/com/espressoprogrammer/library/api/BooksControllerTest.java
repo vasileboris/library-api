@@ -212,6 +212,32 @@ public class BooksControllerTest {
     }
 
     @Test
+    public void updateExistingUserBook() throws Exception {
+        Book updateBook = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        Book theOtherBook = getBook("f2e10e37-b0fc-4eff-93aa-3dff682cc388.json");
+        when(booksDao.getUserBooks(JOHN_DOE_USER)).thenReturn(Arrays.asList(updateBook, theOtherBook));
+
+        this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, updateBook.getUuid())
+            .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-update-existing-book.json"))
+            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(status().isForbidden())
+            .andExpect(jsonPath("type", is("DATA_VALIDATION")))
+            .andExpect(jsonPath("causes[0].causes[0]", is("isbn10")))
+            .andExpect(jsonPath("causes[0].causes[1]", is("isbn13")))
+            .andExpect(jsonPath("causes[0].key", is("book.isbn.exists")))
+            .andDo(document("{class-name}/{method-name}",
+                responseFields(
+                    fieldWithPath("type").description("Error type"),
+                    fieldWithPath("causes").description("Error causes"),
+                    fieldWithPath("causes[].causes")
+                        .description("Error causes (OPTIONAL). If present, it contains the name of the fields related with this error.")
+                        .optional(),
+                    fieldWithPath("causes[].key")
+                        .description("Error key. This should be used to locate the right translation for the error")
+                )));
+    }
+
+    @Test
     public void updateMissingUserBook() throws Exception {
         Book updateBook = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
         Book updateBookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
