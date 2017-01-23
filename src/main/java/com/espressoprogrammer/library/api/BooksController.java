@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -146,7 +147,7 @@ public class BooksController {
     }
 
     private boolean haveTheSameISBN(@RequestBody Book book, Book existingBook) {
-        return (existingBook.getIsbn10() != null && existingBook.getIsbn10().equals(book.getIsbn10()))
-            || (existingBook.getIsbn13() != null && existingBook.getIsbn13().equals(book.getIsbn13()));
+        return (!StringUtils.isEmpty(existingBook.getIsbn10()) && existingBook.getIsbn10().equals(book.getIsbn10()))
+            || (!StringUtils.isEmpty(existingBook.getIsbn13()) && existingBook.getIsbn13().equals(book.getIsbn13()));
     }
 }
