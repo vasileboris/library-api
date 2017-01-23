@@ -27,4 +27,9 @@ public class LibraryController {
     public String editBook(@RequestParam("uuid") String uuid) {
         return "edit-book";
     }
+
+    @RequestMapping("/delete-book")
+    public String deleteBook(@RequestParam("uuid") String uuid) {
+        return "delete-book";
+    }
 }

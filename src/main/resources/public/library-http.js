@@ -3,7 +3,8 @@
 
     window.http = {
         getRequestParameters: getRequestParameters,
-        getRequestParameter: getRequestParameter
+        getRequestParameter: getRequestParameter,
+        navigateTo: navigateTo
     }
 
     function getRequestParameters() {
@@ -22,6 +23,10 @@
 
     function getRequestParameter(param) {
         return getRequestParameters()[param];
+    }
+
+    function navigateTo(url) {
+        location.href = url;
     }
 
 })();

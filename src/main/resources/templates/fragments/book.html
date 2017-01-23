@@ -5,7 +5,7 @@
 <div th:fragment="book">
 <script type="text/template" id="book-template">
 <div>
-  TITLE : <a href="/edit-book?uuid={{uuid}}">{{title}}</a>
+    TITLE : <a href="/edit-book?uuid={{uuid}}">{{title}}</a> <a href="/delete-book?uuid={{uuid}}"><img src="delete.png" alt="delete book" height="10px" width="10px"/></a>
    ISBN : {{isbn10}} / {{isbn13}}
 AUTHORS : {{authors}}
   PAGES : {{pages}}
