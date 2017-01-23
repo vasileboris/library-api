@@ -30,9 +30,14 @@
     function searchBooksClick() {
         initModels();
 
+        var searchBooksDiv = document.getElementById("search-books-div");
+        searchBooksDiv.className = css.addStyle(searchBooksDiv.className, "waiting");
+
         var xhr = new XMLHttpRequest();
         var url = "/users/boris/books?searchText=" + document.getElementById("search-books-text").value;
         xhr.addEventListener("load", function(){
+            searchBooksDiv.className = css.removeStyle(searchBooksDiv.className, "waiting");
+
             if(xhr.status === 200) {
                 var booksData = JSON.parse(xhr.responseText);
                 if(booksData.length != 0) {
@@ -44,6 +49,8 @@
             render();
         });
         xhr.addEventListener("error", function(){
+            searchBooksDiv.className = css.removeStyle(searchBooksDiv.className, "waiting");
+
             message = {"message" : "Cannot retrieve the books from the server!"};
             render();
         });
