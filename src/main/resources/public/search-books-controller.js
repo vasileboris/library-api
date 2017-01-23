@@ -23,7 +23,7 @@
         bookcase.booksView.render(books);
 
         if(!message) {
-            document.getElementById("search-books-text").value="";
+            bookcase.booksView.clear();
         }
     }
 

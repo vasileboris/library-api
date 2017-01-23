@@ -6,12 +6,17 @@
     }
 
     bookcase.booksView = {
-        render: render
+        render: render,
+        clear: clear
     };
 
     function render(books) {
         var booksDiv = document.getElementById("books-div");
         booksDiv.innerHTML = getBooksInfo(books);
+    }
+
+    function clear() {
+        document.getElementById("search-books-text").value="";
     }
 
     function getBooksInfo(books) {

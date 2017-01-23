@@ -12,53 +12,54 @@
     function init() {
         initModels();
 
-        var saveBookButton = document.getElementById("save-book-button");
-        saveBookButton.addEventListener("click", saveBookClick);
+        var updateBookButton = document.getElementById("update-book-button");
+        updateBookButton.addEventListener("click", updateBookClick);
 
         render();
+
+        searchBook()
     }
 
     function render() {
         bookcase.messageView.render(message);
         bookcase.bookView.render(book);
-
-        if(!message) {
-            bookcase.bookView.clear();
-        }
     }
 
-    function saveBookClick() {
+    function updateBookClick() {
         initModels();
 
         var xhr = new XMLHttpRequest();
-        var url = "/users/boris/books";
+        var uuid = http.getRequestParameter("uuid");
+        var url = "/users/boris/books/" + uuid;
         xhr.addEventListener("load", function(){
-            if(xhr.status === 201) {
-                searchBook(xhr.getResponseHeader("Location"));
+            if(xhr.status === 200) {
+                searchBook();
             } else {
-                message = {"message": "Cannot save the book on the server! (" + xhr.status + ")"};
+                message = {"message": "Cannot update the book on the server! (" + xhr.status + ")"};
             }
             render();
         });
         xhr.addEventListener("error", function(){
-            message = {"message" : "Cannot save the book on the server!"};
+            message = {"message" : "Cannot update the book on the server!"};
             render();
         });
-        xhr.open("POST", url);
+        xhr.open("PUT", url);
         xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
         xhr.send(JSON.stringify(createBook().getData()));
     }
 
     function createBook() {
         return new bookcase.Book(null,
-            document.getElementById("add-book-isbn10-text").value,
-            document.getElementById("add-book-isbn13-text").value,
-            document.getElementById("add-book-title-text").value,
-            document.getElementById("add-book-authors-text").value.split(","),
-            document.getElementById("add-book-pages-text").value);
+            document.getElementById("edit-book-isbn10-text").value,
+            document.getElementById("edit-book-isbn13-text").value,
+            document.getElementById("edit-book-title-text").value,
+            document.getElementById("edit-book-authors-text").value.split(","),
+            document.getElementById("edit-book-pages-text").value);
     }
 
-    function searchBook(url) {
+    function searchBook() {
+        var uuid = http.getRequestParameter("uuid");
+        var url = "/users/boris/books/" + uuid;
         var xhr = new XMLHttpRequest();
         xhr.addEventListener("load", function(){
             if(xhr.status === 200) {

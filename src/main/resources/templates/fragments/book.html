@@ -5,13 +5,12 @@
 <div th:fragment="book">
 <script type="text/template" id="book-template">
 <div>
-  TITLE : {{title}}
+  TITLE : <a href="/edit-book?uuid={{uuid}}">{{title}}</a>
    ISBN : {{isbn10}} / {{isbn13}}
 AUTHORS : {{authors}}
   PAGES : {{pages}}
 </div>
 </script>
-<script src="books-model.js"></script>
 </div>
 
 </body>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Library application</title>
+    <link rel="stylesheet" type="text/css" href="library.css"></link>
+</head>
+<body>
+
+<div th:replace="fragments/header :: header"></div>
+
+<div id="edit-book-div" class="div-entries">
+    <input type="text" id="edit-book-isbn10-text" class="text" placeholder="ISBN 10"/>
+    <input type="text" id="edit-book-isbn13-text" class="text" placeholder="ISBN 13"/>
+    <input type="text" id="edit-book-title-text" class="text" placeholder="Title"/>
+    <input type="text" id="edit-book-authors-text" class="text" placeholder="Authors"/>
+    <input type="text" id="edit-book-pages-text" class="text" placeholder="Number of pages"/>
+    <button id="update-book-button" class="button-left">Update book</button>
+
+    <div id="book-div" class="div-entries div-results"></div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+<script src="books-model.js"></script>
+<script src="edit-book-view.js"></script>
+<script src="edit-book-controller.js"></script>
+
+</body>
+</html>
