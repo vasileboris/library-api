@@ -15,11 +15,11 @@
         }
 
         var bookData = book.getData();
-        document.getElementById("delete-book-isbn10-text").value = bookData.isbn10;
-        document.getElementById("delete-book-isbn13-text").value = bookData.isbn13;
-        document.getElementById("delete-book-title-text").value = bookData.title;
-        document.getElementById("delete-book-authors-text").value = templates.concatenateArray(bookData.authors, ",");
-        document.getElementById("delete-book-pages-text").value = bookData.pages;
+        $("#delete-book-isbn10-text").val(bookData.isbn10);
+        $("#delete-book-isbn13-text").val(bookData.isbn13);
+        $("#delete-book-title-text").val(bookData.title);
+        $("#delete-book-authors-text").val(templates.concatenateArray(bookData.authors, ","));
+        $("#delete-book-pages-text").val(bookData.pages);
     }
 
 })();

@@ -12,8 +12,7 @@
     function init() {
         initModels();
 
-        var deleteBookButton = document.getElementById("delete-book-button");
-        deleteBookButton.addEventListener("click", deleteBookClick);
+        $("#delete-book-button").on("click", deleteBookClick);
 
         render();
 
@@ -28,53 +27,47 @@
     function deleteBookClick() {
         initModels();
 
-        var deleteBookDiv = document.getElementById("delete-book-div");
-        deleteBookDiv.className = css.addStyle(deleteBookDiv.className, "waiting");
+        var deleteBookDiv = $("#delete-book-div");
+        deleteBookDiv.addClass("waiting");
 
-        var xhr = new XMLHttpRequest();
-        var uuid = http.getRequestParameter("uuid");
-        var url = "/users/boris/books/" + uuid;
-        xhr.addEventListener("load", function(){
-            deleteBookDiv.className = css.removeStyle(deleteBookDiv.className, "waiting");
-
-            if(xhr.status === 200) {
-                http.navigateTo("/search-books");
-            } else {
-                message = {"message": "Cannot delete the book on the server! (" + xhr.status + ")"};
+        $.ajax({
+            method: "DELETE",
+            url: "/users/boris/books/" + http.getRequestParameter("uuid"),
+            success: function(bookData, textStatus, jqXHR) {
+                if(jqXHR.status === 200) {
+                    http.navigateTo("/search-books");
+                } else {
+                    message = {"message": "Cannot delete the book on the server! (" + jqXHR.status + ")"};
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                message = {"message": "Cannot delete the book on the server! (" + jqXHR.status + ")"};
+            },
+            complete: function() {
+                deleteBookDiv.removeClass("waiting");
+                render();
             }
-            render();
         });
-        xhr.addEventListener("error", function(){
-            deleteBookDiv.className = css.removeStyle(deleteBookDiv.className, "waiting");
 
-            message = {"message" : "Cannot delete the book on the server!"};
-            render();
-        });
-        xhr.open("DELETE", url);
-        xhr.send();
     }
 
     function createBook() {
         return new bookcase.Book(http.getRequestParameter("uuid"),
-            document.getElementById("delete-book-isbn10-text").value,
-            document.getElementById("delete-book-isbn13-text").value,
-            document.getElementById("delete-book-title-text").value,
-            document.getElementById("delete-book-authors-text").value.split(","),
-            document.getElementById("delete-book-pages-text").value);
+            $("#delete-book-isbn10-text").val(),
+            $("#delete-book-isbn13-text").val(),
+            $("#delete-book-title-text").val(),
+            $("#delete-book-authors-text").val().split(","),
+            $("#delete-book-pages-text").val());
     }
 
     function searchBook() {
-        var deleteBookDiv = document.getElementById("delete-book-div");
-        deleteBookDiv.className = css.addStyle(deleteBookDiv.className, "waiting");
+        var deleteBookDiv = $("#delete-book-div");
+        deleteBookDiv.addClass("waiting");
 
         var uuid = http.getRequestParameter("uuid");
         var url = "/users/boris/books/" + uuid;
-        var xhr = new XMLHttpRequest();
-        xhr.addEventListener("load", function(){
-            deleteBookDiv.className = css.removeStyle(deleteBookDiv.className, "waiting");
-
-            if(xhr.status === 200) {
-                var bookData = JSON.parse(xhr.responseText);
+        $.get(url).done(function(bookData, textStatus, jqXHR) {
+            if(jqXHR.status === 200) {
                 book = new bookcase.Book(bookData.uuid,
                     bookData.isbn10,
                     bookData.isbn13,
@@ -82,18 +75,14 @@
                     bookData.authors,
                     bookData.pages);
             } else {
-                message = {"message": "Cannot retrieve the book from the server! (" + xhr.status + ")"};
+                message = {"message": "Cannot retrieve the book from the server! (" + jqXHR.status + ")"};
             }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            message = {"message": "Cannot retrieve the book from the server! (" + jqXHR.status + ")"};
+        }).always(function() {
+            deleteBookDiv.removeClass("waiting");
             render();
         });
-        xhr.addEventListener("error", function(){
-            deleteBookDiv.className = css.removeStyle(deleteBookDiv.className, "waiting");
-
-            message = {"message" : "Cannot retrieve the book from the server!"};
-            render();
-        });
-        xhr.open("GET", url);
-        xhr.send();
     }
 
     init();
