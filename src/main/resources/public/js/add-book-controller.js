@@ -36,7 +36,6 @@
             type: "POST",
             url: "/users/boris/books",
             data: JSON.stringify(createBook().getData()),
-            dataType: "json",
             contentType: "application/json;charset=UTF-8",
             success: function(bookData, textStatus, jqXHR) {
                 if(jqXHR.status === 201) {
