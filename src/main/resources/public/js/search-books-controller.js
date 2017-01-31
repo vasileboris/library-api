@@ -1,4 +1,4 @@
-(function() {
+    (function() {
     "use strict";
 
     var books;
@@ -12,8 +12,7 @@
     function init() {
         initModels();
 
-        var searchBooksButton = document.getElementById("search-books-button");
-        searchBooksButton.addEventListener("click", searchBooksClick);
+        $("#search-books-button").on("click", searchBooksClick);
 
         render();
     }
@@ -30,32 +29,24 @@
     function searchBooksClick() {
         initModels();
 
-        var searchBooksDiv = document.getElementById("search-books-div");
-        searchBooksDiv.className = css.addStyle(searchBooksDiv.className, "waiting");
+        var searchBooksDiv = $("#search-books-div");
+        searchBooksDiv.addClass("waiting");
 
-        var xhr = new XMLHttpRequest();
-        var url = "/users/boris/books?searchText=" + document.getElementById("search-books-text").value;
-        xhr.addEventListener("load", function(){
-            searchBooksDiv.className = css.removeStyle(searchBooksDiv.className, "waiting");
-
-            if(xhr.status === 200) {
-                var booksData = JSON.parse(xhr.responseText);
-                if(booksData.length != 0) {
+        var url = "/users/boris/books?searchText=" + $("#search-books-text").val();
+        $.get(url).done(function(booksData, textStatus, jqXHR) {
+            if(jqXHR.status === 200) {
+                if(booksData && booksData.length != 0) {
                     books.addBooks(booksData);
                 }
             } else {
-                message = {"message": "Cannot retrieve the books from the server! (" + xhr.status + ")"};
+                message = {"message": "Cannot retrieve the books from the server! (" + jqXHR.status + ")"};
             }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+                message = {"message": "Cannot retrieve the books from the server! (" + jqXHR.status + ")"};
+        }).always(function() {
+            searchBooksDiv.removeClass("waiting");
             render();
         });
-        xhr.addEventListener("error", function(){
-            searchBooksDiv.className = css.removeStyle(searchBooksDiv.className, "waiting");
-
-            message = {"message" : "Cannot retrieve the books from the server!"};
-            render();
-        });
-        xhr.open("GET", url);
-        xhr.send();
     }
 
     init();
