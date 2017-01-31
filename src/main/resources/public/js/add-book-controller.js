@@ -78,7 +78,7 @@
                 message = {"message": "Cannot retrieve the book from the server! (" + jqXHR.status + ")"};
             }
         }).fail(function(jqXHR, textStatus, errorThrown) {
-                message = {"message": "Cannot retrieve the book from the server! (" + jqXHR.status + ")"};
+            message = {"message": "Cannot retrieve the book from the server! (" + jqXHR.status + ")"};
         }).always(function() {
             addBookDiv.removeClass("waiting");
             render();
