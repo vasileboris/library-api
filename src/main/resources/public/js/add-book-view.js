@@ -11,16 +11,15 @@
     };
 
     function render(book) {
-        var bookDiv = document.getElementById("book-div");
-        bookDiv.innerHTML = getBookInfo(book);
+        $("#book-div").html(getBookInfo(book));
     }
 
     function clear() {
-        document.getElementById("add-book-isbn10-text").value="";
-        document.getElementById("add-book-isbn13-text").value="";
-        document.getElementById("add-book-title-text").value="";
-        document.getElementById("add-book-authors-text").value="";
-        document.getElementById("add-book-pages-text").value="";
+        $("#add-book-isbn10-text").val("");
+        $("#add-book-isbn13-text").val("");
+        $("#add-book-title-text").val("");
+        $("#add-book-authors-text").val("");
+        $("#add-book-pages-text").val("");
     }
 
     function getBookInfo(book) {
@@ -32,7 +31,7 @@
     }
 
     function getBookDataInfo(bookData) {
-        return templates.fill(document.getElementById("book-template").innerHTML, bookData);
+        return templates.fill($("#book-template").html(), bookData);
     }
 
 })();
