@@ -32,8 +32,7 @@
         var addBookDiv = $("#add-book-div");
         addBookDiv.addClass("waiting");
 
-        $.ajax({
-            type: "POST",
+        $.post({
             url: "/users/boris/books",
             data: JSON.stringify(createBook().getData()),
             contentType: "application/json;charset=UTF-8",
