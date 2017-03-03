@@ -6,7 +6,7 @@
     }
 
     bookcase.BooksView = Backbone.View.extend({
-        el: '#books-div',
+        el: '#add-book-div',
 
         events: {
             'click #add-book-button': 'addBook'
@@ -28,17 +28,18 @@
             var bookView = new bookcase.BookView({
                 model: book
             });
-            this.$el.append(bookView.render().el);
+            this.$('#books-div').append(bookView.render().el);
         },
         
         addBook: function (e) {
             var bookData = {};
-            $('#add-bookData-div ').children('input').each(function(i, el){
-                var property = el.id.replace('add-bookData-','').replace(/-\w+/,'');
+            $('#add-book-div').children('input').each(function(i, el){
+                var property = el.id.replace('add-book-','').replace(/-\w+/,'');
                 var value = $(el).val().trim();
                 bookData[property] = value;
             });
-            this.collection.addBooks(new bookcase.Book(bookData));
+            var book = new bookcase.Book(bookData);
+            this.collection.add(book);
         }
     });
 
