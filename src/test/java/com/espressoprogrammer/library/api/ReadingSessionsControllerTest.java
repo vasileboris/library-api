@@ -95,7 +95,7 @@ public class ReadingSessionsControllerTest {
     @Test
     public void createUserReadingSession() throws Exception {
         ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
-        when(readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, readingSession)).thenReturn("1e4014b1-a551-4310-9f30-590c3140b695");
+        when(readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, readingSession)).thenReturn(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
 
         this.mockMvc.perform(post("/users/{user}/reading-sessions", JOHN_DOE_USER)
             .content(getReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
@@ -113,6 +113,14 @@ public class ReadingSessionsControllerTest {
                 ),
                 responseHeaders(
                     headerWithName(HttpHeaders.LOCATION).description("New added reading session resource")
+                ),
+                responseFields(
+                    fieldWithPath("uuid").description("UUID used to identify a reading session"),
+                    fieldWithPath("bookUuid").description("UUID used to identify a book"),
+                    fieldWithPath("dateReadingSessions").description("Reading sessions (optional)").optional(),
+                    fieldWithPath("dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
+                    fieldWithPath("dateReadingSessions[].lastReadPage").description("Last page that was read"),
+                    fieldWithPath("dateReadingSessions[].bookmark").description("Where to start next")
                 )));
     }
 

@@ -101,8 +101,9 @@ public class FilesystemReadingSessionsDaoTest {
         List<ReadingSession> readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER);
         assertThat(readingSessions).isEmpty();
 
-        String uuid = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, getReadingSession("uuid-1.json"));
-        assertThat(uuid).isNotNull();
+        ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, getReadingSession("uuid-1.json"));
+        assertThat(readingSession).isNotNull();
+        assertThat(readingSession.getUuid()).isNotNull();
 
         readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER);
         assertThat(readingSessions.get(0).getUuid()).isNotNull();
@@ -120,10 +121,11 @@ public class FilesystemReadingSessionsDaoTest {
 
     @Test
     public void getUserReadingSession() throws Exception {
-        String uuid = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, getReadingSession("uuid-1.json"));
-        assertThat(uuid).isNotNull();
+        ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, getReadingSession("uuid-1.json"));
+        assertThat(readingSession).isNotNull();
+        assertThat(readingSession.getUuid()).isNotNull();
 
-        Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, uuid);
+        Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
         assertThat(optionalReadingSession.isPresent()).isTrue();
         assertThat(optionalReadingSession.get()).isEqualTo(
             new ReadingSession(optionalReadingSession.get().getUuid(),
@@ -147,8 +149,9 @@ public class FilesystemReadingSessionsDaoTest {
         assertThat(readingSessions).isEmpty();
 
         ReadingSession readingSession = getReadingSession("uuid-1.json");
-        String uuid = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, readingSession);
-        assertThat(uuid).isNotNull();
+        ReadingSession createdReadingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, readingSession);
+        assertThat(createdReadingSession).isNotNull();
+        assertThat(createdReadingSession.getUuid()).isNotNull();
 
         readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER);
         assertThat(readingSessions)
@@ -169,7 +172,7 @@ public class FilesystemReadingSessionsDaoTest {
             )
         );
 
-        Optional<String> optionalUuid = readingSessionsDao.updateUserReadingSession(JOHN_DOE_USER, uuid, updatedReadingSession);
+        Optional<String> optionalUuid = readingSessionsDao.updateUserReadingSession(JOHN_DOE_USER, createdReadingSession.getUuid(), updatedReadingSession);
         assertThat(optionalUuid.isPresent()).isTrue();
 
         readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER);
@@ -194,15 +197,16 @@ public class FilesystemReadingSessionsDaoTest {
 
     @Test
     public void deleteUserReadingSession() throws Exception {
-        String uuid = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, getReadingSession("uuid-1.json"));
-        assertThat(uuid).isNotNull();
+        ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, getReadingSession("uuid-1.json"));
+        assertThat(readingSession).isNotNull();
+        assertThat(readingSession.getUuid()).isNotNull();
 
-        Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, uuid);
+        Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
         assertThat(optionalReadingSession.isPresent()).isTrue();
 
-        readingSessionsDao.deleteUserReadingSession(JOHN_DOE_USER, uuid);
+        readingSessionsDao.deleteUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
 
-        optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, uuid);
+        optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
         assertThat(optionalReadingSession.isPresent()).isFalse();
     }
 

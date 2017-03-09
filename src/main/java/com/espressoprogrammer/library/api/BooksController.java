@@ -48,8 +48,8 @@ public class BooksController {
     }
 
     @PostMapping(value = "/users/{user}/books")
-    public ResponseEntity createUserBook(@PathVariable("user") String user,
-                                         @RequestBody Book book)  {
+    public ResponseEntity<Book> createUserBook(@PathVariable("user") String user,
+                                               @RequestBody Book book)  {
         try {
             logger.debug("Add new book for user {}", user);
 
@@ -60,10 +60,10 @@ public class BooksController {
                 return new ResponseEntity(errorResponse ,HttpStatus.FORBIDDEN);
             }
 
-            String uuid = booksDao.createUserBook(user, book);
+            Book persistedBook = booksDao.createUserBook(user, book);
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add(HttpHeaders.LOCATION, String.format("/users/%s/books/%s", user, uuid));
-            return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
+            httpHeaders.add(HttpHeaders.LOCATION, String.format("/users/%s/books/%s", user, persistedBook.getUuid()));
+            return new ResponseEntity(persistedBook, httpHeaders, HttpStatus.CREATED);
         } catch (Exception ex) {
             logger.error("Error on adding new book", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);

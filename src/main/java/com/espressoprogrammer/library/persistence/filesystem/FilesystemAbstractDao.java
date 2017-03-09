@@ -46,7 +46,7 @@ abstract class FilesystemAbstractDao<T> {
 
     protected abstract boolean applySearchCriteria(T t, String searchText);
 
-    protected String createUserItem(String user, T item) {
+    protected T createUserItem(String user, T item) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
             logger.debug("Add new item for user {} into {}", user, storageFolder);
@@ -54,7 +54,7 @@ abstract class FilesystemAbstractDao<T> {
             String uuid = UUID.randomUUID().toString();
             T persistedItem = createItem(uuid, item);
             Files.write(Paths.get(storageFolder, uuid + FILE_EXTENSION), toJson(persistedItem).getBytes());
-            return uuid;
+            return persistedItem;
         } catch(Exception ex) {
             throw new FilesystemDaoException(ex);
         }

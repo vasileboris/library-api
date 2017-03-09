@@ -102,7 +102,7 @@ public class BooksControllerTest {
     public void createUserBook() throws Exception {
         Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
         when(booksDao.getUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.empty());
-        when(booksDao.createUserBook(JOHN_DOE_USER, book)).thenReturn("1e4014b1-a551-4310-9f30-590c3140b695");
+        when(booksDao.createUserBook(JOHN_DOE_USER, book)).thenReturn(getBook("1e4014b1-a551-4310-9f30-590c3140b695.json"));
 
         this.mockMvc.perform(post("/users/{user}/books", JOHN_DOE_USER)
                 .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
@@ -120,6 +120,14 @@ public class BooksControllerTest {
                 ),
                 responseHeaders(
                     headerWithName(HttpHeaders.LOCATION).description("New added book resource")
+                ),
+                responseFields(
+                    fieldWithPath("uuid").description("UUID used to identify a book"),
+                    fieldWithPath("isbn10").description("10 digits ISBN (optional)").optional(),
+                    fieldWithPath("isbn13").description("13 digits ISBN (optional)").optional(),
+                    fieldWithPath("title").description("Book title"),
+                    fieldWithPath("authors").description("Book authors (optional)").optional(),
+                    fieldWithPath("pages").description("Number of pages")
                 )));
     }
 

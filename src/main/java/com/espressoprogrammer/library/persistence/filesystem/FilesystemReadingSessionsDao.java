@@ -17,7 +17,7 @@ public class FilesystemReadingSessionsDao extends FilesystemAbstractDao<ReadingS
     }
 
     @Override
-    public String createUserReadingSession(String user, ReadingSession readingSession) {
+    public ReadingSession createUserReadingSession(String user, ReadingSession readingSession) {
         return createUserItem(user, readingSession);
     }
 

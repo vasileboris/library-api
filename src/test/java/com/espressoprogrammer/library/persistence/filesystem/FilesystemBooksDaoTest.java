@@ -173,8 +173,9 @@ public class FilesystemBooksDaoTest {
         List<Book> books = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(books).isEmpty();
 
-        String uuid = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
-        assertThat(uuid).isNotNull();
+        Book book = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
+        assertThat(book).isNotNull();
+        assertThat(book.getUuid()).isNotNull();
 
         books = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(books.get(0).getUuid()).isNotNull();
@@ -193,8 +194,9 @@ public class FilesystemBooksDaoTest {
         List<Book> books = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(books).isEmpty();
 
-        String uuid = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-3.json"));
-        assertThat(uuid).isNotNull();
+        Book book = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-3.json"));
+        assertThat(book).isNotNull();
+        assertThat(book.getUuid()).isNotNull();
 
         books = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(books)
@@ -209,10 +211,11 @@ public class FilesystemBooksDaoTest {
 
     @Test
     public void getUserBook() throws Exception {
-        String uuid = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
-        assertThat(uuid).isNotNull();
+        Book book = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
+        assertThat(book).isNotNull();
+        assertThat(book.getUuid()).isNotNull();
 
-        Optional<Book> optionalBook = booksDao.getUserBook(JOHN_DOE_USER, uuid);
+        Optional<Book> optionalBook = booksDao.getUserBook(JOHN_DOE_USER, book.getUuid());
         assertThat(optionalBook.isPresent()).isTrue();
         assertThat(optionalBook.get()).isEqualTo(new Book(optionalBook.get().getUuid(),
             "isbn10-1",
@@ -234,8 +237,9 @@ public class FilesystemBooksDaoTest {
         assertThat(books).isEmpty();
 
         Book book = getBook("uuid-1.json");
-        String uuid = booksDao.createUserBook(JOHN_DOE_USER, book);
-        assertThat(uuid).isNotNull();
+        Book createdBook = booksDao.createUserBook(JOHN_DOE_USER, book);
+        assertThat(createdBook).isNotNull();
+        assertThat(createdBook.getUuid()).isNotNull();
 
         books = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(books)
@@ -254,7 +258,7 @@ public class FilesystemBooksDaoTest {
             book.getAuthors(),
             book.getPages());
 
-        Optional<String> optionalUuid = booksDao.updateUserBook(JOHN_DOE_USER, uuid, updatedBook);
+        Optional<String> optionalUuid = booksDao.updateUserBook(JOHN_DOE_USER, createdBook.getUuid(), updatedBook);
         assertThat(optionalUuid.isPresent()).isTrue();
 
         books = booksDao.getUserBooks(JOHN_DOE_USER);
@@ -277,15 +281,16 @@ public class FilesystemBooksDaoTest {
 
     @Test
     public void deleteUserBook() throws Exception {
-        String uuid = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
-        assertThat(uuid).isNotNull();
+        Book book = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
+        assertThat(book).isNotNull();
+        assertThat(book.getUuid()).isNotNull();
 
-        Optional<Book> optionalBook = booksDao.getUserBook(JOHN_DOE_USER, uuid);
+        Optional<Book> optionalBook = booksDao.getUserBook(JOHN_DOE_USER, book.getUuid());
         assertThat(optionalBook.isPresent()).isTrue();
 
-        booksDao.deleteUserBook(JOHN_DOE_USER, uuid);
+        booksDao.deleteUserBook(JOHN_DOE_USER, book.getUuid());
 
-        optionalBook = booksDao.getUserBook(JOHN_DOE_USER, uuid);
+        optionalBook = booksDao.getUserBook(JOHN_DOE_USER, book.getUuid());
         assertThat(optionalBook.isPresent()).isFalse();
     }
 

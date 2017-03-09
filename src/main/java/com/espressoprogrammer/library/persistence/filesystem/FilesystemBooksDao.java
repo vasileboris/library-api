@@ -24,7 +24,7 @@ public class FilesystemBooksDao extends FilesystemAbstractDao<Book> implements B
     }
 
     @Override
-    public String createUserBook(String user, Book book) {
+    public Book createUserBook(String user, Book book) {
         return createUserItem(user, book);
     }
 

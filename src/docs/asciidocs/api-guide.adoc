@@ -50,6 +50,10 @@ include::{snippets}/books-controller-test/create-user-book/http-request.adoc[]
 
 include::{snippets}/books-controller-test/create-user-book/response-headers.adoc[]
 
+==== Response fields
+
+include::{snippets}/books-controller-test/create-user-book/response-fields.adoc[]
+
 ==== Example response
 
 include::{snippets}/books-controller-test/create-user-book/http-response.adoc[]
@@ -198,6 +202,10 @@ include::{snippets}/reading-sessions-controller-test/create-user-reading-session
 ==== Response headers
 
 include::{snippets}/reading-sessions-controller-test/create-user-reading-session/response-headers.adoc[]
+
+==== Response fields
+
+include::{snippets}/reading-sessions-controller-test/create-user-reading-session/response-fields.adoc[]
 
 ==== Example response
 

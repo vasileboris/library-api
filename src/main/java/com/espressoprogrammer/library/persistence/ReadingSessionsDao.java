@@ -9,7 +9,7 @@ public interface ReadingSessionsDao {
 
     List<ReadingSession> getUserReadingSessions(String user);
 
-    String createUserReadingSession(String user, ReadingSession readingSession);
+    ReadingSession createUserReadingSession(String user, ReadingSession readingSession);
 
     Optional<ReadingSession> getUserReadingSession(String user, String uuid);
 

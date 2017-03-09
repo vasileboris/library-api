@@ -45,8 +45,8 @@ public class ReadingSessionsController {
     }
 
     @PostMapping(value = "/users/{user}/reading-sessions")
-    public ResponseEntity createUserReadingSession(@PathVariable("user") String user,
-                                                   @RequestBody ReadingSession readingSession)  {
+    public ResponseEntity<ReadingSession> createUserReadingSession(@PathVariable("user") String user,
+                                                                   @RequestBody ReadingSession readingSession)  {
         try {
             logger.debug("Add new reading session for user {}", user);
 
@@ -59,10 +59,10 @@ public class ReadingSessionsController {
                     createdDateReadingSessions);
             }
 
-            String uuid = readingSessionsDao.createUserReadingSession(user, createdReadingSession);
+            ReadingSession persistedReadingSession = readingSessionsDao.createUserReadingSession(user, createdReadingSession);
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add(HttpHeaders.LOCATION, String.format("/users/%s/reading-sessions/%s", user, uuid));
-            return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
+            httpHeaders.add(HttpHeaders.LOCATION, String.format("/users/%s/reading-sessions/%s", user, persistedReadingSession.getUuid()));
+            return new ResponseEntity(readingSession, httpHeaders, HttpStatus.CREATED);
         } catch (Exception ex) {
             logger.error("Error on adding new reading session", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
