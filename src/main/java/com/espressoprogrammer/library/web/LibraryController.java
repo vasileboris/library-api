@@ -9,7 +9,7 @@ public class LibraryController {
 
     @RequestMapping("/")
     public String index() {
-        return "add-book";
+        return "Library";
     }
 
 }
