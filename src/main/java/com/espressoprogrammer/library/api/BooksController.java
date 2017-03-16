@@ -107,7 +107,7 @@ public class BooksController {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
 
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception ex) {
             logger.error("Error on looking for books", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
