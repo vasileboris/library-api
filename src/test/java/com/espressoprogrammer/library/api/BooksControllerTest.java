@@ -264,7 +264,7 @@ public class BooksControllerTest {
         when(booksDao.deleteUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.of(book.getUuid()));
 
         this.mockMvc.perform(delete("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid()))
-            .andExpect(status().isOk())
+            .andExpect(status().isNoContent())
             .andDo(document("{class-name}/{method-name}",
                 pathParameters(
                     parameterWithName("user").description("User id"),
