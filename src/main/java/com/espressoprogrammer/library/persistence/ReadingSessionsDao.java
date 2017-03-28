@@ -7,13 +7,13 @@ import java.util.Optional;
 
 public interface ReadingSessionsDao {
 
-    List<ReadingSession> getUserReadingSessions(String user);
+    List<ReadingSession> getUserReadingSessions(String user, String bookUuid);
 
-    ReadingSession createUserReadingSession(String user, ReadingSession readingSession);
+    ReadingSession createUserReadingSession(String user, String bookUuid, ReadingSession readingSession);
 
-    Optional<ReadingSession> getUserReadingSession(String user, String uuid);
+    Optional<ReadingSession> getUserReadingSession(String user, String bookUuid, String uuid);
 
-    Optional<String> updateUserReadingSession(String user, String uuid, ReadingSession readingSession);
+    Optional<String> updateUserReadingSession(String user, String bookUuid, String uuid, ReadingSession readingSession);
 
-    Optional<String> deleteUserReadingSession(String user, String uuid);
+    Optional<String> deleteUserReadingSession(String user, String bookUuid, String uuid);
 }

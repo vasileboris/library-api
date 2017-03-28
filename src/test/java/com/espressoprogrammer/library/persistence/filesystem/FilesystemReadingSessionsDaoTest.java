@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 public class FilesystemReadingSessionsDaoTest {
     private static final String TMPDIR = "java.io.tmpdir";
     private static final String JOHN_DOE_USER = "johndoe";
+    private static final String BOOK_UUID = "book-uuid-1";
 
     @Mock
     private FilesystemConfiguration filesystemConfiguration;
@@ -49,7 +50,7 @@ public class FilesystemReadingSessionsDaoTest {
 
     @Test
     public void getNoUserReadingSessions() throws Exception {
-        assertThat(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER)).isEmpty();
+        assertThat(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).isEmpty();
     }
 
     @Test
@@ -57,7 +58,7 @@ public class FilesystemReadingSessionsDaoTest {
         createReadingSessionsFolder(JOHN_DOE_USER);
         copyReadingSession("uuid-1.json", getUserReadingSessionsFolder(JOHN_DOE_USER));
 
-        List<ReadingSession> readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER);
+        List<ReadingSession> readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID);
         assertThat(readingSessions)
             .hasSize(1)
             .contains(
@@ -76,7 +77,7 @@ public class FilesystemReadingSessionsDaoTest {
         copyReadingSession("uuid-1.json", getUserReadingSessionsFolder(JOHN_DOE_USER));
         copyReadingSession("uuid-2.json", getUserReadingSessionsFolder(JOHN_DOE_USER));
 
-        List<ReadingSession> readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER);
+        List<ReadingSession> readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID);
         assertThat(readingSessions)
             .hasSize(2)
             .contains(
@@ -87,7 +88,7 @@ public class FilesystemReadingSessionsDaoTest {
                     )
                 ),
                 new ReadingSession("uuid-2",
-                    "book-uuid-2",
+                    "book-uuid-1",
                     Arrays.asList(
                         new DateReadingSession("2017-02-01", 201, "bookmark-201"),
                         new DateReadingSession("2017-02-02", 202, "bookmark-202")
@@ -98,14 +99,14 @@ public class FilesystemReadingSessionsDaoTest {
 
     @Test
     public void createUserReadingSession() throws Exception {
-        List<ReadingSession> readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER);
+        List<ReadingSession> readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID);
         assertThat(readingSessions).isEmpty();
 
-        ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, getReadingSession("uuid-1.json"));
+        ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, getReadingSession("uuid-1.json"));
         assertThat(readingSession).isNotNull();
         assertThat(readingSession.getUuid()).isNotNull();
 
-        readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER);
+        readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID);
         assertThat(readingSessions.get(0).getUuid()).isNotNull();
         assertThat(readingSessions)
             .hasSize(1)
@@ -121,11 +122,15 @@ public class FilesystemReadingSessionsDaoTest {
 
     @Test
     public void getUserReadingSession() throws Exception {
-        ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, getReadingSession("uuid-1.json"));
+        ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER,
+            BOOK_UUID,
+            getReadingSession("uuid-1.json"));
         assertThat(readingSession).isNotNull();
         assertThat(readingSession.getUuid()).isNotNull();
 
-        Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
+        Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
+            BOOK_UUID,
+            readingSession.getUuid());
         assertThat(optionalReadingSession.isPresent()).isTrue();
         assertThat(optionalReadingSession.get()).isEqualTo(
             new ReadingSession(optionalReadingSession.get().getUuid(),
@@ -139,21 +144,25 @@ public class FilesystemReadingSessionsDaoTest {
 
     @Test
     public void getUserMissingReadingSession() throws Exception {
-        Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, "missing-isbn-1");
+        Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
+            BOOK_UUID,
+            "missing-isbn-1");
         assertThat(optionalReadingSession.isPresent()).isFalse();
     }
 
     @Test
     public void updateUserReadingSession() throws Exception {
-        List<ReadingSession> readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER);
+        List<ReadingSession> readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID);
         assertThat(readingSessions).isEmpty();
 
         ReadingSession readingSession = getReadingSession("uuid-1.json");
-        ReadingSession createdReadingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, readingSession);
+        ReadingSession createdReadingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER,
+            BOOK_UUID,
+            readingSession);
         assertThat(createdReadingSession).isNotNull();
         assertThat(createdReadingSession.getUuid()).isNotNull();
 
-        readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER);
+        readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID);
         assertThat(readingSessions)
             .hasSize(1)
             .contains(
@@ -172,10 +181,12 @@ public class FilesystemReadingSessionsDaoTest {
             )
         );
 
-        Optional<String> optionalUuid = readingSessionsDao.updateUserReadingSession(JOHN_DOE_USER, createdReadingSession.getUuid(), updatedReadingSession);
+        Optional<String> optionalUuid = readingSessionsDao.updateUserReadingSession(JOHN_DOE_USER,
+            BOOK_UUID,
+            createdReadingSession.getUuid(), updatedReadingSession);
         assertThat(optionalUuid.isPresent()).isTrue();
 
-        readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER);
+        readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID);
         assertThat(readingSessions)
             .hasSize(1)
             .contains(
@@ -191,22 +202,32 @@ public class FilesystemReadingSessionsDaoTest {
     @Test
     public void updateUserMissingReadingSession() throws Exception {
         ReadingSession readingSession = getReadingSession("uuid-1.json");
-        Optional<String> optionalUuid = readingSessionsDao.updateUserReadingSession(JOHN_DOE_USER, "uuid-1", readingSession);
+        Optional<String> optionalUuid = readingSessionsDao.updateUserReadingSession(JOHN_DOE_USER,
+            BOOK_UUID,
+            "uuid-1", readingSession);
         assertThat(optionalUuid.isPresent()).isFalse();
     }
 
     @Test
     public void deleteUserReadingSession() throws Exception {
-        ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, getReadingSession("uuid-1.json"));
+        ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER,
+            BOOK_UUID,
+            getReadingSession("uuid-1.json"));
         assertThat(readingSession).isNotNull();
         assertThat(readingSession.getUuid()).isNotNull();
 
-        Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
+        Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
+            BOOK_UUID,
+            readingSession.getUuid());
         assertThat(optionalReadingSession.isPresent()).isTrue();
 
-        readingSessionsDao.deleteUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
+        readingSessionsDao.deleteUserReadingSession(JOHN_DOE_USER,
+            BOOK_UUID,
+            readingSession.getUuid());
 
-        optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, readingSession.getUuid());
+        optionalReadingSession = readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
+            BOOK_UUID,
+            readingSession.getUuid());
         assertThat(optionalReadingSession.isPresent()).isFalse();
     }
 

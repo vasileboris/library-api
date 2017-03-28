@@ -1197,7 +1197,7 @@ Content-Length: 151
 <h4 id="_example_response_6"><a class="link" href="#_example_response_6">Example response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 204 No Content</code></pre>
 </div>
 </div>
 </div>
@@ -1347,7 +1347,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_example_response_9"><a class="link" href="#_example_response_9">Example response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 204 No Content</code></pre>
 </div>
 </div>
 </div>
@@ -1377,7 +1377,7 @@ Host: localhost:8080</code></pre>
 <div class="sect3">
 <h4 id="_path_parameters_6"><a class="link" href="#_path_parameters_6">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 6. /users/{user}/reading-sessions</caption>
+<caption class="title">Table 6. /users/{user}/books/{bookUuid}/reading-sessions</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1393,6 +1393,10 @@ Host: localhost:8080</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>user</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User id</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bookUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Book uuid</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1400,7 +1404,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_example_request_11"><a class="link" href="#_example_request_11">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /users/johndoe/reading-sessions HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1472,7 +1476,7 @@ Content-Length: 188
 <div class="sect3">
 <h4 id="_path_parameters_7"><a class="link" href="#_path_parameters_7">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 7. /users/{user}/reading-sessions</caption>
+<caption class="title">Table 7. /users/{user}/books/{bookUuid}/reading-sessions</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1487,6 +1491,10 @@ Content-Length: 188
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>user</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bookUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Book uuid</p></td>
 </tr>
 </tbody>
 </table>
@@ -1539,7 +1547,7 @@ Content-Length: 188
 <h4 id="_example_request_12"><a class="link" href="#_example_request_12">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /users/johndoe/reading-sessions HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
 Content-Length: 186
@@ -1632,7 +1640,7 @@ Content-Length: 186
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
-Location: /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695
+Location: /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695
 Content-Type: application/json;charset=UTF-8
 Content-Length: 152
 
@@ -1646,7 +1654,7 @@ Content-Length: 152
 <div class="sect3">
 <h4 id="_path_parameters_8"><a class="link" href="#_path_parameters_8">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 8. /users/{user}/reading-sessions/{uuid}</caption>
+<caption class="title">Table 8. /users/{user}/books/{bookUuid}/reading-sessions/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1663,6 +1671,10 @@ Content-Length: 152
 <td class="tableblock halign-left valign-top"><p class="tableblock">User id</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bookUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Book uuid</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reading session uuid</p></td>
 </tr>
@@ -1673,7 +1685,7 @@ Content-Length: 152
 <h4 id="_example_request_13"><a class="link" href="#_example_request_13">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1746,7 +1758,7 @@ Content-Length: 186
 <h4 id="_example_request_14"><a class="link" href="#_example_request_14">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /users/johndoe/reading-sessions/missing-uuid-1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/missing-uuid-1 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1765,7 +1777,7 @@ Host: localhost:8080</code></pre>
 <div class="sect3">
 <h4 id="_path_parameters_9"><a class="link" href="#_path_parameters_9">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 9. /users/{user}/reading-sessions/{uuid}</caption>
+<caption class="title">Table 9. /users/{user}/books/{bookUuid}/reading-sessions/{uuid}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1782,6 +1794,10 @@ Host: localhost:8080</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User id</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bookUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Book uuid</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reading session uuid</p></td>
 </tr>
@@ -1792,7 +1808,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_example_request_15"><a class="link" href="#_example_request_15">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1812,7 +1828,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_example_request_16"><a class="link" href="#_example_request_16">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1831,7 +1847,7 @@ Host: localhost:8080</code></pre>
 <div class="sect3">
 <h4 id="_path_parameters_10"><a class="link" href="#_path_parameters_10">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 10. /users/{user}/reading-sessions/{uuid}/date-reading-sessions</caption>
+<caption class="title">Table 10. /users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1848,6 +1864,10 @@ Host: localhost:8080</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User id</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bookUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Book uuid</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reading session uuid</p></td>
 </tr>
@@ -1858,7 +1878,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_example_request_17"><a class="link" href="#_example_request_17">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1915,7 +1935,7 @@ Content-Length: 66
 <div class="sect3">
 <h4 id="_path_parameters_11"><a class="link" href="#_path_parameters_11">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 11. /users/{user}/reading-sessions/{uuid}/date-reading-sessions</caption>
+<caption class="title">Table 11. /users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1930,6 +1950,10 @@ Content-Length: 66
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>user</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bookUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Book uuid</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
@@ -1976,7 +2000,7 @@ Content-Length: 66
 <h4 id="_example_request_18"><a class="link" href="#_example_request_18">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
 Content-Length: 75
@@ -2026,7 +2050,7 @@ Location: /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/d
 <h4 id="_example_request_19"><a class="link" href="#_example_request_19">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
 Content-Length: 75
@@ -2053,7 +2077,7 @@ Content-Length: 75
 <div class="sect3">
 <h4 id="_path_parameters_12"><a class="link" href="#_path_parameters_12">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 12. /users/{user}/reading-sessions/{uuid}/date-reading-sessions/{date}</caption>
+<caption class="title">Table 12. /users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions/{date}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2070,6 +2094,10 @@ Content-Length: 75
 <td class="tableblock halign-left valign-top"><p class="tableblock">User id</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bookUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Book uuid</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reading session uuid</p></td>
 </tr>
@@ -2084,7 +2112,7 @@ Content-Length: 75
 <h4 id="_example_request_20"><a class="link" href="#_example_request_20">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions/2017-01-01 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions/2017-01-01 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2142,7 +2170,7 @@ Content-Length: 64
 <h4 id="_example_request_21"><a class="link" href="#_example_request_21">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions/2017-01-02 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions/2017-01-02 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2161,7 +2189,7 @@ Host: localhost:8080</code></pre>
 <div class="sect3">
 <h4 id="_path_parameters_13"><a class="link" href="#_path_parameters_13">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 13. /users/{user}/reading-sessions/{uuid}/date-reading-sessions/{date}</caption>
+<caption class="title">Table 13. /users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions/{date}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2176,6 +2204,10 @@ Host: localhost:8080</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>user</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bookUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Book uuid</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
@@ -2226,7 +2258,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_example_request_22"><a class="link" href="#_example_request_22">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions/2017-01-01 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions/2017-01-01 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
 Content-Length: 75
@@ -2254,7 +2286,7 @@ Content-Length: 75
 <h4 id="_example_request_23"><a class="link" href="#_example_request_23">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions/2017-01-02 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions/2017-01-02 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
 Content-Length: 75
@@ -2281,7 +2313,7 @@ Content-Length: 75
 <div class="sect3">
 <h4 id="_path_parameters_14"><a class="link" href="#_path_parameters_14">Path parameters</a></h4>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 14. /users/{user}/reading-sessions/{uuid}/date-reading-sessions/{date}</caption>
+<caption class="title">Table 14. /users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions/{date}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2298,6 +2330,10 @@ Content-Length: 75
 <td class="tableblock halign-left valign-top"><p class="tableblock">User id</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bookUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Book uuid</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>uuid</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reading session uuid</p></td>
 </tr>
@@ -2312,7 +2348,7 @@ Content-Length: 75
 <h4 id="_example_request_24"><a class="link" href="#_example_request_24">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions/2017-01-01 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions/2017-01-01 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2332,7 +2368,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_example_request_25"><a class="link" href="#_example_request_25">Example request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /users/johndoe/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions/2017-01-02 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695/date-reading-sessions/2017-01-02 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
