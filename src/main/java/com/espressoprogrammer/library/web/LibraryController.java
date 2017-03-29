@@ -12,4 +12,14 @@ public class LibraryController {
         return "Library";
     }
 
+    @RequestMapping("/books")
+    public String manageBooks() {
+        return index();
+    }
+
+    @RequestMapping("/books/{bookUuid}")
+    public String manageReadingSessions() {
+        return index();
+    }
+
 }
