@@ -90,7 +90,7 @@ include::{snippets}/books-controller-test/get-user-book/response-fields.adoc[]
 
 include::{snippets}/books-controller-test/get-user-book/http-response.adoc[]
 
-=== Retrieve a missing user book
+=== Retrieve missing user book
 
 ==== Example request
 
@@ -132,8 +132,7 @@ include::{snippets}/books-controller-test/update-existing-user-book/response-fie
 
 include::{snippets}/books-controller-test/update-existing-user-book/http-response.adoc[]
 
-
-=== Update a missing user book
+=== Update missing user book
 
 ==== Example request
 
@@ -157,7 +156,7 @@ include::{snippets}/books-controller-test/delete-user-book/http-request.adoc[]
 
 include::{snippets}/books-controller-test/delete-user-book/http-response.adoc[]
 
-=== Delete a missing user book
+=== Delete missing user book
 
 ==== Example request
 
@@ -185,6 +184,34 @@ include::{snippets}/reading-sessions-controller-test/get-user-reading-sessions/r
 
 include::{snippets}/reading-sessions-controller-test/get-user-reading-sessions/http-response.adoc[]
 
+=== Retrieve current user reading session
+
+==== Path parameters
+
+include::{snippets}/reading-sessions-controller-test/get-user-current-reading-session/path-parameters.adoc[]
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/get-user-current-reading-session/http-request.adoc[]
+
+==== Response fields
+
+include::{snippets}/reading-sessions-controller-test/get-user-current-reading-session/response-fields.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/get-user-current-reading-session/http-response.adoc[]
+
+=== Retrieve missing user current reading session
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/get-missing-user-current-reading-session/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/get-missing-user-current-reading-session/http-response.adoc[]
+
 === Add a new reading session for a user
 
 ==== Path parameters
@@ -211,6 +238,16 @@ include::{snippets}/reading-sessions-controller-test/create-user-reading-session
 
 include::{snippets}/reading-sessions-controller-test/create-user-reading-session/http-response.adoc[]
 
+=== Add an additional user reading session
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/create-additional-user-reading-session/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/create-additional-user-reading-session/http-response.adoc[]
+
 === Retrieve a user reading session
 
 ==== Path parameters
@@ -229,7 +266,7 @@ include::{snippets}/reading-sessions-controller-test/get-user-reading-session/re
 
 include::{snippets}/reading-sessions-controller-test/get-user-reading-session/http-response.adoc[]
 
-=== Retrieve a missing user reading session
+=== Retrieve missing user reading session
 
 ==== Example request
 
@@ -253,7 +290,7 @@ include::{snippets}/reading-sessions-controller-test/delete-user-reading-session
 
 include::{snippets}/reading-sessions-controller-test/delete-user-reading-session/http-response.adoc[]
 
-=== Delete a missing user reading session
+=== Delete missing user reading session
 
 ==== Example request
 
@@ -331,7 +368,7 @@ include::{snippets}/reading-sessions-controller-test/get-date-reading-session/re
 
 include::{snippets}/reading-sessions-controller-test/get-date-reading-session/http-response.adoc[]
 
-=== Retrieve a missing date reading session
+=== Retrieve missing date reading session
 
 ==== Example request
 
@@ -359,7 +396,7 @@ include::{snippets}/reading-sessions-controller-test/update-date-reading-session
 
 include::{snippets}/reading-sessions-controller-test/update-date-reading-session/http-response.adoc[]
 
-=== Update a missing date reading session
+=== Update missing date reading session
 
 ==== Example request
 
@@ -383,7 +420,7 @@ include::{snippets}/reading-sessions-controller-test/delete-date-reading-session
 
 include::{snippets}/reading-sessions-controller-test/delete-date-reading-session/http-response.adoc[]
 
-=== Delete a missing date reading session
+=== Delete missing date reading session
 
 ==== Example request
 

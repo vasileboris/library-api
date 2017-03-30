@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSession;
@@ -96,6 +97,43 @@ public class ReadingSessionsControllerTest {
     }
 
     @Test
+    public void getUserCurrentReadingSession() throws Exception {
+        ArrayList<ReadingSession> readingSessions = new ArrayList<>();
+        readingSessions.add(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
+        when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(readingSessions);
+
+        this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/current-reading-session", JOHN_DOE_USER, BOOK_UUID))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("uuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
+            .andExpect(jsonPath("bookUuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
+            .andExpect(jsonPath("dateReadingSessions[0].date", is("2017-01-01")))
+            .andExpect(jsonPath("dateReadingSessions[0].lastReadPage", is(32)))
+            .andExpect(jsonPath("dateReadingSessions[0].bookmark", is("Section 3.3")))
+            .andDo(document("{class-name}/{method-name}",
+                pathParameters(
+                    parameterWithName("user").description("User id"),
+                    parameterWithName("bookUuid").description("Book uuid")),
+                responseFields(
+                    fieldWithPath("uuid").description("UUID used to identify a reading session"),
+                    fieldWithPath("bookUuid").description("UUID used to identify a book"),
+                    fieldWithPath("dateReadingSessions").description("Reading sessions (optional)").optional(),
+                    fieldWithPath("dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
+                    fieldWithPath("dateReadingSessions[].lastReadPage").description("Last page that was read"),
+                    fieldWithPath("dateReadingSessions[].bookmark").description("Where to start next")
+                )));
+    }
+
+    @Test
+    public void getMissingUserCurrentReadingSession() throws Exception {
+        when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(new ArrayList<>());
+
+        this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/current-reading-session", JOHN_DOE_USER, BOOK_UUID))
+            .andExpect(status().isNotFound())
+            .andDo(document("{class-name}/{method-name}"));
+    }
+
+    @Test
     public void createUserReadingSession() throws Exception {
         ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
         when(readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession)).thenReturn(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
@@ -128,6 +166,17 @@ public class ReadingSessionsControllerTest {
                     fieldWithPath("dateReadingSessions[].lastReadPage").description("Last page that was read"),
                     fieldWithPath("dateReadingSessions[].bookmark").description("Where to start next")
                 )));
+    }
+
+    @Test
+    public void createAdditionalUserReadingSession() throws Exception {
+        when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Arrays.asList(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json")));
+
+        this.mockMvc.perform(post("/users/{user}/books/{bookUuid}/reading-sessions", JOHN_DOE_USER, BOOK_UUID)
+            .content(getReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
+            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(status().isForbidden())
+            .andDo(document("{class-name}/{method-name}"));
     }
 
     @Test

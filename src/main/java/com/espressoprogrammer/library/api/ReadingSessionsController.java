@@ -37,8 +37,25 @@ public class ReadingSessionsController {
         try {
             logger.debug("Look for reading sessions for user {}", user);
 
+            List<ReadingSession> userReadingSessions = readingSessionsDao.getUserReadingSessions(user, bookUuid);
+            return new ResponseEntity<>(userReadingSessions, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("Error on looking for reading sessions", ex);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/users/{user}/books/{bookUuid}/current-reading-session")
+    public ResponseEntity<ReadingSession> getUserCurrentReadingSession(@PathVariable("user") String user,
+                                                                       @PathVariable("bookUuid") String bookUuid)  {
+        try {
+            logger.debug("Look for current reading sessions for user {}", user);
+
             List<ReadingSession> userBooks = readingSessionsDao.getUserReadingSessions(user, bookUuid);
-            return new ResponseEntity<>(userBooks, HttpStatus.OK);
+            if(userBooks.isEmpty()) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(userBooks.get(0), HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for reading sessions", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -51,6 +68,11 @@ public class ReadingSessionsController {
                                                                    @RequestBody ReadingSession readingSession)  {
         try {
             logger.debug("Add new reading session for user {}", user);
+
+            List<ReadingSession> userReadingSessions = readingSessionsDao.getUserReadingSessions(user, bookUuid);
+            if(!userReadingSessions.isEmpty()) {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
 
             ReadingSession createdReadingSession = readingSession;
             if(!CollectionUtils.isEmpty(createdReadingSession.getDateReadingSessions())) {
