@@ -297,6 +297,11 @@ public class ReadingSessionsControllerTest {
                 ),
                 responseHeaders(
                     headerWithName(HttpHeaders.LOCATION).description("New added reading session resource")
+                ),
+                responseFields(
+                    fieldWithPath("date").description("Date of a reading session in the format yyyy-MM-dd"),
+                    fieldWithPath("lastReadPage").description("Last page that was read"),
+                    fieldWithPath("bookmark").description("Where to start next")
                 )));
 
         verify(readingSessionsDao).updateUserReadingSession(JOHN_DOE_USER,
@@ -418,7 +423,7 @@ public class ReadingSessionsControllerTest {
             BOOK_UUID,
             "1e4014b1-a551-4310-9f30-590c3140b695",
             date))
-            .andExpect(status().isOk())
+            .andExpect(status().isNoContent())
             .andDo(document("{class-name}/{method-name}",
                 pathParameters(
                     parameterWithName("user").description("User id"),

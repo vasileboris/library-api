@@ -336,6 +336,10 @@ include::{snippets}/reading-sessions-controller-test/create-date-reading-session
 
 include::{snippets}/reading-sessions-controller-test/create-date-reading-session/response-headers.adoc[]
 
+==== Response fields
+
+include::{snippets}/reading-sessions-controller-test/create-date-reading-session/response-fields.adoc[]
+
 ==== Example response
 
 include::{snippets}/reading-sessions-controller-test/create-date-reading-session/http-response.adoc[]

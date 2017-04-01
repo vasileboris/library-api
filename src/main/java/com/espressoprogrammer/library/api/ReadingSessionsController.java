@@ -154,7 +154,7 @@ public class ReadingSessionsController {
     }
 
     @PostMapping(value = "/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions")
-    public ResponseEntity createDateReadingSession(@PathVariable("user") String user,
+    public ResponseEntity<DateReadingSession> createDateReadingSession(@PathVariable("user") String user,
                                                    @PathVariable("bookUuid") String bookUuid,
                                                    @PathVariable("uuid") String uuid,
                                                    @RequestBody DateReadingSession dateReadingSession)  {
@@ -187,7 +187,7 @@ public class ReadingSessionsController {
             httpHeaders.add(HttpHeaders.LOCATION,
                 String.format("/users/%s/reading-sessions/%s/date-reading-sessions/%s",
                     user, uuid, dateReadingSession.getDate()));
-            return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
+            return new ResponseEntity(dateReadingSession, httpHeaders, HttpStatus.CREATED);
         } catch (Exception ex) {
             logger.error("Error on adding new date reading session", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -290,7 +290,7 @@ public class ReadingSessionsController {
                 readingSessionsDao.updateUserReadingSession(user, bookUuid, uuid, new ReadingSession(existingReadingSession.getUuid(),
                     bookUuid,
                     updateDateReadingSessions));
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
             return new ResponseEntity(HttpStatus.NOT_FOUND);
