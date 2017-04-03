@@ -252,7 +252,7 @@ public class ReadingSessionsController {
                 readingSessionsDao.updateUserReadingSession(user, bookUuid, uuid, new ReadingSession(existingReadingSession.getUuid(),
                     bookUuid,
                     updateDateReadingSessions));
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
             return new ResponseEntity(HttpStatus.NOT_FOUND);

@@ -376,7 +376,7 @@ public class ReadingSessionsControllerTest {
             JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date)
             .content(getReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-update-date-reading-session-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(status().isOk())
+            .andExpect(status().isNoContent())
             .andDo(document("{class-name}/{method-name}",
                 pathParameters(
                     parameterWithName("user").description("User id"),
