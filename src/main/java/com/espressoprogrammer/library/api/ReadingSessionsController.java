@@ -3,6 +3,7 @@ package com.espressoprogrammer.library.api;
 import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.dto.DateReadingSession;
 import com.espressoprogrammer.library.dto.ReadingSession;
+import com.espressoprogrammer.library.dto.ReadingSessionProgress;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -299,4 +300,19 @@ public class ReadingSessionsController {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping(value = "/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/progress")
+    public ResponseEntity<ReadingSessionProgress> getUserReadingSessionProgress(@PathVariable("user") String user,
+                                                                                @PathVariable("bookUuid") String bookUuid,
+                                                                                @PathVariable("uuid") String uuid)  {
+        try {
+            logger.debug("Look for reading session progress for user {} with uuid {} ", user, uuid);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("Error on looking for reading session", ex);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
