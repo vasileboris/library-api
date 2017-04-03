@@ -3,7 +3,9 @@ package com.espressoprogrammer.library.api;
 import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.dto.ErrorCause;
 import com.espressoprogrammer.library.dto.ErrorResponse;
+import com.espressoprogrammer.library.dto.ReadingSession;
 import com.espressoprogrammer.library.persistence.BooksDao;
+import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class BooksController {
 
     @Autowired
     private BooksDao booksDao;
+
+    @Autowired
+    private ReadingSessionsDao readingSessionsDao;
 
     @GetMapping(value = "/users/{user}/books")
     public ResponseEntity<List<Book>> getUserBooks(@PathVariable("user") String user,
@@ -119,6 +124,17 @@ public class BooksController {
                                                @PathVariable("uuid") String uuid)  {
         try {
             logger.debug("Delete book for user {} with uuid {}", user, uuid);
+
+            List<ReadingSession> userReadingSessions = readingSessionsDao.getUserReadingSessions(user, uuid);
+            for(ReadingSession userReadingSession : userReadingSessions) {
+                if(!userReadingSession.getDateReadingSessions().isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+            }
+
+            for(ReadingSession userReadingSession : userReadingSessions) {
+                readingSessionsDao.deleteUserReadingSession(user, uuid, userReadingSession.getUuid());
+            }
 
             Optional<String> optionalBook = booksDao.deleteUserBook(user, uuid);
             if(!optionalBook.isPresent()) {

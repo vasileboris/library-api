@@ -166,6 +166,16 @@ include::{snippets}/books-controller-test/delete-missing-user-book/http-request.
 
 include::{snippets}/books-controller-test/delete-missing-user-book/http-response.adoc[]
 
+=== Delete user book with reading sessions
+
+==== Example request
+
+include::{snippets}/books-controller-test/delete-user-book-with-reading-sessions/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/books-controller-test/delete-user-book-with-reading-sessions/http-response.adoc[]
+
 === Retrieve user reading sessions
 
 ==== Path parameters

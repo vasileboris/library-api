@@ -2,6 +2,7 @@ package com.espressoprogrammer.library.api;
 
 import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.persistence.BooksDao;
+import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,7 +24,9 @@ import java.util.Optional;
 
 import static com.espressoprogrammer.library.LibraryTestUtil.getBook;
 import static com.espressoprogrammer.library.LibraryTestUtil.getBookJson;
+import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSession;
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -57,6 +60,9 @@ public class BooksControllerTest {
 
     @MockBean
     private BooksDao booksDao;
+
+    @MockBean
+    private ReadingSessionsDao readingSessionsDao;
 
     private MockMvc mockMvc;
 
@@ -262,6 +268,8 @@ public class BooksControllerTest {
     public void deleteUserBook() throws Exception {
         Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
         when(booksDao.deleteUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.of(book.getUuid()));
+        when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, book.getUuid()))
+                .thenReturn(Arrays.asList(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-delete-date-reading-session.json")));
 
         this.mockMvc.perform(delete("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid()))
             .andExpect(status().isNoContent())
@@ -269,6 +277,7 @@ public class BooksControllerTest {
                 pathParameters(
                     parameterWithName("user").description("User id"),
                     parameterWithName("uuid").description("Book uuid"))));
+        verify(readingSessionsDao).deleteUserReadingSession(JOHN_DOE_USER, book.getUuid(), "1e4014b1-a551-4310-9f30-590c3140b695");
     }
 
     @Test
@@ -280,4 +289,17 @@ public class BooksControllerTest {
             .andExpect(status().isNotFound())
             .andDo(document("{class-name}/{method-name}"));
     }
+
+    @Test
+    public void deleteUserBookWithReadingSessions() throws Exception {
+        Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(booksDao.deleteUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.of(book.getUuid()));
+        when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, book.getUuid()))
+                .thenReturn(Arrays.asList(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json")));
+
+        this.mockMvc.perform(delete("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid()))
+                .andExpect(status().isForbidden())
+                .andDo(document("{class-name}/{method-name}"));
+    }
+
 }
