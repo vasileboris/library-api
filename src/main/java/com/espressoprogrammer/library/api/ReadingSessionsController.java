@@ -350,7 +350,9 @@ public class ReadingSessionsController {
                     .multiply(new BigDecimal(100))
                     .divide(new BigDecimal(book.getPages()), RoundingMode.HALF_UP);
 
-            ReadingSessionProgress readingSessionProgress = new ReadingSessionProgress(lastReadPage,
+            ReadingSessionProgress readingSessionProgress = new ReadingSessionProgress(uuid,
+                    bookUuid,
+                    lastReadPage,
                     book.getPages(),
                     readPercentage.intValue(),
                     averagePagesPerDay.intValue(),
