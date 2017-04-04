@@ -346,9 +346,11 @@ public class ReadingSessionsController {
             BigDecimal multiplyFactor = new BigDecimal(readPeriodDays)
                     .divide(new BigDecimal(dateReadingSessions.size()), RoundingMode.HALF_UP);
             BigDecimal estimatedDaysLeft = estimatedReadDaysLeft.multiply(multiplyFactor);
+            int readPercentage = (int) Math.round (lastReadPage  * 100D / book.getPages());
 
             ReadingSessionProgress readingSessionProgress = new ReadingSessionProgress(lastReadPage,
                     book.getPages(),
+                    readPercentage,
                     averagePagesPerDay.intValue(),
                     estimatedReadDaysLeft.intValue(),
                     estimatedDaysLeft.intValue(),
