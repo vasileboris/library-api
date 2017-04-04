@@ -1,8 +1,6 @@
 package com.espressoprogrammer.library.dto
 
-data class ReadingSessionProgress(val uuid: String,
-                                  val bookUuid: String,
-                                  val lastReadPage: Int,
+data class ReadingSessionProgress(val lastReadPage: Int,
                                   val pagesTotal: Int,
                                   val readPercentage: Int,
                                   val averagePagesPerDay: Int,
