@@ -4,7 +4,9 @@ import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.dto.DateReadingSession;
 import com.espressoprogrammer.library.dto.ReadingSession;
 import com.espressoprogrammer.library.dto.ReadingSessionProgress;
+import com.espressoprogrammer.library.persistence.BooksDao;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
+import kotlin.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +32,9 @@ import java.util.Optional;
 public class ReadingSessionsController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private BooksDao booksDao;
 
     @Autowired
     private ReadingSessionsDao readingSessionsDao;
@@ -176,7 +183,7 @@ public class ReadingSessionsController {
 
             List<DateReadingSession> updatedDateReadingSessions = new ArrayList<>(readingSession.getDateReadingSessions());
             updatedDateReadingSessions.add(dateReadingSession);
-            updatedDateReadingSessions.sort((drs1, drs2) -> drs1.getDate().compareTo(drs2.getDate()));
+            updatedDateReadingSessions.sort(Comparator.comparing(DateReadingSession::getDate));
             readingSessionsDao.updateUserReadingSession(user,
                 bookUuid,
                 uuid,
@@ -308,9 +315,44 @@ public class ReadingSessionsController {
         try {
             logger.debug("Look for reading session progress for user {} with uuid {} ", user, uuid);
 
+            Optional<Book> optionalBook = booksDao.getUserBook(user, bookUuid);
+            if(!optionalBook.isPresent()) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+
+            Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, bookUuid, uuid);
+            if(!optionalReadingSession.isPresent()) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+
+            ReadingSession readingSession = optionalReadingSession.get();
+            List<DateReadingSession> dateReadingSessions = new ArrayList<>(readingSession.getDateReadingSessions());
+            if(dateReadingSessions.isEmpty()) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+
+            DateReadingSession firstDateReadingSession = dateReadingSessions.get(0);
+            LocalDate firstReadDate = LocalDate.parse(firstDateReadingSession.getDate());
+
+            DateReadingSession lastDateReadingSession = dateReadingSessions.get(dateReadingSessions.size() - 1);
+            LocalDate lastReadDate = LocalDate.parse(lastDateReadingSession.getDate());
+            int lastReadPage = lastDateReadingSession.getLastReadPage();
+
+            dateReadingSessions.sort(Comparator.comparing(DateReadingSession::getDate));
+            Pair<Integer, Integer> averagePagesPerDayPair = dateReadingSessions.stream()
+                .map(drs -> new Pair<>(0, drs.getLastReadPage()))
+                .reduce(new Pair<>(0, 0), (i, p) -> new Pair<>(i.getFirst() + p.getSecond() - i.getSecond(), p.getSecond()));
+            int averagePagesPerDay = averagePagesPerDayPair.getFirst() / dateReadingSessions.size();
+
+            ReadingSessionProgress readingSessionProgress = new ReadingSessionProgress(lastReadPage,
+                optionalBook.get().getPages(),
+                averagePagesPerDay,
+                0,
+                "");
+
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception ex) {
-            logger.error("Error on looking for reading session", ex);
+            logger.error("Error on looking for reading session progress", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
