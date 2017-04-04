@@ -22,7 +22,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -331,6 +334,8 @@ public class ReadingSessionsController {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
 
+            dateReadingSessions.sort(Comparator.comparing(DateReadingSession::getDate));
+
             DateReadingSession firstDateReadingSession = dateReadingSessions.get(0);
             LocalDate firstReadDate = LocalDate.parse(firstDateReadingSession.getDate());
 
@@ -338,19 +343,24 @@ public class ReadingSessionsController {
             LocalDate lastReadDate = LocalDate.parse(lastDateReadingSession.getDate());
             int lastReadPage = lastDateReadingSession.getLastReadPage();
 
-            dateReadingSessions.sort(Comparator.comparing(DateReadingSession::getDate));
-            Pair<Integer, Integer> averagePagesPerDayPair = dateReadingSessions.stream()
-                .map(drs -> new Pair<>(0, drs.getLastReadPage()))
-                .reduce(new Pair<>(0, 0), (i, p) -> new Pair<>(i.getFirst() + p.getSecond() - i.getSecond(), p.getSecond()));
-            int averagePagesPerDay = averagePagesPerDayPair.getFirst() / dateReadingSessions.size();
+            int averagePagesPerDay = new BigDecimal(lastReadPage)
+                    .divide(new BigDecimal(dateReadingSessions.size()), RoundingMode.CEILING).intValue();
+
+            Book book = optionalBook.get();
+            int estimatedReadDaysLeft = (book.getPages() - lastReadPage) / averagePagesPerDay;
+            long readPeriodDays = ChronoUnit.DAYS.between(firstReadDate, lastReadDate);
+            BigDecimal multiplyFactor = new BigDecimal(readPeriodDays)
+                    .divide(new BigDecimal(dateReadingSessions.size()), RoundingMode.CEILING);
+            int estimatedDaysLeft = new BigDecimal(estimatedReadDaysLeft).multiply(multiplyFactor).intValue();
 
             ReadingSessionProgress readingSessionProgress = new ReadingSessionProgress(lastReadPage,
-                optionalBook.get().getPages(),
-                averagePagesPerDay,
-                0,
-                "");
+                    book.getPages(),
+                    averagePagesPerDay,
+                    estimatedReadDaysLeft,
+                    estimatedDaysLeft,
+                    LocalDate.now().plusDays(estimatedDaysLeft).toString());
 
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(readingSessionProgress, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for reading session progress", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
