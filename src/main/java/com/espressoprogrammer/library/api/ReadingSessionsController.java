@@ -342,7 +342,7 @@ public class ReadingSessionsController {
             Book book = optionalBook.get();
             BigDecimal estimatedReadDaysLeft = new BigDecimal(book.getPages() - lastReadPage)
                     .divide(averagePagesPerDay, RoundingMode.HALF_UP);
-            long readPeriodDays = ChronoUnit.DAYS.between(firstReadDate, lastReadDate);
+            long readPeriodDays = ChronoUnit.DAYS.between(firstReadDate, lastReadDate) + 1;
             BigDecimal multiplyFactor = new BigDecimal(readPeriodDays)
                     .divide(new BigDecimal(dateReadingSessions.size()), RoundingMode.HALF_UP);
             BigDecimal estimatedDaysLeft = estimatedReadDaysLeft.multiply(multiplyFactor);
