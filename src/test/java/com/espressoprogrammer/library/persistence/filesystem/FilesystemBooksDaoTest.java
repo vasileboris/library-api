@@ -64,6 +64,7 @@ public class FilesystemBooksDaoTest {
                 "isbn13-1",
                 "Title 1",
                 Arrays.asList("First1 Last1"),
+                "image-1",
                 100));
     }
 
@@ -81,12 +82,14 @@ public class FilesystemBooksDaoTest {
                 "isbn13-1",
                 "Title 1",
                 Arrays.asList("First1 Last1"),
+                "image-1",
                 100))
             .contains(new Book("uuid-2",
                 "isbn10-2",
                 "isbn13-2",
                 "Title 2",
                 Arrays.asList("First21 Last21", "First22 Last22"),
+                "image-2",
                 200));
     }
 
@@ -104,6 +107,7 @@ public class FilesystemBooksDaoTest {
                 "isbn13-1",
                 "Title 1",
                 Arrays.asList("First1 Last1"),
+                "image-1",
                 100));
     }
 
@@ -121,6 +125,7 @@ public class FilesystemBooksDaoTest {
                 "isbn13-1",
                 "Title 1",
                 Arrays.asList("First1 Last1"),
+                "image-1",
                 100));
     }
 
@@ -138,6 +143,7 @@ public class FilesystemBooksDaoTest {
                 "isbn13-1",
                 "Title 1",
                 Arrays.asList("First1 Last1"),
+                "image-1",
                 100));
     }
 
@@ -155,6 +161,7 @@ public class FilesystemBooksDaoTest {
                 "isbn13-1",
                 "Title 1",
                 Arrays.asList("First1 Last1"),
+                "image-1",
                 100));
     }
 
@@ -186,6 +193,7 @@ public class FilesystemBooksDaoTest {
                 "isbn13-1",
                 "Title 1",
                 Arrays.asList("First1 Last1"),
+                "image-1",
                 100));
     }
 
@@ -206,6 +214,7 @@ public class FilesystemBooksDaoTest {
                 null,
                 "Title 3",
                 Arrays.asList("First3 Last3"),
+                "image-3",
                 300));
     }
 
@@ -222,6 +231,7 @@ public class FilesystemBooksDaoTest {
             "isbn13-1",
             "Title 1",
             Arrays.asList("First1 Last1"),
+            "image-1",
             100));
     }
 
@@ -249,6 +259,7 @@ public class FilesystemBooksDaoTest {
                 "isbn13-1",
                 "Title 1",
                 Arrays.asList("First1 Last1"),
+                "image-1",
                 100));
 
         Book updatedBook = new Book(null,
@@ -256,6 +267,7 @@ public class FilesystemBooksDaoTest {
             book.getIsbn13(),
             "Updated " + book.getTitle(),
             book.getAuthors(),
+            "image-1",
             book.getPages());
 
         Optional<String> optionalUuid = booksDao.updateUserBook(JOHN_DOE_USER, createdBook.getUuid(), updatedBook);
@@ -269,6 +281,7 @@ public class FilesystemBooksDaoTest {
                 "isbn13-1",
                 "Updated Title 1",
                 Arrays.asList("First1 Last1"),
+                "image-1",
                 100));
     }
 

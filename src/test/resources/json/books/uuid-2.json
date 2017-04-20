@@ -4,5 +4,6 @@
   "isbn13": "isbn13-2",
   "title": "Title 2",
   "authors": ["First21 Last21", "First22 Last22"],
+  "image": "image-2",
   "pages": 200
 }

@@ -5,7 +5,8 @@ data class Book(val uuid: String?,
                 val isbn13: String?,
                 val title: String?,
                 val authors: List<String>,
+                val image: String?,
                 val pages: Int?) {
 
-    constructor() : this(null, null, null, null, emptyList(), null);
+    constructor() : this(null, null, null, null, emptyList(), null, null);
 }

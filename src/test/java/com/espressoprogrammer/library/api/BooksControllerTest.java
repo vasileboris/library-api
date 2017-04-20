@@ -87,6 +87,7 @@ public class BooksControllerTest {
             .andExpect(jsonPath("$[0].isbn13", is("978-1-61729-310-8")))
             .andExpect(jsonPath("$[0].title", is("Get Programming with JavaScript")))
             .andExpect(jsonPath("$[0].authors[0]", is("John R. Larsen")))
+            .andExpect(jsonPath("$[0].image", is("Larsen_hires.png")))
             .andExpect(jsonPath("$[0].pages", is(406)))
             .andDo(document("{class-name}/{method-name}",
                 pathParameters(
@@ -100,6 +101,7 @@ public class BooksControllerTest {
                     fieldWithPath("[].isbn13").description("13 digits ISBN (optional)").optional(),
                     fieldWithPath("[].title").description("Book title"),
                     fieldWithPath("[].authors").description("Book authors (optional)").optional(),
+                    fieldWithPath("[].image").description("Book image (optional)").optional(),
                     fieldWithPath("[].pages").description("Number of pages")
                 )));
     }
@@ -122,6 +124,7 @@ public class BooksControllerTest {
                     fieldWithPath("isbn13").description("13 digits ISBN (optional)" ).optional(),
                     fieldWithPath("title").description("Book title"),
                     fieldWithPath("authors").description("Book authors (optional)").optional(),
+                    fieldWithPath("image").description("Book image (optional)").optional(),
                     fieldWithPath("pages").description("Number of pages")
                 ),
                 responseHeaders(
@@ -133,6 +136,7 @@ public class BooksControllerTest {
                     fieldWithPath("isbn13").description("13 digits ISBN (optional)").optional(),
                     fieldWithPath("title").description("Book title"),
                     fieldWithPath("authors").description("Book authors (optional)").optional(),
+                    fieldWithPath("image").description("Book image (optional)").optional(),
                     fieldWithPath("pages").description("Number of pages")
                 )));
     }
@@ -176,6 +180,7 @@ public class BooksControllerTest {
             .andExpect(jsonPath("isbn13", is("978-1-61729-310-8")))
             .andExpect(jsonPath("title", is("Get Programming with JavaScript")))
             .andExpect(jsonPath("authors[0]", is("John R. Larsen")))
+            .andExpect(jsonPath("image", is("Larsen_hires.png")))
             .andExpect(jsonPath("pages", is(406)))
             .andDo(document("{class-name}/{method-name}",
                 pathParameters(
@@ -187,6 +192,7 @@ public class BooksControllerTest {
                     fieldWithPath("isbn13").description("13 digits ISBN (optional)").optional(),
                     fieldWithPath("title").description("Book title"),
                     fieldWithPath("authors").description("Book authors (optional)").optional(),
+                    fieldWithPath("image").description("Book image (optional)").optional(),
                     fieldWithPath("pages").description("Number of pages")
                 )));
     }
@@ -221,6 +227,7 @@ public class BooksControllerTest {
                     fieldWithPath("isbn13").description("13 digits ISBN (optional)").optional(),
                     fieldWithPath("title").description("Book title"),
                     fieldWithPath("authors").description("Book authors (optional)").optional(),
+                    fieldWithPath("image").description("Book image (optional)").optional(),
                     fieldWithPath("pages").description("Number of pages")
                 )));
     }

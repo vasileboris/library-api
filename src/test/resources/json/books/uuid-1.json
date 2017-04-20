@@ -4,5 +4,6 @@
   "isbn13": "isbn13-1",
   "title": "Title 1",
   "authors": ["First1 Last1"],
+  "image": "image-1",
   "pages": 100
 }

@@ -4,5 +4,6 @@
   "isbn13": null,
   "title": "Title 3",
   "authors": ["First3 Last3"],
+  "image": "image-3",
   "pages": 300
 }

@@ -65,6 +65,7 @@ public class FilesystemBooksDao extends FilesystemAbstractDao<Book> implements B
             book.getIsbn13(),
             book.getTitle(),
             new ArrayList<>(book.getAuthors()),
+            book.getImage(),
             book.getPages());
     }
 
