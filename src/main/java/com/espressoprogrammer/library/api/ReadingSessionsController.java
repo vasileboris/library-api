@@ -360,7 +360,8 @@ public class ReadingSessionsController {
                     averagePagesPerDay.intValue(),
                     estimatedReadDaysLeft.intValue(),
                     estimatedDaysLeft.intValue(),
-                    LocalDate.now().plusDays(estimatedDaysLeft.intValue()).toString());
+                    LocalDate.now().plusDays(estimatedDaysLeft.intValue()).toString(),
+                    readingSession.getDeadline());
 
             return new ResponseEntity<>(readingSessionProgress, HttpStatus.OK);
         } catch (Exception ex) {

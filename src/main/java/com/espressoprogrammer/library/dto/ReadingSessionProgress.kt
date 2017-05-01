@@ -6,4 +6,5 @@ data class ReadingSessionProgress(val lastReadPage: Int,
                                   val averagePagesPerDay: Int,
                                   val estimatedReadDaysLeft: Int,
                                   val estimatedDaysLeft: Int,
-                                  val estimatedFinishDate: String)
+                                  val estimatedFinishDate: String,
+                                  val deadline: String?)
