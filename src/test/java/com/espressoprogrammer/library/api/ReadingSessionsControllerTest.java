@@ -79,6 +79,7 @@ public class ReadingSessionsControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$[0].uuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
             .andExpect(jsonPath("$[0].bookUuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
+            .andExpect(jsonPath("$[0].deadline", is("2017-01-31")))
             .andExpect(jsonPath("$[0].dateReadingSessions[0].date", is("2017-01-01")))
             .andExpect(jsonPath("$[0].dateReadingSessions[0].lastReadPage", is(32)))
             .andExpect(jsonPath("$[0].dateReadingSessions[0].bookmark", is("Section 3.3")))
@@ -89,6 +90,7 @@ public class ReadingSessionsControllerTest {
                 responseFields(
                     fieldWithPath("[].uuid").description("UUID used to identify a reading session"),
                     fieldWithPath("[].bookUuid").description("UUID used to identify a book"),
+                    fieldWithPath("[].deadline").description("When book is expected to be read (optional)"),
                     fieldWithPath("[].dateReadingSessions").description("Reading sessions (optional)").optional(),
                     fieldWithPath("[].dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("[].dateReadingSessions[].lastReadPage").description("Last page that was read"),
@@ -107,6 +109,7 @@ public class ReadingSessionsControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("uuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
             .andExpect(jsonPath("bookUuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
+            .andExpect(jsonPath("deadline", is("2017-01-31")))
             .andExpect(jsonPath("dateReadingSessions[0].date", is("2017-01-01")))
             .andExpect(jsonPath("dateReadingSessions[0].lastReadPage", is(32)))
             .andExpect(jsonPath("dateReadingSessions[0].bookmark", is("Section 3.3")))
@@ -117,6 +120,7 @@ public class ReadingSessionsControllerTest {
                 responseFields(
                     fieldWithPath("uuid").description("UUID used to identify a reading session"),
                     fieldWithPath("bookUuid").description("UUID used to identify a book"),
+                    fieldWithPath("deadline").description("When book is expected to be read (optional)"),
                     fieldWithPath("dateReadingSessions").description("Reading sessions (optional)").optional(),
                     fieldWithPath("dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("dateReadingSessions[].lastReadPage").description("Last page that was read"),
@@ -150,6 +154,7 @@ public class ReadingSessionsControllerTest {
                     parameterWithName("bookUuid").description("Book uuid")),
                 requestFields(
                     fieldWithPath("bookUuid").description("UUID used to identify a book"),
+                    fieldWithPath("deadline").description("When book is expected to be read (optional)"),
                     fieldWithPath("dateReadingSessions").description("Reading sessions (optional)").optional(),
                     fieldWithPath("dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("dateReadingSessions[].lastReadPage").description("Last page that was read"),
@@ -161,6 +166,7 @@ public class ReadingSessionsControllerTest {
                 responseFields(
                     fieldWithPath("uuid").description("UUID used to identify a reading session"),
                     fieldWithPath("bookUuid").description("UUID used to identify a book"),
+                    fieldWithPath("deadline").description("When book is expected to be read (optional)"),
                     fieldWithPath("dateReadingSessions").description("Reading sessions (optional)").optional(),
                     fieldWithPath("dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("dateReadingSessions[].lastReadPage").description("Last page that was read"),
@@ -190,6 +196,7 @@ public class ReadingSessionsControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("uuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
             .andExpect(jsonPath("bookUuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
+            .andExpect(jsonPath("deadline", is("2017-01-31")))
             .andExpect(jsonPath("dateReadingSessions[0].date", is("2017-01-01")))
             .andExpect(jsonPath("dateReadingSessions[0].lastReadPage", is(32)))
             .andExpect(jsonPath("dateReadingSessions[0].bookmark", is("Section 3.3")))
@@ -201,6 +208,7 @@ public class ReadingSessionsControllerTest {
                 responseFields(
                     fieldWithPath("uuid").description("UUID used to identify a reading session"),
                     fieldWithPath("bookUuid").description("UUID used to identify a book"),
+                    fieldWithPath("deadline").description("When book is expected to be read (optional)"),
                     fieldWithPath("dateReadingSessions").description("Reading sessions (optional)").optional(),
                     fieldWithPath("dateReadingSessions[].date").description("Date of a reading session in the format yyyy-MM-dd"),
                     fieldWithPath("dateReadingSessions[].lastReadPage").description("Last page that was read"),

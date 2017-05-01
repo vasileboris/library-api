@@ -1513,6 +1513,11 @@ Host: localhost:8080</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">UUID used to identify a book</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].deadline</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When book is expected to be read (optional)</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].dateReadingSessions</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reading sessions (optional)</p></td>
@@ -1541,9 +1546,9 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 188
+Content-Length: 212
 
-[{"uuid":"1e4014b1-a551-4310-9f30-590c3140b695","bookUuid":"1e4014b1-a551-4310-9f30-590c3140b695","dateReadingSessions":[{"date":"2017-01-01","lastReadPage":32,"bookmark":"Section 3.3"}]}]</code></pre>
+[{"uuid":"1e4014b1-a551-4310-9f30-590c3140b695","bookUuid":"1e4014b1-a551-4310-9f30-590c3140b695","deadline":"2017-01-31","dateReadingSessions":[{"date":"2017-01-01","lastReadPage":32,"bookmark":"Section 3.3"}]}]</code></pre>
 </div>
 </div>
 </div>
@@ -1612,6 +1617,11 @@ Host: localhost:8080</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">UUID used to identify a book</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deadline</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When book is expected to be read (optional)</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>dateReadingSessions</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reading sessions (optional)</p></td>
@@ -1640,9 +1650,9 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 186
+Content-Length: 210
 
-{"uuid":"1e4014b1-a551-4310-9f30-590c3140b695","bookUuid":"1e4014b1-a551-4310-9f30-590c3140b695","dateReadingSessions":[{"date":"2017-01-01","lastReadPage":32,"bookmark":"Section 3.3"}]}</code></pre>
+{"uuid":"1e4014b1-a551-4310-9f30-590c3140b695","bookUuid":"1e4014b1-a551-4310-9f30-590c3140b695","deadline":"2017-01-31","dateReadingSessions":[{"date":"2017-01-01","lastReadPage":32,"bookmark":"Section 3.3"}]}</code></pre>
 </div>
 </div>
 </div>
@@ -1717,6 +1727,11 @@ Host: localhost:8080</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">UUID used to identify a book</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deadline</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When book is expected to be read (optional)</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>dateReadingSessions</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reading sessions (optional)</p></td>
@@ -1746,10 +1761,11 @@ Host: localhost:8080</code></pre>
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
-Content-Length: 186
+Content-Length: 214
 
 {
   "bookUuid": "1e4014b1-a551-4310-9f30-590c3140b695",
+  "deadline": "2017-01-31",
   "dateReadingSessions": [
     {
       "date": "2017-01-01",
@@ -1809,6 +1825,11 @@ Content-Length: 186
 <td class="tableblock halign-left valign-top"><p class="tableblock">UUID used to identify a book</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deadline</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When book is expected to be read (optional)</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>dateReadingSessions</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reading sessions (optional)</p></td>
@@ -1838,9 +1859,9 @@ Content-Length: 186
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
 Location: /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions/1e4014b1-a551-4310-9f30-590c3140b695
 Content-Type: application/json;charset=UTF-8
-Content-Length: 186
+Content-Length: 210
 
-{"uuid":"1e4014b1-a551-4310-9f30-590c3140b695","bookUuid":"1e4014b1-a551-4310-9f30-590c3140b695","dateReadingSessions":[{"date":"2017-01-01","lastReadPage":32,"bookmark":"Section 3.3"}]}</code></pre>
+{"uuid":"1e4014b1-a551-4310-9f30-590c3140b695","bookUuid":"1e4014b1-a551-4310-9f30-590c3140b695","deadline":"2017-01-31","dateReadingSessions":[{"date":"2017-01-01","lastReadPage":32,"bookmark":"Section 3.3"}]}</code></pre>
 </div>
 </div>
 </div>
@@ -1854,10 +1875,11 @@ Content-Length: 186
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /users/johndoe/books/1e4014b1-a551-4310-9f30-590c3140b695/reading-sessions HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080
-Content-Length: 186
+Content-Length: 214
 
 {
   "bookUuid": "1e4014b1-a551-4310-9f30-590c3140b695",
+  "deadline": "2017-01-31",
   "dateReadingSessions": [
     {
       "date": "2017-01-01",
@@ -1946,6 +1968,11 @@ Host: localhost:8080</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">UUID used to identify a book</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deadline</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When book is expected to be read (optional)</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>dateReadingSessions</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Reading sessions (optional)</p></td>
@@ -1974,9 +2001,9 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 186
+Content-Length: 210
 
-{"uuid":"1e4014b1-a551-4310-9f30-590c3140b695","bookUuid":"1e4014b1-a551-4310-9f30-590c3140b695","dateReadingSessions":[{"date":"2017-01-01","lastReadPage":32,"bookmark":"Section 3.3"}]}</code></pre>
+{"uuid":"1e4014b1-a551-4310-9f30-590c3140b695","bookUuid":"1e4014b1-a551-4310-9f30-590c3140b695","deadline":"2017-01-31","dateReadingSessions":[{"date":"2017-01-01","lastReadPage":32,"bookmark":"Section 3.3"}]}</code></pre>
 </div>
 </div>
 </div>

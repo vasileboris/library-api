@@ -84,6 +84,7 @@ public class ReadingSessionsController {
                 createdDateReadingSessions.sort((drs1, drs2) -> drs1.getDate().compareTo(drs2.getDate()));
                 createdReadingSession = new ReadingSession(readingSession.getUuid(),
                     readingSession.getBookUuid(),
+                    readingSession.getDeadline(),
                     createdDateReadingSessions);
             }
 
@@ -185,6 +186,7 @@ public class ReadingSessionsController {
                 uuid,
                 new ReadingSession(readingSession.getUuid(),
                     readingSession.getBookUuid(),
+                    readingSession.getDeadline(),
                     updatedDateReadingSessions));
 
             HttpHeaders httpHeaders = new HttpHeaders();
@@ -255,6 +257,7 @@ public class ReadingSessionsController {
             if(update) {
                 readingSessionsDao.updateUserReadingSession(user, bookUuid, uuid, new ReadingSession(existingReadingSession.getUuid(),
                     bookUuid,
+                    existingReadingSession.getDeadline(),
                     updateDateReadingSessions));
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -293,6 +296,7 @@ public class ReadingSessionsController {
             if(delete) {
                 readingSessionsDao.updateUserReadingSession(user, bookUuid, uuid, new ReadingSession(existingReadingSession.getUuid(),
                     bookUuid,
+                    existingReadingSession.getDeadline(),
                     updateDateReadingSessions));
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }

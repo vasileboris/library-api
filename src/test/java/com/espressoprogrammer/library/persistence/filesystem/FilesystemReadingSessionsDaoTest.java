@@ -64,6 +64,7 @@ public class FilesystemReadingSessionsDaoTest {
             .contains(
                 new ReadingSession("uuid-1",
                     "book-uuid-1",
+                    "2017-01-31",
                     Arrays.asList(
                         new DateReadingSession("2017-01-01", 101, "bookmark-101")
                     )
@@ -83,12 +84,14 @@ public class FilesystemReadingSessionsDaoTest {
             .contains(
                 new ReadingSession("uuid-1",
                     "book-uuid-1",
+                    "2017-01-31",
                     Arrays.asList(
                         new DateReadingSession("2017-01-01", 101, "bookmark-101")
                     )
                 ),
                 new ReadingSession("uuid-2",
                     "book-uuid-1",
+                    "2017-01-31",
                     Arrays.asList(
                         new DateReadingSession("2017-02-01", 201, "bookmark-201"),
                         new DateReadingSession("2017-02-02", 202, "bookmark-202")
@@ -113,6 +116,7 @@ public class FilesystemReadingSessionsDaoTest {
             .contains(
                 new ReadingSession(readingSessions.get(0).getUuid(),
                     "book-uuid-1",
+                    "2017-01-31",
                     Arrays.asList(
                         new DateReadingSession("2017-01-01", 101, "bookmark-101")
                     )
@@ -135,6 +139,7 @@ public class FilesystemReadingSessionsDaoTest {
         assertThat(optionalReadingSession.get()).isEqualTo(
             new ReadingSession(optionalReadingSession.get().getUuid(),
                 "book-uuid-1",
+                "2017-01-31",
                 Arrays.asList(
                     new DateReadingSession("2017-01-01", 101, "bookmark-101")
                 )
@@ -168,6 +173,7 @@ public class FilesystemReadingSessionsDaoTest {
             .contains(
                 new ReadingSession(readingSessions.get(0).getUuid(),
                     "book-uuid-1",
+                    "2017-01-31",
                     Arrays.asList(
                         new DateReadingSession("2017-01-01", 101, "bookmark-101")
                     )
@@ -176,6 +182,7 @@ public class FilesystemReadingSessionsDaoTest {
 
         ReadingSession updatedReadingSession = new ReadingSession(null,
             readingSession.getBookUuid(),
+            null,
             Arrays.asList(
                 new DateReadingSession("2017-01-01", 101, "updated-bookmark-101")
             )
@@ -192,6 +199,7 @@ public class FilesystemReadingSessionsDaoTest {
             .contains(
                 new ReadingSession(readingSessions.get(0).getUuid(),
                     "book-uuid-1",
+                    null,
                     Arrays.asList(
                         new DateReadingSession("2017-01-01", 101, "updated-bookmark-101")
                     )
