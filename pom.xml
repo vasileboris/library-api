@@ -44,53 +44,6 @@
         <start-class>com.espressoprogrammer.library.Start</start-class>
     </properties>
 
-    <profiles>
-        <profile>
-            <id>library-backbone</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-maven-plugin</artifactId>
-                        <configuration>
-                            <excludes>
-                                <exclude>
-                                    <groupId>com.espressoprogrammer</groupId>
-                                    <artifactId>library-backbone</artifactId>
-                                </exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>unpack-library-backbone</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>unpack-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <includeGroupIds>com.espressoprogrammer</includeGroupIds>
-                                    <includeArtifactIds>library-backbone</includeArtifactIds>
-                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-            <dependencies>
-                <dependency>
-                    <groupId>com.espressoprogrammer</groupId>
-                    <artifactId>library-backbone</artifactId>
-                    <version>${library.backbone.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
-
     <build>
         <pluginManagement>
             <plugins>
