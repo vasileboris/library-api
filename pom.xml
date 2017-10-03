@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.4.3.RELEASE</version>
+        <version>1.5.7.RELEASE</version>
     </parent>
     <groupId>com.espressoprogrammer</groupId>
     <artifactId>library</artifactId>
@@ -37,10 +37,10 @@
 
     <properties>
         <library.backbone.version>0.1-SNAPSHOT</library.backbone.version>
-        <kotlin.version>1.0.6</kotlin.version>
+        <kotlin.version>1.1.51</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <asciidoctor.version>1.5.3</asciidoctor.version>
+        <asciidoctor.version>1.5.6</asciidoctor.version>
         <start-class>com.espressoprogrammer.library.Start</start-class>
     </properties>
 
