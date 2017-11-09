@@ -9,7 +9,7 @@
         <version>1.5.7.RELEASE</version>
     </parent>
     <groupId>com.espressoprogrammer</groupId>
-    <artifactId>library</artifactId>
+    <artifactId>library-api</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -68,6 +68,12 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                    <embeddedLaunchScriptProperties>
+                        <logFolder>/var/log/${artifactId}</logFolder>
+                    </embeddedLaunchScriptProperties>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
