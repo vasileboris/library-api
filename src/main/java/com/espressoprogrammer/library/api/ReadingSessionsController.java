@@ -55,6 +55,11 @@ public class ReadingSessionsController {
         try {
             logger.debug("Look for current reading sessions for user {}", user);
 
+            Optional<Book> optionalBook = booksDao.getUserBook(user, bookUuid);
+            if(!optionalBook.isPresent()) {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
+
             List<ReadingSession> userBooks = readingSessionsDao.getUserReadingSessions(user, bookUuid);
             if(userBooks.isEmpty()) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);

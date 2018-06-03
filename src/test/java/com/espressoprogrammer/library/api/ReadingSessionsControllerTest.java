@@ -1,6 +1,8 @@
 package com.espressoprogrammer.library.api;
 
+import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.dto.ReadingSession;
+import com.espressoprogrammer.library.persistence.BooksDao;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static com.espressoprogrammer.library.LibraryTestUtil.getBook;
 import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSession;
 import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSessionJson;
 import static org.hamcrest.CoreMatchers.is;
@@ -55,6 +58,9 @@ public class ReadingSessionsControllerTest {
 
     @Autowired
     private WebApplicationContext context;
+
+    @MockBean
+    private BooksDao booksDao;
 
     @MockBean
     private ReadingSessionsDao readingSessionsDao;
@@ -100,6 +106,9 @@ public class ReadingSessionsControllerTest {
 
     @Test
     public void getUserCurrentReadingSession() throws Exception {
+        Book book = getBook(BOOK_UUID + ".json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.of(book));
+
         ArrayList<ReadingSession> readingSessions = new ArrayList<>();
         readingSessions.add(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
         when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(readingSessions);
@@ -130,7 +139,7 @@ public class ReadingSessionsControllerTest {
 
     @Test
     public void getMissingUserCurrentReadingSession() throws Exception {
-        when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(new ArrayList<>());
+        when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.empty());
 
         this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/current-reading-session", JOHN_DOE_USER, BOOK_UUID))
             .andExpect(status().isNotFound())
