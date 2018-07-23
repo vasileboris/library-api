@@ -16,7 +16,7 @@ public class FilesystemReadingSessionsDao extends FilesystemAbstractDao<ReadingS
     @Override
     public List<ReadingSession> getUserReadingSessions(String user, String bookUuid) {
         return getUserItems(user).stream()
-            .filter(r -> r.getBookUuid().equals(bookUuid))
+            .filter(r -> bookUuid.equals(r.getBookUuid()))
             .collect(toList());
     }
 
