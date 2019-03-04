@@ -1,11 +1,9 @@
 package com.espressoprogrammer.library.dto
 
-data class ErrorResponse(val type: Type,
-                         val causes: List<ErrorCause>) {
+data class ErrorResponse(val type: Type = Type.UNKNOWN,
+                         val causes: List<ErrorCause> = emptyList()) {
 
-    constructor() : this(Type.UNKNOWN, emptyList());
-
-    enum class Type() {
+    enum class Type {
         UNKNOWN,
         FIELD_VALIDATION,
         DATA_VALIDATION
