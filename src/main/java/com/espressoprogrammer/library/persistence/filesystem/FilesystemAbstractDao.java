@@ -19,15 +19,15 @@ import java.util.function.Function;
 import static java.util.stream.Collectors.toList;
 
 abstract class FilesystemAbstractDao<T> {
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     
-    protected static final String FILE_EXTENSION = ".json";
+    private static final String FILE_EXTENSION = ".json";
 
-    protected List<T> getUserItems(String user) {
+    List<T> getUserItems(String user) {
         return getUserItems(user, null);
     }
 
-    protected List<T> getUserItems(String user, String searchText) {
+    List<T> getUserItems(String user, String searchText) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
             logger.debug("Look for item for user {} into {}", user, storageFolder);
@@ -46,7 +46,7 @@ abstract class FilesystemAbstractDao<T> {
 
     protected abstract boolean applySearchCriteria(T t, String searchText);
 
-    protected T createUserItem(String user, T item) {
+    T createUserItem(String user, T item) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
             logger.debug("Add new item for user {} into {}", user, storageFolder);
@@ -60,7 +60,7 @@ abstract class FilesystemAbstractDao<T> {
         }
     }
 
-    protected Optional<T> getUserItem(String user, String id) {
+    Optional<T> getUserItem(String user, String id) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
             logger.debug("Look for item for user {} into {} with uuid {}", user, storageFolder, id);
@@ -76,7 +76,7 @@ abstract class FilesystemAbstractDao<T> {
         }
     }
 
-    protected Optional<String> updateUserItem(String user, String uuid, T item) {
+    Optional<String> updateUserItem(String user, String uuid, T item) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
             logger.debug("Update item for user {} with uuid {}", user, uuid);
@@ -94,7 +94,7 @@ abstract class FilesystemAbstractDao<T> {
         }
     }
 
-    protected Optional<String> deleteUserItem(String user, String uuid) {
+    Optional<String> deleteUserItem(String user, String uuid) {
         try {
             String storageFolder = createStorageFolderIfMissing(user);
             logger.debug("Delete item for user {} with uuid {}", user, uuid);
@@ -114,12 +114,12 @@ abstract class FilesystemAbstractDao<T> {
     protected abstract T createItem(String uuid, T item);
 
     @Autowired
-    protected FilesystemConfiguration filesystemConfiguration;
+    FilesystemConfiguration filesystemConfiguration;
 
 
-    protected T fromJson(Path path) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    private T fromJson(Path path) {
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(path.toFile(),
                 (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
         } catch (IOException ex) {
@@ -127,7 +127,7 @@ abstract class FilesystemAbstractDao<T> {
         }
     }
 
-    protected String toJson(T t) {
+    private String toJson(T t) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -138,11 +138,11 @@ abstract class FilesystemAbstractDao<T> {
         }
     }
 
-    protected String createStorageFolderIfMissing(String user) throws IOException {
+    private String createStorageFolderIfMissing(String user) throws IOException {
         return createFolderIfMissing(user, u -> getStorageFolder(u));
     }
 
-    protected String createFolderIfMissing(String user, Function<String, String> getFolder) throws IOException {
+    private String createFolderIfMissing(String user, Function<String, String> getFolder) throws IOException {
         String folder = getFolder.apply(user);
         createFolderIfMissing(folder);
         return folder;

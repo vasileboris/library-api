@@ -5,12 +5,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
-public class FilesystemConfiguration {
+class FilesystemConfiguration {
 
     @Value(value = "${filesystem.dao.rootfolder:}")
     private String libraryFolder;
 
-    public String getLibraryFolder() {
+    String getLibraryFolder() {
         if(!StringUtils.isEmpty(libraryFolder)) {
             return libraryFolder;
         }
