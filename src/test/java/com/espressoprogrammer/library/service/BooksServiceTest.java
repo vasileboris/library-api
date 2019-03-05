@@ -3,7 +3,7 @@ package com.espressoprogrammer.library.service;
 import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.persistence.BooksDao;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
-import com.espressoprogrammer.library.service.BooksServiceException.Reason;
+import com.espressoprogrammer.library.service.BooksException.Reason;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +68,7 @@ public class BooksServiceTest {
         try {
             booksService.createUserBook(JOHN_DOE_USER, bookRequest);
             fail("It should fail with " + Reason.BOOK_ALREADY_EXISTS);
-        } catch(BooksServiceException bsex) {
+        } catch(BooksException bsex) {
             assertThat(bsex.getReason()).isEqualTo(Reason.BOOK_ALREADY_EXISTS);
         } catch (Exception ex) {
             fail("It should fail with " + Reason.BOOK_ALREADY_EXISTS);
@@ -93,7 +93,7 @@ public class BooksServiceTest {
         try {
             booksService.getUserBook(JOHN_DOE_USER, uuid);
             fail("It should fail with " + Reason.BOOK_NOT_FOUND);
-        } catch(BooksServiceException bsex) {
+        } catch(BooksException bsex) {
             assertThat(bsex.getReason()).isEqualTo(Reason.BOOK_NOT_FOUND);
         } catch (Exception ex) {
             fail("It should fail with " + Reason.BOOK_NOT_FOUND);
@@ -121,7 +121,7 @@ public class BooksServiceTest {
         try {
             booksService.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest);
             fail("It should fail with " + Reason.BOOK_ALREADY_EXISTS);
-        } catch(BooksServiceException bsex) {
+        } catch(BooksException bsex) {
             assertThat(bsex.getReason()).isEqualTo(Reason.BOOK_ALREADY_EXISTS);
         } catch (Exception ex) {
             fail("It should fail with " + Reason.BOOK_ALREADY_EXISTS);
@@ -137,7 +137,7 @@ public class BooksServiceTest {
         try {
             booksService.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest);
             fail("It should fail with " + Reason.BOOK_NOT_FOUND);
-        } catch(BooksServiceException bsex) {
+        } catch(BooksException bsex) {
             assertThat(bsex.getReason()).isEqualTo(Reason.BOOK_NOT_FOUND);
         } catch (Exception ex) {
             fail("It should fail with " + Reason.BOOK_NOT_FOUND);
@@ -163,7 +163,7 @@ public class BooksServiceTest {
         try {
             booksService.deleteUserBook(JOHN_DOE_USER, book.getUuid());
             fail("It should fail with " + Reason.BOOK_NOT_FOUND);
-        } catch(BooksServiceException bsex) {
+        } catch(BooksException bsex) {
             assertThat(bsex.getReason()).isEqualTo(Reason.BOOK_NOT_FOUND);
         } catch (Exception ex) {
             fail("It should fail with " + Reason.BOOK_NOT_FOUND);
@@ -180,7 +180,7 @@ public class BooksServiceTest {
         try {
             booksService.deleteUserBook(JOHN_DOE_USER, book.getUuid());
             fail("It should fail with " + Reason.BOOK_HAS_READING_SESSION);
-        } catch(BooksServiceException bsex) {
+        } catch(BooksException bsex) {
             assertThat(bsex.getReason()).isEqualTo(Reason.BOOK_HAS_READING_SESSION);
         } catch (Exception ex) {
             fail("It should fail with " + Reason.BOOK_HAS_READING_SESSION);

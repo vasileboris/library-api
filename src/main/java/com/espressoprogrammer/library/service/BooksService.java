@@ -4,7 +4,7 @@ import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.dto.ReadingSession;
 import com.espressoprogrammer.library.persistence.BooksDao;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
-import com.espressoprogrammer.library.service.BooksServiceException.Reason;
+import com.espressoprogrammer.library.service.BooksException.Reason;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,55 +31,55 @@ public class BooksService {
         return booksDao.getUserBooks(user, searchText);
     }
 
-    public Book createUserBook(String user, Book book) throws BooksServiceException {
+    public Book createUserBook(String user, Book book) throws BooksException {
         logger.debug("Add new book for user {}", user);
 
         if(hasTheBook(user, book)) {
-            throw new BooksServiceException(Reason.BOOK_ALREADY_EXISTS);
+            throw new BooksException(Reason.BOOK_ALREADY_EXISTS);
         }
 
         return booksDao.createUserBook(user, book);
     }
 
-    public Book getUserBook(String user, String uuid) throws BooksServiceException {
+    public Book getUserBook(String user, String uuid) throws BooksException {
         logger.debug("Look for book for user {} with uuid {} ", user, uuid);
 
         Optional<Book> optionalBook = booksDao.getUserBook(user, uuid);
         if(!optionalBook.isPresent()) {
-            throw new BooksServiceException(Reason.BOOK_NOT_FOUND);
+            throw new BooksException(Reason.BOOK_NOT_FOUND);
         }
 
         return optionalBook.get();
     }
 
-    public String updateUserBook(String user, String uuid, Book book) throws BooksServiceException {
+    public String updateUserBook(String user, String uuid, Book book) throws BooksException {
         logger.debug("Update book for user {} with uuid {} ", user, uuid);
 
         if(hasTheBook(user, book)) {
-            throw new BooksServiceException(Reason.BOOK_ALREADY_EXISTS);
+            throw new BooksException(Reason.BOOK_ALREADY_EXISTS);
         }
 
         Optional<String> optionalUuid = booksDao.updateUserBook(user, uuid, book);
         if(!optionalUuid.isPresent()) {
-            throw new BooksServiceException(Reason.BOOK_NOT_FOUND);
+            throw new BooksException(Reason.BOOK_NOT_FOUND);
         }
 
         return optionalUuid.get();
     }
 
-    public String deleteUserBook(String user, String uuid) throws BooksServiceException {
+    public String deleteUserBook(String user, String uuid) throws BooksException {
         logger.debug("Delete book for user {} with uuid {}", user, uuid);
 
         List<ReadingSession> userReadingSessions = readingSessionsDao.getUserReadingSessions(user, uuid);
         for(ReadingSession userReadingSession : userReadingSessions) {
             if(!userReadingSession.getDateReadingSessions().isEmpty()) {
-                throw new BooksServiceException(Reason.BOOK_HAS_READING_SESSION);
+                throw new BooksException(Reason.BOOK_HAS_READING_SESSION);
             }
         }
 
         Optional<String> optionalUuid = booksDao.deleteUserBook(user, uuid);
         if(!optionalUuid.isPresent()) {
-            throw new BooksServiceException(Reason.BOOK_NOT_FOUND);
+            throw new BooksException(Reason.BOOK_NOT_FOUND);
         }
 
         return optionalUuid.get();

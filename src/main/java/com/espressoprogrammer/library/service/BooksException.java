@@ -1,6 +1,6 @@
 package com.espressoprogrammer.library.service;
 
-public class BooksServiceException extends Exception {
+public class BooksException extends Exception {
 
     public enum Reason {
         BOOK_ALREADY_EXISTS,
@@ -10,7 +10,7 @@ public class BooksServiceException extends Exception {
 
     private Reason reason;
 
-    public BooksServiceException(Reason reason) {
+    public BooksException(Reason reason) {
         this.reason = reason;
     }
 

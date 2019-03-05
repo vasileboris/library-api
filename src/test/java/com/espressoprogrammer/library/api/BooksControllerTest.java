@@ -2,8 +2,8 @@ package com.espressoprogrammer.library.api;
 
 import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.service.BooksService;
-import com.espressoprogrammer.library.service.BooksServiceException;
-import com.espressoprogrammer.library.service.BooksServiceException.Reason;
+import com.espressoprogrammer.library.service.BooksException;
+import com.espressoprogrammer.library.service.BooksException.Reason;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -127,7 +127,7 @@ public class BooksControllerTest {
     @Test
     public void createExistingUserBook() throws Exception {
         Book bookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
-        when(booksService.createUserBook(JOHN_DOE_USER, bookRequest)).thenThrow(new BooksServiceException(Reason.BOOK_ALREADY_EXISTS));
+        when(booksService.createUserBook(JOHN_DOE_USER, bookRequest)).thenThrow(new BooksException(Reason.BOOK_ALREADY_EXISTS));
 
         this.mockMvc.perform(post("/users/{user}/books", JOHN_DOE_USER)
             .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
@@ -169,7 +169,7 @@ public class BooksControllerTest {
     @Test
     public void getMissingUserBook() throws Exception {
         String uuid = "missing-uuid-1";
-        when(booksService.getUserBook(JOHN_DOE_USER, uuid)).thenThrow(new BooksServiceException(Reason.BOOK_NOT_FOUND));
+        when(booksService.getUserBook(JOHN_DOE_USER, uuid)).thenThrow(new BooksException(Reason.BOOK_NOT_FOUND));
 
         this.mockMvc.perform(get("/users/{user}/books/{uuid}", JOHN_DOE_USER, uuid))
             .andExpect(status().isNotFound())
@@ -204,7 +204,7 @@ public class BooksControllerTest {
     public void updateExistingUserBook() throws Exception {
         Book updateBook = getBook("f2e10e37-b0fc-4eff-93aa-3dff682cc388.json");
         Book updateBookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
-        when(booksService.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest)).thenThrow(new BooksServiceException(Reason.BOOK_ALREADY_EXISTS));
+        when(booksService.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest)).thenThrow(new BooksException(Reason.BOOK_ALREADY_EXISTS));
 
         this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, updateBook.getUuid())
             .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
@@ -216,7 +216,7 @@ public class BooksControllerTest {
     public void updateMissingUserBook() throws Exception {
         Book updateBook = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
         Book updateBookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
-        when(booksService.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest)).thenThrow(new BooksServiceException(Reason.BOOK_NOT_FOUND));
+        when(booksService.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest)).thenThrow(new BooksException(Reason.BOOK_NOT_FOUND));
 
         this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, updateBook.getUuid())
             .content(getBookJson("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json"))
@@ -241,7 +241,7 @@ public class BooksControllerTest {
     @Test
     public void deleteMissingUserBook() throws Exception {
         Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(booksService.deleteUserBook(JOHN_DOE_USER, book.getUuid())).thenThrow(new BooksServiceException(Reason.BOOK_NOT_FOUND));
+        when(booksService.deleteUserBook(JOHN_DOE_USER, book.getUuid())).thenThrow(new BooksException(Reason.BOOK_NOT_FOUND));
 
         this.mockMvc.perform(delete("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid()))
             .andExpect(status().isNotFound())
@@ -251,7 +251,7 @@ public class BooksControllerTest {
     @Test
     public void deleteUserBookWithReadingSessions() throws Exception {
         Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(booksService.deleteUserBook(JOHN_DOE_USER, book.getUuid())).thenThrow(new BooksServiceException(Reason.BOOK_HAS_READING_SESSION));
+        when(booksService.deleteUserBook(JOHN_DOE_USER, book.getUuid())).thenThrow(new BooksException(Reason.BOOK_HAS_READING_SESSION));
 
         this.mockMvc.perform(delete("/users/{user}/books/{uuid}", JOHN_DOE_USER, book.getUuid()))
                 .andExpect(status().isForbidden())

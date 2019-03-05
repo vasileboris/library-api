@@ -2,7 +2,7 @@ package com.espressoprogrammer.library.api;
 
 import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.service.BooksService;
-import com.espressoprogrammer.library.service.BooksServiceException;
+import com.espressoprogrammer.library.service.BooksException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +26,9 @@ public class BooksController {
 
     @Autowired
     private BooksService booksService;
+
+    @Autowired
+    private HttpStatusConverter httpStatusConverter;
 
     @GetMapping(value = "/users/{user}/books")
     public ResponseEntity<List<Book>> getUserBooks(@PathVariable("user") String user,
@@ -51,9 +54,9 @@ public class BooksController {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(HttpHeaders.LOCATION, String.format("/users/%s/books/%s", user, persistedBook.getUuid()));
             return new ResponseEntity(persistedBook, httpHeaders, HttpStatus.CREATED);
-        } catch (BooksServiceException bsex) {
-            logger.error("Error on adding new book", bsex);
-            return new ResponseEntity(getHttpStatus(bsex));
+        } catch (BooksException ex) {
+            logger.error("Error on adding new book", ex);
+            return new ResponseEntity(httpStatusConverter.from(ex));
         } catch (Exception ex) {
             logger.error("Error on adding new book", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -68,9 +71,9 @@ public class BooksController {
 
             Book book = booksService.getUserBook(user, uuid);
             return new ResponseEntity(book, HttpStatus.OK);
-        } catch (BooksServiceException bsex) {
-            logger.error("Error on looking for books", bsex);
-            return new ResponseEntity(getHttpStatus(bsex));
+        } catch (BooksException ex) {
+            logger.error("Error on looking for books", ex);
+            return new ResponseEntity(httpStatusConverter.from(ex));
         } catch (Exception ex) {
             logger.error("Error on looking for books", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -86,9 +89,9 @@ public class BooksController {
 
             booksService.updateUserBook(user, uuid, book);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (BooksServiceException bsex) {
-            logger.error("Error on updating book", bsex);
-            return new ResponseEntity(getHttpStatus(bsex));
+        } catch (BooksException ex) {
+            logger.error("Error on updating book", ex);
+            return new ResponseEntity(httpStatusConverter.from(ex));
         } catch (Exception ex) {
             logger.error("Error on updating book", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -96,7 +99,7 @@ public class BooksController {
     }
 
     @DeleteMapping(value= "/users/{user}/books/{uuid}")
-    public ResponseEntity<Book> deleteUserBook(@PathVariable("user") String user,
+    public ResponseEntity deleteUserBook(@PathVariable("user") String user,
                                                @PathVariable("uuid") String uuid)  {
         try {
             logger.debug("Delete book for user {} with uuid {}", user, uuid);
@@ -104,24 +107,12 @@ public class BooksController {
             booksService.deleteUserBook(user, uuid);
 
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (BooksServiceException bsex) {
-            logger.error("Error on deleting book", bsex);
-            return new ResponseEntity(getHttpStatus(bsex));
+        } catch (BooksException ex) {
+            logger.error("Error on deleting book", ex);
+            return new ResponseEntity(httpStatusConverter.from(ex));
         } catch (Exception ex) {
             logger.error("Error on deleting book", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    private HttpStatus getHttpStatus(BooksServiceException bsex) {
-        switch (bsex.getReason()) {
-            case BOOK_ALREADY_EXISTS:
-            case BOOK_HAS_READING_SESSION:
-                return HttpStatus.FORBIDDEN;
-            case BOOK_NOT_FOUND:
-                return HttpStatus.NOT_FOUND;
-            default:
-                return HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }
 
