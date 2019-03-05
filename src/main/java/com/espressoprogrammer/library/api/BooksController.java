@@ -1,18 +1,14 @@
 package com.espressoprogrammer.library.api;
 
 import com.espressoprogrammer.library.dto.Book;
-import com.espressoprogrammer.library.dto.ErrorCause;
-import com.espressoprogrammer.library.dto.ErrorResponse;
-import com.espressoprogrammer.library.dto.ReadingSession;
-import com.espressoprogrammer.library.persistence.BooksDao;
-import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
+import com.espressoprogrammer.library.service.BooksService;
+import com.espressoprogrammer.library.service.BooksServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,20 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
-
-import static com.espressoprogrammer.library.dto.ErrorResponse.Type.DATA_VALIDATION;
-import static java.util.Arrays.asList;
 
 @RestController
 public class BooksController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private BooksDao booksDao;
-
-    @Autowired
-    private ReadingSessionsDao readingSessionsDao;
+    private BooksService booksService;
 
     @GetMapping(value = "/users/{user}/books")
     public ResponseEntity<List<Book>> getUserBooks(@PathVariable("user") String user,
@@ -44,7 +33,7 @@ public class BooksController {
         try {
             logger.debug("Look for books for user {}", user);
 
-            List<Book> userBooks = booksDao.getUserBooks(user, searchText);
+            List<Book> userBooks = booksService.getUserBooks(user, searchText);
             return new ResponseEntity<>(userBooks, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Error on looking for books", ex);
@@ -58,17 +47,13 @@ public class BooksController {
         try {
             logger.debug("Add new book for user {}", user);
 
-            if(hasTheBook(user, book)) {
-                ErrorResponse errorResponse = new ErrorResponse(DATA_VALIDATION,
-                    asList(new ErrorCause(asList("isbn10", "isbn13"), "book.isbn.exists")));
-
-                return new ResponseEntity(errorResponse ,HttpStatus.FORBIDDEN);
-            }
-
-            Book persistedBook = booksDao.createUserBook(user, book);
+            Book persistedBook = booksService.createUserBook(user, book);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(HttpHeaders.LOCATION, String.format("/users/%s/books/%s", user, persistedBook.getUuid()));
             return new ResponseEntity(persistedBook, httpHeaders, HttpStatus.CREATED);
+        } catch (BooksServiceException bsex) {
+            logger.error("Error on adding new book", bsex);
+            return new ResponseEntity(getHttpStatus(bsex));
         } catch (Exception ex) {
             logger.error("Error on adding new book", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -81,12 +66,11 @@ public class BooksController {
         try {
             logger.debug("Look for book for user {} with uuid {} ", user, uuid);
 
-            Optional<Book> optionalBook = booksDao.getUserBook(user, uuid);
-            if(!optionalBook.isPresent()) {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
-            }
-
-            return new ResponseEntity<>(optionalBook.get(), HttpStatus.OK);
+            Book book = booksService.getUserBook(user, uuid);
+            return new ResponseEntity(book, HttpStatus.OK);
+        } catch (BooksServiceException bsex) {
+            logger.error("Error on looking for books", bsex);
+            return new ResponseEntity(getHttpStatus(bsex));
         } catch (Exception ex) {
             logger.error("Error on looking for books", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -100,21 +84,13 @@ public class BooksController {
         try {
             logger.debug("Update book for user {} with uuid {} ", user, uuid);
 
-            if(hasTheBook(user, book)) {
-                ErrorResponse errorResponse = new ErrorResponse(DATA_VALIDATION,
-                    asList(new ErrorCause(asList("isbn10", "isbn13"), "book.isbn.exists")));
-
-                return new ResponseEntity(errorResponse ,HttpStatus.FORBIDDEN);
-            }
-
-            Optional<String> optionalBook = booksDao.updateUserBook(user, uuid, book);
-            if(!optionalBook.isPresent()) {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
-            }
-
+            booksService.updateUserBook(user, uuid, book);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (BooksServiceException bsex) {
+            logger.error("Error on updating book", bsex);
+            return new ResponseEntity(getHttpStatus(bsex));
         } catch (Exception ex) {
-            logger.error("Error on looking for books", ex);
+            logger.error("Error on updating book", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -125,45 +101,28 @@ public class BooksController {
         try {
             logger.debug("Delete book for user {} with uuid {}", user, uuid);
 
-            List<ReadingSession> userReadingSessions = readingSessionsDao.getUserReadingSessions(user, uuid);
-            for(ReadingSession userReadingSession : userReadingSessions) {
-                if(!userReadingSession.getDateReadingSessions().isEmpty()) {
-                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-                }
-            }
-
-            for(ReadingSession userReadingSession : userReadingSessions) {
-                readingSessionsDao.deleteUserReadingSession(user, uuid, userReadingSession.getUuid());
-            }
-
-            Optional<String> optionalBook = booksDao.deleteUserBook(user, uuid);
-            if(!optionalBook.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+            booksService.deleteUserBook(user, uuid);
 
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (BooksServiceException bsex) {
+            logger.error("Error on deleting book", bsex);
+            return new ResponseEntity(getHttpStatus(bsex));
         } catch (Exception ex) {
-            logger.error("Error on looking for books", ex);
+            logger.error("Error on deleting book", ex);
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    private boolean hasTheBook(@PathVariable("user") String user, @RequestBody Book book) {
-        List<Book> existingBooks = booksDao.getUserBooks(user);
-        for(Book existingBook : existingBooks) {
-            if(areDifferentBooks(book, existingBook) && haveTheSameISBN(book, existingBook)) {
-                return true;
-            }
+    private HttpStatus getHttpStatus(BooksServiceException bsex) {
+        switch (bsex.getReason()) {
+            case BOOK_ALREADY_EXISTS:
+            case BOOK_HAS_READING_SESSION:
+                return HttpStatus.FORBIDDEN;
+            case BOOK_NOT_FOUND:
+                return HttpStatus.NOT_FOUND;
+            default:
+                return HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return false;
     }
 
-    private boolean areDifferentBooks(@RequestBody Book book, Book existingBook) {
-        return !existingBook.getUuid().equals(book.getUuid());
-    }
-
-    private boolean haveTheSameISBN(@RequestBody Book book, Book existingBook) {
-        return (!StringUtils.isEmpty(existingBook.getIsbn10()) && existingBook.getIsbn10().equals(book.getIsbn10()))
-            || (!StringUtils.isEmpty(existingBook.getIsbn13()) && existingBook.getIsbn13().equals(book.getIsbn13()));
-    }
 }
