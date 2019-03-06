@@ -17,8 +17,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.espressoprogrammer.library.LibraryTestUtil.getBook;
-import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSession;
+import static com.espressoprogrammer.library.LibraryTestUtil.getTestBook;
+import static com.espressoprogrammer.library.LibraryTestUtil.getTestReadingSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.when;
@@ -40,7 +40,7 @@ public class BooksServiceTest {
     @Test
     public void getUserBooks() throws Exception {
         ArrayList<Book> books = new ArrayList<>();
-        books.add(getBook("1e4014b1-a551-4310-9f30-590c3140b695.json"));
+        books.add(getTestBook("1e4014b1-a551-4310-9f30-590c3140b695.json"));
         when(booksDao.getUserBooks(JOHN_DOE_USER, "JavaScript")).thenReturn(books);
 
         List<Book> actualBooks = booksService.getUserBooks(JOHN_DOE_USER, "JavaScript");
@@ -51,8 +51,8 @@ public class BooksServiceTest {
     public void createUserBook() throws Exception {
         when(booksDao.getUserBooks(JOHN_DOE_USER)).thenReturn(Collections.emptyList());
 
-        Book bookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
-        Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        Book bookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
+        Book book = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
         when(booksDao.createUserBook(JOHN_DOE_USER, bookRequest)).thenReturn(book);
 
         Book actualBook = booksService.createUserBook(JOHN_DOE_USER, bookRequest);
@@ -61,10 +61,10 @@ public class BooksServiceTest {
 
     @Test
     public void createExistingUserBook() throws Exception {
-        Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        Book book = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
         when(booksDao.getUserBooks(JOHN_DOE_USER)).thenReturn(Arrays.asList(book));
 
-        Book bookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
+        Book bookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
         try {
             booksService.createUserBook(JOHN_DOE_USER, bookRequest);
             fail("It should fail with " + Reason.BOOK_ALREADY_EXISTS);
@@ -78,7 +78,7 @@ public class BooksServiceTest {
     @Test
     public void getUserBook() throws Exception {
         String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
-        Book book = getBook(uuid + ".json");
+        Book book = getTestBook(uuid + ".json");
         when(booksDao.getUserBook(JOHN_DOE_USER, uuid)).thenReturn(Optional.of(book));
 
         Book actualBook = booksService.getUserBook(JOHN_DOE_USER, uuid);
@@ -102,8 +102,8 @@ public class BooksServiceTest {
 
     @Test
     public void updateUserBook() throws Exception {
-        Book updateBook = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
-        Book updateBookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
+        Book updateBook = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
+        Book updateBookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
         when(booksDao.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest))
             .thenReturn(Optional.of(updateBook.getUuid()));
 
@@ -113,9 +113,9 @@ public class BooksServiceTest {
 
     @Test
     public void updateExistingUserBook() throws Exception {
-        Book theOtherBook = getBook("f2e10e37-b0fc-4eff-93aa-3dff682cc388.json");
-        Book updateBook = getBook("f2e10e37-b0fc-4eff-93aa-3dff682cc388.json");
-        Book updateBookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update-existing-book.json");
+        Book theOtherBook = getTestBook("f2e10e37-b0fc-4eff-93aa-3dff682cc388.json");
+        Book updateBook = getTestBook("f2e10e37-b0fc-4eff-93aa-3dff682cc388.json");
+        Book updateBookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-update-existing-book.json");
         when(booksDao.getUserBooks(JOHN_DOE_USER)).thenReturn(Arrays.asList(updateBook, theOtherBook));
 
         try {
@@ -130,8 +130,8 @@ public class BooksServiceTest {
 
     @Test
     public void updateMissingUserBook() throws Exception {
-        Book updateBook = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
-        Book updateBookRequest = getBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
+        Book updateBook = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-update.json");
+        Book updateBookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-update-request.json");
         when(booksDao.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest)).thenReturn(Optional.empty());
 
         try {
@@ -146,10 +146,10 @@ public class BooksServiceTest {
 
     @Test
     public void deleteUserBook() throws Exception {
-        Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        Book book = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
         when(booksDao.deleteUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.of(book.getUuid()));
         when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, book.getUuid()))
-                .thenReturn(Arrays.asList(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-delete-date-reading-session.json")));
+                .thenReturn(Arrays.asList(getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-delete-date-reading-session.json")));
 
         String actualBookUuid = booksService.deleteUserBook(JOHN_DOE_USER, book.getUuid());
         assertThat(actualBookUuid).isEqualTo(book.getUuid());
@@ -157,7 +157,7 @@ public class BooksServiceTest {
 
     @Test
     public void deleteMissingUserBook() throws Exception {
-        Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        Book book = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
         when(booksDao.deleteUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.empty());
 
         try {
@@ -172,10 +172,10 @@ public class BooksServiceTest {
 
     @Test
     public void deleteUserBookWithReadingSessions() throws Exception {
-        Book book = getBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        Book book = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695.json");
         when(booksDao.deleteUserBook(JOHN_DOE_USER, book.getUuid())).thenReturn(Optional.of(book.getUuid()));
         when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, book.getUuid()))
-                .thenReturn(Arrays.asList(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json")));
+                .thenReturn(Arrays.asList(getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json")));
 
         try {
             booksService.deleteUserBook(JOHN_DOE_USER, book.getUuid());

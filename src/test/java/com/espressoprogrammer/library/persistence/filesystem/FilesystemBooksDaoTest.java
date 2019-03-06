@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.espressoprogrammer.library.LibraryTestUtil.copyBook;
-import static com.espressoprogrammer.library.LibraryTestUtil.getBook;
+import static com.espressoprogrammer.library.LibraryTestUtil.getTestBook;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -180,7 +180,7 @@ public class FilesystemBooksDaoTest {
         List<Book> books = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(books).isEmpty();
 
-        Book book = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
+        Book book = booksDao.createUserBook(JOHN_DOE_USER, getTestBook("uuid-1.json"));
         assertThat(book).isNotNull();
         assertThat(book.getUuid()).isNotNull();
 
@@ -202,7 +202,7 @@ public class FilesystemBooksDaoTest {
         List<Book> books = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(books).isEmpty();
 
-        Book book = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-3.json"));
+        Book book = booksDao.createUserBook(JOHN_DOE_USER, getTestBook("uuid-3.json"));
         assertThat(book).isNotNull();
         assertThat(book.getUuid()).isNotNull();
 
@@ -220,7 +220,7 @@ public class FilesystemBooksDaoTest {
 
     @Test
     public void getUserBook() throws Exception {
-        Book book = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
+        Book book = booksDao.createUserBook(JOHN_DOE_USER, getTestBook("uuid-1.json"));
         assertThat(book).isNotNull();
         assertThat(book.getUuid()).isNotNull();
 
@@ -246,7 +246,7 @@ public class FilesystemBooksDaoTest {
         List<Book> books = booksDao.getUserBooks(JOHN_DOE_USER);
         assertThat(books).isEmpty();
 
-        Book book = getBook("uuid-1.json");
+        Book book = getTestBook("uuid-1.json");
         Book createdBook = booksDao.createUserBook(JOHN_DOE_USER, book);
         assertThat(createdBook).isNotNull();
         assertThat(createdBook.getUuid()).isNotNull();
@@ -287,14 +287,14 @@ public class FilesystemBooksDaoTest {
 
     @Test
     public void updateUserMissingBook() throws Exception {
-        Book book = getBook("uuid-1.json");
+        Book book = getTestBook("uuid-1.json");
         Optional<String> optionalUuid = booksDao.updateUserBook(JOHN_DOE_USER, "uuid-1", book);
         assertThat(optionalUuid.isPresent()).isFalse();
     }
 
     @Test
     public void deleteUserBook() throws Exception {
-        Book book = booksDao.createUserBook(JOHN_DOE_USER, getBook("uuid-1.json"));
+        Book book = booksDao.createUserBook(JOHN_DOE_USER, getTestBook("uuid-1.json"));
         assertThat(book).isNotNull();
         assertThat(book.getUuid()).isNotNull();
 

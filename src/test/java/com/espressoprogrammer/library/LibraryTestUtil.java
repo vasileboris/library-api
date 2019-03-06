@@ -1,6 +1,7 @@
 package com.espressoprogrammer.library;
 
 import com.espressoprogrammer.library.dto.Book;
+import com.espressoprogrammer.library.dto.DateReadingSession;
 import com.espressoprogrammer.library.dto.ReadingSession;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -21,23 +22,33 @@ public class LibraryTestUtil {
         Files.copy(LibraryTestUtil.class.getResourceAsStream("/json/reading-sessions/" + fileName), Paths.get(folder + "/" + fileName));
     }
 
-    public static Book getBook(String fileName) throws IOException {
+    public static Book getTestBook(String fileName) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(LibraryTestUtil.class.getResourceAsStream("/json/books/" + fileName), Book.class);
     }
 
-    public static ReadingSession getReadingSession(String fileName) throws IOException {
+    public static ReadingSession getTestReadingSession(String fileName) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(LibraryTestUtil.class.getResourceAsStream("/json/reading-sessions/" + fileName), ReadingSession.class);
     }
 
-    public static String getBookJson(String fileName) throws IOException, URISyntaxException {
+    public static DateReadingSession getTestDateReadingSession(String fileName) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(LibraryTestUtil.class.getResourceAsStream("/json/reading-sessions/" + fileName), DateReadingSession.class);
+    }
+
+    public static String getTestBookJson(String fileName) throws IOException, URISyntaxException {
         return Files.readAllLines(Paths.get(LibraryTestUtil.class.getResource("/json/books/" + fileName).toURI())).stream()
             .collect(joining("\n"));
     }
 
-    public static String getReadingSessionJson(String fileName) throws IOException, URISyntaxException {
+    public static String getTestReadingSessionJson(String fileName) throws IOException, URISyntaxException {
         return Files.readAllLines(Paths.get(LibraryTestUtil.class.getResource("/json/reading-sessions/" + fileName).toURI())).stream()
             .collect(joining("\n"));
+    }
+
+    public static String getTestDateReadingSessionJson(String fileName) throws IOException, URISyntaxException {
+        return Files.readAllLines(Paths.get(LibraryTestUtil.class.getResource("/json/reading-sessions/" + fileName).toURI())).stream()
+                .collect(joining("\n"));
     }
 }

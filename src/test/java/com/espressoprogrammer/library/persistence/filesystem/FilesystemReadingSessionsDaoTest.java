@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.espressoprogrammer.library.LibraryTestUtil.copyReadingSession;
-import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSession;
+import static com.espressoprogrammer.library.LibraryTestUtil.getTestReadingSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -105,7 +105,7 @@ public class FilesystemReadingSessionsDaoTest {
         List<ReadingSession> readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID);
         assertThat(readingSessions).isEmpty();
 
-        ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, getReadingSession("uuid-1.json"));
+        ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, getTestReadingSession("uuid-1.json"));
         assertThat(readingSession).isNotNull();
         assertThat(readingSession.getUuid()).isNotNull();
 
@@ -128,7 +128,7 @@ public class FilesystemReadingSessionsDaoTest {
     public void getUserReadingSession() throws Exception {
         ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER,
             BOOK_UUID,
-            getReadingSession("uuid-1.json"));
+            getTestReadingSession("uuid-1.json"));
         assertThat(readingSession).isNotNull();
         assertThat(readingSession.getUuid()).isNotNull();
 
@@ -160,7 +160,7 @@ public class FilesystemReadingSessionsDaoTest {
         List<ReadingSession> readingSessions = readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID);
         assertThat(readingSessions).isEmpty();
 
-        ReadingSession readingSession = getReadingSession("uuid-1.json");
+        ReadingSession readingSession = getTestReadingSession("uuid-1.json");
         ReadingSession createdReadingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER,
             BOOK_UUID,
             readingSession);
@@ -209,7 +209,7 @@ public class FilesystemReadingSessionsDaoTest {
 
     @Test
     public void updateUserMissingReadingSession() throws Exception {
-        ReadingSession readingSession = getReadingSession("uuid-1.json");
+        ReadingSession readingSession = getTestReadingSession("uuid-1.json");
         Optional<String> optionalUuid = readingSessionsDao.updateUserReadingSession(JOHN_DOE_USER,
             BOOK_UUID,
             "uuid-1", readingSession);
@@ -220,7 +220,7 @@ public class FilesystemReadingSessionsDaoTest {
     public void deleteUserReadingSession() throws Exception {
         ReadingSession readingSession = readingSessionsDao.createUserReadingSession(JOHN_DOE_USER,
             BOOK_UUID,
-            getReadingSession("uuid-1.json"));
+            getTestReadingSession("uuid-1.json"));
         assertThat(readingSession).isNotNull();
         assertThat(readingSession.getUuid()).isNotNull();
 

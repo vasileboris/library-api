@@ -1,9 +1,9 @@
 package com.espressoprogrammer.library.api;
 
-import com.espressoprogrammer.library.dto.Book;
+import com.espressoprogrammer.library.dto.DateReadingSession;
 import com.espressoprogrammer.library.dto.ReadingSession;
-import com.espressoprogrammer.library.persistence.BooksDao;
-import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
+import com.espressoprogrammer.library.service.ReadingSessionsException;
+import com.espressoprogrammer.library.service.ReadingSessionsService;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,14 +20,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
 
-import static com.espressoprogrammer.library.LibraryTestUtil.getBook;
-import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSession;
-import static com.espressoprogrammer.library.LibraryTestUtil.getReadingSessionJson;
+import static com.espressoprogrammer.library.LibraryTestUtil.getTestDateReadingSession;
+import static com.espressoprogrammer.library.LibraryTestUtil.getTestDateReadingSessionJson;
+import static com.espressoprogrammer.library.LibraryTestUtil.getTestReadingSession;
+import static com.espressoprogrammer.library.LibraryTestUtil.getTestReadingSessionJson;
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
@@ -60,10 +58,7 @@ public class ReadingSessionsControllerTest {
     private WebApplicationContext context;
 
     @MockBean
-    private BooksDao booksDao;
-
-    @MockBean
-    private ReadingSessionsDao readingSessionsDao;
+    private ReadingSessionsService readingSessionsService;
 
     private MockMvc mockMvc;
 
@@ -77,8 +72,8 @@ public class ReadingSessionsControllerTest {
     @Test
     public void getUserReadingSessions() throws Exception {
         ArrayList<ReadingSession> readingSessions = new ArrayList<>();
-        readingSessions.add(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
-        when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(readingSessions);
+        readingSessions.add(getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
+        when(readingSessionsService.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(readingSessions);
 
         this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/reading-sessions", JOHN_DOE_USER, BOOK_UUID))
             .andExpect(status().isOk())
@@ -106,12 +101,8 @@ public class ReadingSessionsControllerTest {
 
     @Test
     public void getUserCurrentReadingSession() throws Exception {
-        Book book = getBook(BOOK_UUID + ".json");
-        when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.of(book));
-
-        ArrayList<ReadingSession> readingSessions = new ArrayList<>();
-        readingSessions.add(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
-        when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(readingSessions);
+        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(readingSessionsService.getUserCurrentReadingSession(JOHN_DOE_USER, BOOK_UUID)).thenReturn(readingSession);
 
         this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/current-reading-session", JOHN_DOE_USER, BOOK_UUID))
             .andExpect(status().isOk())
@@ -139,7 +130,8 @@ public class ReadingSessionsControllerTest {
 
     @Test
     public void getMissingUserCurrentReadingSession() throws Exception {
-        when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.empty());
+        when(readingSessionsService.getUserCurrentReadingSession(JOHN_DOE_USER, BOOK_UUID))
+                .thenThrow(new ReadingSessionsException(ReadingSessionsException.Reason.READING_SESSION_NOT_FOUND));
 
         this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/current-reading-session", JOHN_DOE_USER, BOOK_UUID))
             .andExpect(status().isNotFound())
@@ -148,11 +140,12 @@ public class ReadingSessionsControllerTest {
 
     @Test
     public void createUserReadingSession() throws Exception {
-        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
-        when(readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession)).thenReturn(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
+        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
+        when(readingSessionsService.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession))
+                .thenReturn(getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
 
         this.mockMvc.perform(post("/users/{user}/books/{bookUuid}/reading-sessions", JOHN_DOE_USER, BOOK_UUID)
-            .content(getReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
+            .content(getTestReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isCreated())
             .andExpect(header().string(HttpHeaders.LOCATION,
@@ -185,10 +178,12 @@ public class ReadingSessionsControllerTest {
 
     @Test
     public void createAdditionalUserReadingSession() throws Exception {
-        when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Arrays.asList(getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json")));
+        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
+        when(readingSessionsService.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession))
+                .thenThrow(new ReadingSessionsException(ReadingSessionsException.Reason.READING_SESSION_ALREADY_EXISTS));
 
         this.mockMvc.perform(post("/users/{user}/books/{bookUuid}/reading-sessions", JOHN_DOE_USER, BOOK_UUID)
-            .content(getReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
+            .content(getTestReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isForbidden())
             .andDo(document("{class-name}/{method-name}"));
@@ -197,8 +192,8 @@ public class ReadingSessionsControllerTest {
     @Test
     public void getUserReadingSession() throws Exception {
         String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
-        ReadingSession readingSession = getReadingSession(uuid + ".json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid)).thenReturn(Optional.of(readingSession));
+        ReadingSession readingSession = getTestReadingSession(uuid + ".json");
+        when(readingSessionsService.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid)).thenReturn(readingSession);
 
         this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}", JOHN_DOE_USER, BOOK_UUID, uuid))
             .andExpect(status().isOk())
@@ -228,7 +223,8 @@ public class ReadingSessionsControllerTest {
     @Test
     public void getMissingUserReadingSession() throws Exception {
         String uuid = "missing-uuid-1";
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid)).thenReturn(Optional.empty());
+        when(readingSessionsService.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid))
+                .thenThrow(new ReadingSessionsException(ReadingSessionsException.Reason.READING_SESSION_NOT_FOUND));
 
         this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}", JOHN_DOE_USER, BOOK_UUID, uuid))
             .andExpect(status().isNotFound())
@@ -237,8 +233,8 @@ public class ReadingSessionsControllerTest {
 
     @Test
     public void deleteUserReadingSession() throws Exception {
-        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(readingSessionsDao.deleteUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession.getUuid())).thenReturn(Optional.of(readingSession.getUuid()));
+        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(readingSessionsService.deleteUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession.getUuid())).thenReturn(readingSession.getUuid());
 
         this.mockMvc.perform(delete("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}",
             JOHN_DOE_USER,
@@ -254,8 +250,9 @@ public class ReadingSessionsControllerTest {
 
     @Test
     public void deleteMissingUserReadingSession() throws Exception {
-        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(readingSessionsDao.deleteUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession.getUuid())).thenReturn(Optional.empty());
+        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(readingSessionsService.deleteUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession.getUuid()))
+                .thenThrow(new ReadingSessionsException(ReadingSessionsException.Reason.READING_SESSION_NOT_FOUND));
 
         this.mockMvc.perform(delete("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}",
             JOHN_DOE_USER, BOOK_UUID, readingSession.getUuid()))
@@ -266,8 +263,8 @@ public class ReadingSessionsControllerTest {
     @Test
     public void getDateReadingSessions() throws Exception {
         String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
-        ReadingSession readingSession = getReadingSession(uuid + ".json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid)).thenReturn(Optional.of(readingSession));
+        ReadingSession readingSession = getTestReadingSession(uuid + ".json");
+        when(readingSessionsService.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid)).thenReturn(readingSession);
 
         this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions",
             JOHN_DOE_USER, BOOK_UUID, uuid))
@@ -290,12 +287,14 @@ public class ReadingSessionsControllerTest {
 
     @Test
     public void createDateReadingSession() throws Exception {
-        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID,"1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        DateReadingSession dateReadingSession = getTestDateReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-new-date-reading-session.json");
+        when(readingSessionsService.createDateReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession.getUuid(), dateReadingSession))
+                .thenReturn(dateReadingSession);
 
         this.mockMvc.perform(post("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions",
             JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")
-            .content(getReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-new-date-reading-session.json"))
+            .content(getTestDateReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-new-date-reading-session.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isCreated())
             .andExpect(header().string(HttpHeaders.LOCATION, "/users/" + JOHN_DOE_USER
@@ -320,24 +319,19 @@ public class ReadingSessionsControllerTest {
                     fieldWithPath("lastReadPage").description("Last page that was read"),
                     fieldWithPath("bookmark").description("Where to start next")
                 )));
-
-        verify(readingSessionsDao).updateUserReadingSession(JOHN_DOE_USER,
-            BOOK_UUID,
-            "1e4014b1-a551-4310-9f30-590c3140b695",
-            getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-update.json"));
     }
 
     @Test
     public void createDateReadingSessionExistingDate() throws Exception {
-        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
-            BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+        DateReadingSession dateReadingSession = getTestDateReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-existing-date-reading-session.json");
+        when(readingSessionsService.createDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", dateReadingSession))
+                .thenThrow(new ReadingSessionsException(ReadingSessionsException.Reason.DATE_READING_SESSION_ALREADY_EXISTS));
 
         this.mockMvc.perform(post("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions",
             JOHN_DOE_USER,
             BOOK_UUID,
             "1e4014b1-a551-4310-9f30-590c3140b695")
-            .content(getReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-existing-date-reading-session.json"))
+            .content(getTestReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-existing-date-reading-session.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isForbidden())
             .andDo(document("{class-name}/{method-name}"));
@@ -346,9 +340,10 @@ public class ReadingSessionsControllerTest {
     @Test
     public void getDateReadingSession() throws Exception {
         String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
-        ReadingSession readingSession = getReadingSession(uuid + ".json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid)).thenReturn(Optional.of(readingSession));
+        ReadingSession readingSession = getTestReadingSession(uuid + ".json");
+        DateReadingSession dateReadingSession = readingSession.getDateReadingSessions().get(0);
         String date = "2017-01-01";
+        when(readingSessionsService.getDateReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid, date)).thenReturn(dateReadingSession);
 
         this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions/{date}",
             JOHN_DOE_USER, BOOK_UUID, uuid, date))
@@ -373,9 +368,9 @@ public class ReadingSessionsControllerTest {
     @Test
     public void getMissingDateReadingSession() throws Exception {
         String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
-        ReadingSession readingSession = getReadingSession(uuid + ".json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid)).thenReturn(Optional.of(readingSession));
         String date = "2017-01-02";
+        when(readingSessionsService.getDateReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid, date))
+                .thenThrow(new ReadingSessionsException(ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND));
 
         this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions/{date}",
             JOHN_DOE_USER, BOOK_UUID, uuid, date))
@@ -385,13 +380,13 @@ public class ReadingSessionsControllerTest {
 
     @Test
     public void updateDateReadingSession() throws Exception {
-        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(readingSessionsService.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(readingSession);
 
         String date = "2017-01-01";
         this.mockMvc.perform(put("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions/{date}",
             JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date)
-            .content(getReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-update-date-reading-session-request.json"))
+            .content(getTestReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-update-date-reading-session-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isNoContent())
             .andDo(document("{class-name}/{method-name}",
@@ -406,23 +401,18 @@ public class ReadingSessionsControllerTest {
                     fieldWithPath("lastReadPage").description("Last page that was read"),
                     fieldWithPath("bookmark").description("Where to start next")
                 )));
-
-        verify(readingSessionsDao).updateUserReadingSession(JOHN_DOE_USER,
-            BOOK_UUID,
-            "1e4014b1-a551-4310-9f30-590c3140b695",
-            getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-update-date-reading-session.json"));
     }
 
     @Test
     public void updateMissingDateReadingSession() throws Exception {
-        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
-            BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
-
+        DateReadingSession dateReadingSession = getTestDateReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-update-date-reading-session-request.json");
         String date = "2017-01-02";
+        when(readingSessionsService.updateDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date, dateReadingSession))
+                .thenThrow(new ReadingSessionsException(ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND));
+
         this.mockMvc.perform(put("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions/{date}",
             JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date)
-            .content(getReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-update-date-reading-session-request.json"))
+            .content(getTestDateReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-update-date-reading-session-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(status().isNotFound())
             .andDo(document("{class-name}/{method-name}"));
@@ -430,11 +420,9 @@ public class ReadingSessionsControllerTest {
 
     @Test
     public void deleteDateReadingSession() throws Exception {
-        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
-            BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
-
         String date = "2017-01-01";
+        when(readingSessionsService.deleteDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date)).thenReturn(date);
+
         this.mockMvc.perform(delete("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions/{date}",
             JOHN_DOE_USER,
             BOOK_UUID,
@@ -449,19 +437,14 @@ public class ReadingSessionsControllerTest {
                     parameterWithName("date").description("Reading session date in the format yyyy-MM-dd")
                 )));
 
-        verify(readingSessionsDao).updateUserReadingSession(JOHN_DOE_USER,
-            BOOK_UUID,
-            "1e4014b1-a551-4310-9f30-590c3140b695",
-            getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-delete-date-reading-session.json"));
     }
 
     @Test
     public void deleteMissingDateReadingSession() throws Exception {
-        ReadingSession readingSession = getReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
-            BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
-
         String date = "2017-01-02";
+        when(readingSessionsService.deleteDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date))
+                .thenThrow(new ReadingSessionsException(ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND));
+
         this.mockMvc.perform(delete("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions/{date}",
             JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date))
             .andExpect(status().isNotFound())
