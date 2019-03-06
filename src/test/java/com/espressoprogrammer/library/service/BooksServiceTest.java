@@ -68,8 +68,8 @@ public class BooksServiceTest {
         try {
             booksService.createUserBook(JOHN_DOE_USER, bookRequest);
             fail("It should fail with " + Reason.BOOK_ALREADY_EXISTS);
-        } catch(BooksException bsex) {
-            assertThat(bsex.getReason()).isEqualTo(Reason.BOOK_ALREADY_EXISTS);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_ALREADY_EXISTS);
         } catch (Exception ex) {
             fail("It should fail with " + Reason.BOOK_ALREADY_EXISTS);
         }
@@ -93,8 +93,8 @@ public class BooksServiceTest {
         try {
             booksService.getUserBook(JOHN_DOE_USER, uuid);
             fail("It should fail with " + Reason.BOOK_NOT_FOUND);
-        } catch(BooksException bsex) {
-            assertThat(bsex.getReason()).isEqualTo(Reason.BOOK_NOT_FOUND);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_NOT_FOUND);
         } catch (Exception ex) {
             fail("It should fail with " + Reason.BOOK_NOT_FOUND);
         }
@@ -121,8 +121,8 @@ public class BooksServiceTest {
         try {
             booksService.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest);
             fail("It should fail with " + Reason.BOOK_ALREADY_EXISTS);
-        } catch(BooksException bsex) {
-            assertThat(bsex.getReason()).isEqualTo(Reason.BOOK_ALREADY_EXISTS);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_ALREADY_EXISTS);
         } catch (Exception ex) {
             fail("It should fail with " + Reason.BOOK_ALREADY_EXISTS);
         }
@@ -137,8 +137,8 @@ public class BooksServiceTest {
         try {
             booksService.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest);
             fail("It should fail with " + Reason.BOOK_NOT_FOUND);
-        } catch(BooksException bsex) {
-            assertThat(bsex.getReason()).isEqualTo(Reason.BOOK_NOT_FOUND);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_NOT_FOUND);
         } catch (Exception ex) {
             fail("It should fail with " + Reason.BOOK_NOT_FOUND);
         }
@@ -163,8 +163,8 @@ public class BooksServiceTest {
         try {
             booksService.deleteUserBook(JOHN_DOE_USER, book.getUuid());
             fail("It should fail with " + Reason.BOOK_NOT_FOUND);
-        } catch(BooksException bsex) {
-            assertThat(bsex.getReason()).isEqualTo(Reason.BOOK_NOT_FOUND);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_NOT_FOUND);
         } catch (Exception ex) {
             fail("It should fail with " + Reason.BOOK_NOT_FOUND);
         }
@@ -180,8 +180,8 @@ public class BooksServiceTest {
         try {
             booksService.deleteUserBook(JOHN_DOE_USER, book.getUuid());
             fail("It should fail with " + Reason.BOOK_HAS_READING_SESSION);
-        } catch(BooksException bsex) {
-            assertThat(bsex.getReason()).isEqualTo(Reason.BOOK_HAS_READING_SESSION);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_HAS_READING_SESSION);
         } catch (Exception ex) {
             fail("It should fail with " + Reason.BOOK_HAS_READING_SESSION);
         }
