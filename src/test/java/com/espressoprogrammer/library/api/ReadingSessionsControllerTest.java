@@ -21,10 +21,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 
-import static com.espressoprogrammer.library.LibraryTestUtil.getTestDateReadingSession;
-import static com.espressoprogrammer.library.LibraryTestUtil.getTestDateReadingSessionJson;
-import static com.espressoprogrammer.library.LibraryTestUtil.getTestReadingSession;
-import static com.espressoprogrammer.library.LibraryTestUtil.getTestReadingSessionJson;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestDateReadingSession;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestDateReadingSessionJson;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestReadingSession;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestReadingSessionJson;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;

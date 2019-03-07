@@ -1,8 +1,9 @@
-package com.espressoprogrammer.library;
+package com.espressoprogrammer.library.util;
 
 import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.dto.DateReadingSession;
 import com.espressoprogrammer.library.dto.ReadingSession;
+import com.espressoprogrammer.library.dto.ReadingSessionProgress;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -37,6 +38,11 @@ public class LibraryTestUtil {
         return objectMapper.readValue(LibraryTestUtil.class.getResourceAsStream("/json/reading-sessions/" + fileName), DateReadingSession.class);
     }
 
+    public static ReadingSessionProgress getTestReadingSessionProgress(String fileName) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(LibraryTestUtil.class.getResourceAsStream("/json/reading-sessions/" + fileName), ReadingSessionProgress.class);
+    }
+
     public static String getTestBookJson(String fileName) throws IOException, URISyntaxException {
         return Files.readAllLines(Paths.get(LibraryTestUtil.class.getResource("/json/books/" + fileName).toURI())).stream()
             .collect(joining("\n"));
@@ -48,7 +54,11 @@ public class LibraryTestUtil {
     }
 
     public static String getTestDateReadingSessionJson(String fileName) throws IOException, URISyntaxException {
-        return Files.readAllLines(Paths.get(LibraryTestUtil.class.getResource("/json/reading-sessions/" + fileName).toURI())).stream()
-                .collect(joining("\n"));
+        return getTestReadingSessionJson(fileName);
     }
+
+    public static String getTestReadingSessionProgressJson(String fileName) throws IOException, URISyntaxException {
+        return getTestReadingSessionJson(fileName);
+    }
+
 }

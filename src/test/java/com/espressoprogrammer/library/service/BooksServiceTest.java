@@ -17,8 +17,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.espressoprogrammer.library.LibraryTestUtil.getTestBook;
-import static com.espressoprogrammer.library.LibraryTestUtil.getTestReadingSession;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestBook;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestReadingSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.when;

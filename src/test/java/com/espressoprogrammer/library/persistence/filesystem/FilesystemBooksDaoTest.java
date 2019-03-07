@@ -18,8 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.espressoprogrammer.library.LibraryTestUtil.copyBook;
-import static com.espressoprogrammer.library.LibraryTestUtil.getTestBook;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.copyBook;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestBook;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 

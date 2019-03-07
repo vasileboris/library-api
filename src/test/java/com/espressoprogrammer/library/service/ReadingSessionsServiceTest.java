@@ -19,9 +19,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.espressoprogrammer.library.LibraryTestUtil.getTestBook;
-import static com.espressoprogrammer.library.LibraryTestUtil.getTestDateReadingSession;
-import static com.espressoprogrammer.library.LibraryTestUtil.getTestReadingSession;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestBook;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestDateReadingSession;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestReadingSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.when;
@@ -31,6 +31,7 @@ import static org.mockito.Mockito.when;
 public class ReadingSessionsServiceTest {
     private static final String JOHN_DOE_USER = "johndoe";
     private static final String BOOK_UUID = "1e4014b1-a551-4310-9f30-590c3140b695";
+    private static final String READING_SESSION_UUID = "1e4014b1-a551-4310-9f30-590c3140b695";
 
     @Rule
     public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("target/generated-snippets");
@@ -47,7 +48,7 @@ public class ReadingSessionsServiceTest {
     @Test
     public void getUserReadingSessions() throws Exception {
         List<ReadingSession> readingSessions = new ArrayList<>();
-        readingSessions.add(getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
+        readingSessions.add(getTestReadingSession(READING_SESSION_UUID + ".json"));
         when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(readingSessions);
 
         List<ReadingSession> actualReadingSessions = readingSessionsService.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID);
@@ -60,7 +61,7 @@ public class ReadingSessionsServiceTest {
         when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.of(book));
 
         ArrayList<ReadingSession> readingSessions = new ArrayList<>();
-        readingSessions.add(getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
+        readingSessions.add(getTestReadingSession(READING_SESSION_UUID + ".json"));
         when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(readingSessions);
 
         List<ReadingSession> actualReadingSessions = readingSessionsService.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID);
@@ -83,19 +84,19 @@ public class ReadingSessionsServiceTest {
 
     @Test
     public void createUserReadingSession() throws Exception {
-        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
-        when(readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession)).thenReturn(getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + "-request.json");
+        when(readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession)).thenReturn(getTestReadingSession(READING_SESSION_UUID + ".json"));
 
         ReadingSession actualReadingSession = readingSessionsService.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession);
-        assertThat(actualReadingSession).isEqualTo(getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json"));
+        assertThat(actualReadingSession).isEqualTo(getTestReadingSession(READING_SESSION_UUID + ".json"));
     }
 
     @Test
     public void createAdditionalUserReadingSession() throws Exception {
-        when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Arrays.asList(getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json")));
+        when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Arrays.asList(getTestReadingSession(READING_SESSION_UUID + ".json")));
 
         try {
-            readingSessionsService.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-request.json"));
+            readingSessionsService.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, getTestReadingSession(READING_SESSION_UUID + "-request.json"));
             fail("It should fail with " + ReadingSessionsException.Reason.READING_SESSION_ALREADY_EXISTS);
         } catch(ReadingSessionsException ex) {
             assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.READING_SESSION_ALREADY_EXISTS);
@@ -106,11 +107,10 @@ public class ReadingSessionsServiceTest {
 
     @Test
     public void getUserReadingSession() throws Exception {
-        String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
-        ReadingSession readingSession = getTestReadingSession(uuid + ".json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid)).thenReturn(Optional.of(readingSession));
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
 
-        ReadingSession actualReadingSession = readingSessionsService.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid);
+        ReadingSession actualReadingSession = readingSessionsService.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID);
         assertThat(actualReadingSession).isEqualTo(readingSession);
     }
 
@@ -131,7 +131,7 @@ public class ReadingSessionsServiceTest {
 
     @Test
     public void deleteUserReadingSession() throws Exception {
-        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
         when(readingSessionsDao.deleteUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession.getUuid())).thenReturn(Optional.of(readingSession.getUuid()));
 
         String actualUuid = readingSessionsService.deleteUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession.getUuid());
@@ -140,7 +140,7 @@ public class ReadingSessionsServiceTest {
 
     @Test
     public void deleteMissingUserReadingSession() throws Exception {
-        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
         when(readingSessionsDao.deleteUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession.getUuid())).thenReturn(Optional.empty());
 
         try {
@@ -155,23 +155,23 @@ public class ReadingSessionsServiceTest {
 
     @Test
     public void createDateReadingSession() throws Exception {
-        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID,"1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID,READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
 
-        DateReadingSession dateReadingSession = getTestDateReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-new-date-reading-session.json");
-        DateReadingSession actualReadingSession = readingSessionsService.createDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", dateReadingSession);
+        DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-new-date-reading-session.json");
+        DateReadingSession actualReadingSession = readingSessionsService.createDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, dateReadingSession);
         assertThat(actualReadingSession).isEqualTo(dateReadingSession);
     }
 
     @Test
     public void createDateReadingSessionExistingDate() throws Exception {
-        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
         when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
-            BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+            BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
 
         try {
-            DateReadingSession dateReadingSession = getTestDateReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-existing-date-reading-session.json");
-            readingSessionsService.createDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", dateReadingSession);
+            DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-existing-date-reading-session.json");
+            readingSessionsService.createDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, dateReadingSession);
             fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_ALREADY_EXISTS);
         } catch(ReadingSessionsException ex) {
             assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_ALREADY_EXISTS);
@@ -182,24 +182,22 @@ public class ReadingSessionsServiceTest {
 
     @Test
     public void getDateReadingSession() throws Exception {
-        String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
-        ReadingSession readingSession = getTestReadingSession(uuid + ".json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid)).thenReturn(Optional.of(readingSession));
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
         String date = "2017-01-01";
 
-        DateReadingSession actualDateReadingSession = readingSessionsService.getDateReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid, date);
+        DateReadingSession actualDateReadingSession = readingSessionsService.getDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, date);
         assertThat(actualDateReadingSession).isEqualTo(readingSession.getDateReadingSessions().get(0));
     }
 
     @Test
     public void getMissingDateReadingSession() throws Exception {
-        String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
-        ReadingSession readingSession = getTestReadingSession(uuid + ".json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, uuid)).thenReturn(Optional.of(readingSession));
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
         String date = "2017-01-02";
 
         try {
-            readingSessionsService.getDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date);
+            readingSessionsService.getDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, date);
             fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND);
         } catch(ReadingSessionsException ex) {
             assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND);
@@ -210,25 +208,25 @@ public class ReadingSessionsServiceTest {
 
     @Test
     public void updateDateReadingSession() throws Exception {
-        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
-        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
 
         String date = "2017-01-01";
-        DateReadingSession dateReadingSession = getTestDateReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-update-date-reading-session-request.json");
-        String actualDate = readingSessionsService.updateDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date, dateReadingSession);
+        DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-update-date-reading-session-request.json");
+        String actualDate = readingSessionsService.updateDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, date, dateReadingSession);
         assertThat(actualDate).isEqualTo(date);
     }
 
     @Test
     public void updateMissingDateReadingSession() throws Exception {
-        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
         when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
-            BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+            BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
 
         String date = "2017-01-02";
         try {
-            DateReadingSession dateReadingSession = getTestDateReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-update-date-reading-session-request.json");
-            readingSessionsService.updateDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date, dateReadingSession);
+            DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-update-date-reading-session-request.json");
+            readingSessionsService.updateDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, date, dateReadingSession);
             fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND);
         } catch(ReadingSessionsException ex) {
             assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND);
@@ -239,24 +237,24 @@ public class ReadingSessionsServiceTest {
 
     @Test
     public void deleteDateReadingSession() throws Exception {
-        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
         when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
-            BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+            BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
 
         String date = "2017-01-01";
-        String actualDate = readingSessionsService.deleteDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date);
+        String actualDate = readingSessionsService.deleteDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, date);
         assertThat(actualDate).isEqualTo(date);
     }
 
     @Test
     public void deleteMissingDateReadingSession() throws Exception {
-        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
         when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
-            BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(Optional.of(readingSession));
+            BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
 
         String date = "2017-01-02";
         try {
-            readingSessionsService.deleteDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date);
+            readingSessionsService.deleteDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, date);
             fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND);
         } catch(ReadingSessionsException ex) {
             assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND);
@@ -264,4 +262,17 @@ public class ReadingSessionsServiceTest {
             fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND);
         }
     }
+
+    @Test
+    public void getReadingSessionProgress() throws Exception {
+        Book book = getTestBook(BOOK_UUID + ".json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.of(book));
+
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
+
+        ReadingSession actualReadingSession = readingSessionsService.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID);
+        assertThat(actualReadingSession).isEqualTo(readingSession);
+    }
+
 }

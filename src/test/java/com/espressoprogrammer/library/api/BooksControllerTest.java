@@ -21,8 +21,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
 
-import static com.espressoprogrammer.library.LibraryTestUtil.getTestBook;
-import static com.espressoprogrammer.library.LibraryTestUtil.getTestBookJson;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestBook;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestBookJson;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
