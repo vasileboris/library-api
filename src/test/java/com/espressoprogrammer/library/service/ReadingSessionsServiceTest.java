@@ -267,7 +267,7 @@ public class ReadingSessionsServiceTest {
     }
 
     @Test
-    public void getUserReadingSessionProgress() throws Exception {
+    public void getUserReadingSessionProgressWithOneReading() throws Exception {
         Book book = getTestBook(BOOK_UUID + ".json");
         when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.of(book));
 
@@ -288,4 +288,47 @@ public class ReadingSessionsServiceTest {
         assertThat(actualReadingSessionProgress).isEqualTo(expectedReadingSessionProgress);
     }
 
+    @Test
+    public void getUserReadingSessionProgressWithTwoConsecutiveReadings() throws Exception {
+        Book book = getTestBook(BOOK_UUID + ".json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.of(book));
+
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + "-two-consecutive-readings.json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
+
+        ReadingSessionProgress actualReadingSessionProgress = readingSessionsService.getUserReadingSessionProgress(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID);
+        ReadingSessionProgress expectedReadingSessionProgressTemplate = getTestReadingSessionProgress(READING_SESSION_UUID + "-two-consecutive-readings-progress.json");
+        ReadingSessionProgress expectedReadingSessionProgress = expectedReadingSessionProgressTemplate.copy(expectedReadingSessionProgressTemplate.getBookUuid(),
+                expectedReadingSessionProgressTemplate.getLastReadPage(),
+                expectedReadingSessionProgressTemplate.getPagesTotal(),
+                expectedReadingSessionProgressTemplate.getReadPercentage(),
+                expectedReadingSessionProgressTemplate.getAveragePagesPerDay(),
+                expectedReadingSessionProgressTemplate.getEstimatedReadDaysLeft(),
+                expectedReadingSessionProgressTemplate.getEstimatedDaysLeft(),
+                LocalDate.now().plusDays(expectedReadingSessionProgressTemplate.getEstimatedDaysLeft().intValue()).toString(),
+                expectedReadingSessionProgressTemplate.getDeadline());
+        assertThat(actualReadingSessionProgress).isEqualTo(expectedReadingSessionProgress);
+    }
+
+    @Test
+    public void getUserReadingSessionProgressWithGapConsecutiveReadings() throws Exception {
+        Book book = getTestBook(BOOK_UUID + ".json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.of(book));
+
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + "-two-gap-readings.json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
+
+        ReadingSessionProgress actualReadingSessionProgress = readingSessionsService.getUserReadingSessionProgress(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID);
+        ReadingSessionProgress expectedReadingSessionProgressTemplate = getTestReadingSessionProgress(READING_SESSION_UUID + "-two-gap-readings-progress.json");
+        ReadingSessionProgress expectedReadingSessionProgress = expectedReadingSessionProgressTemplate.copy(expectedReadingSessionProgressTemplate.getBookUuid(),
+                expectedReadingSessionProgressTemplate.getLastReadPage(),
+                expectedReadingSessionProgressTemplate.getPagesTotal(),
+                expectedReadingSessionProgressTemplate.getReadPercentage(),
+                expectedReadingSessionProgressTemplate.getAveragePagesPerDay(),
+                expectedReadingSessionProgressTemplate.getEstimatedReadDaysLeft(),
+                expectedReadingSessionProgressTemplate.getEstimatedDaysLeft(),
+                LocalDate.now().plusDays(expectedReadingSessionProgressTemplate.getEstimatedDaysLeft().intValue()).toString(),
+                expectedReadingSessionProgressTemplate.getDeadline());
+        assertThat(actualReadingSessionProgress).isEqualTo(expectedReadingSessionProgress);
+    }
 }
