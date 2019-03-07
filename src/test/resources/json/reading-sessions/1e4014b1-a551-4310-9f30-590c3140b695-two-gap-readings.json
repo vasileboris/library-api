@@ -1,16 +1,16 @@
 {
   "uuid": "1e4014b1-a551-4310-9f30-590c3140b695",
   "bookUuid": "1e4014b1-a551-4310-9f30-590c3140b695",
-  "deadline": "2017-01-31",
+  "deadline": "2019-03-31",
   "dateReadingSessions": [
     {
       "date": "2017-03-01",
-      "lastReadPage": 32,
+      "lastReadPage": 100,
       "bookmark": "Section 3.2"
     },
     {
       "date": "2017-03-07",
-      "lastReadPage": 43,
+      "lastReadPage": 200,
       "bookmark": "Section 4.3"
     }
   ]

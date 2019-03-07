@@ -3,6 +3,7 @@ package com.espressoprogrammer.library.service;
 import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.dto.DateReadingSession;
 import com.espressoprogrammer.library.dto.ReadingSession;
+import com.espressoprogrammer.library.dto.ReadingSessionProgress;
 import com.espressoprogrammer.library.persistence.BooksDao;
 import com.espressoprogrammer.library.persistence.ReadingSessionsDao;
 import org.junit.Rule;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.Optional;
 import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestBook;
 import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestDateReadingSession;
 import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestReadingSession;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestReadingSessionProgress;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.mockito.Mockito.when;
@@ -264,15 +267,25 @@ public class ReadingSessionsServiceTest {
     }
 
     @Test
-    public void getReadingSessionProgress() throws Exception {
+    public void getUserReadingSessionProgress() throws Exception {
         Book book = getTestBook(BOOK_UUID + ".json");
         when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.of(book));
 
-        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + "-one-reading.json");
         when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
 
-        ReadingSession actualReadingSession = readingSessionsService.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID);
-        assertThat(actualReadingSession).isEqualTo(readingSession);
+        ReadingSessionProgress actualReadingSessionProgress = readingSessionsService.getUserReadingSessionProgress(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID);
+        ReadingSessionProgress expectedReadingSessionProgressTemplate = getTestReadingSessionProgress(READING_SESSION_UUID + "-one-reading-progress.json");
+        ReadingSessionProgress expectedReadingSessionProgress = expectedReadingSessionProgressTemplate.copy(expectedReadingSessionProgressTemplate.getBookUuid(),
+                expectedReadingSessionProgressTemplate.getLastReadPage(),
+                expectedReadingSessionProgressTemplate.getPagesTotal(),
+                expectedReadingSessionProgressTemplate.getReadPercentage(),
+                expectedReadingSessionProgressTemplate.getAveragePagesPerDay(),
+                expectedReadingSessionProgressTemplate.getEstimatedReadDaysLeft(),
+                expectedReadingSessionProgressTemplate.getEstimatedDaysLeft(),
+                LocalDate.now().plusDays(expectedReadingSessionProgressTemplate.getEstimatedDaysLeft().intValue()).toString(),
+                expectedReadingSessionProgressTemplate.getDeadline());
+        assertThat(actualReadingSessionProgress).isEqualTo(expectedReadingSessionProgress);
     }
 
 }

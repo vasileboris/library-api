@@ -72,7 +72,7 @@ public class BooksControllerTest {
             .andExpect(jsonPath("$[0].title", is("Get Programming with JavaScript")))
             .andExpect(jsonPath("$[0].authors[0]", is("John R. Larsen")))
             .andExpect(jsonPath("$[0].image", is("Larsen_hires.png")))
-            .andExpect(jsonPath("$[0].pages", is(406)))
+            .andExpect(jsonPath("$[0].pages", is(400)))
             .andDo(document("{class-name}/{method-name}",
                 pathParameters(
                     parameterWithName("user").description("User id")),
@@ -150,7 +150,7 @@ public class BooksControllerTest {
             .andExpect(jsonPath("title", is("Get Programming with JavaScript")))
             .andExpect(jsonPath("authors[0]", is("John R. Larsen")))
             .andExpect(jsonPath("image", is("Larsen_hires.png")))
-            .andExpect(jsonPath("pages", is(406)))
+            .andExpect(jsonPath("pages", is(400)))
             .andDo(document("{class-name}/{method-name}",
                 pathParameters(
                     parameterWithName("user").description("User id"),
