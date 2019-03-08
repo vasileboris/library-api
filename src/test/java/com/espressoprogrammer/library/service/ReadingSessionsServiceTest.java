@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -374,5 +375,58 @@ public class ReadingSessionsServiceTest {
                 LocalDate.now().plusDays(expectedReadingSessionProgressTemplate.getEstimatedDaysLeft().intValue()).toString(),
                 expectedReadingSessionProgressTemplate.getDeadline());
         assertThat(actualReadingSessionProgress).isEqualTo(expectedReadingSessionProgress);
+    }
+
+    @Test
+    public void getUserReadingSessionProgressWithMissingBook() throws Exception {
+        when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.empty());
+
+        try {
+            readingSessionsService.getUserReadingSessionProgress(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID);
+            fail("It should fail with " + BooksException.Reason.BOOK_NOT_FOUND);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(BooksException.Reason.BOOK_NOT_FOUND);
+        } catch (Exception ex) {
+            fail("It should fail with " + BooksException.Reason.BOOK_NOT_FOUND);
+        }
+    }
+
+    @Test
+    public void getUserReadingSessionProgressWithMissingReadingSession() throws Exception {
+        Book book = getTestBook(BOOK_UUID + ".json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.of(book));
+
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.empty());
+
+        try {
+            readingSessionsService.getUserReadingSessionProgress(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID);
+            fail("It should fail with " + ReadingSessionsException.Reason.READING_SESSION_NOT_FOUND);
+        } catch(ReadingSessionsException ex) {
+            assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.READING_SESSION_NOT_FOUND);
+        } catch (Exception ex) {
+            fail("It should fail with " + ReadingSessionsException.Reason.READING_SESSION_NOT_FOUND);
+        }
+    }
+
+    @Test
+    public void getUserReadingSessionProgressWithEmptyDateReadingSessions() throws Exception {
+        Book book = getTestBook(BOOK_UUID + ".json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.of(book));
+
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        ReadingSession emptyReadingSession = readingSession.copy(readingSession.getUuid(),
+                readingSession.getBookUuid(),
+                readingSession.getDeadline(),
+                Collections.emptyList());
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID)).thenReturn(Optional.of(emptyReadingSession));
+
+        try {
+            readingSessionsService.getUserReadingSessionProgress(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID);
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND);
+        } catch(ReadingSessionsException ex) {
+            assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND);
+        } catch (Exception ex) {
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND);
+        }
     }
 }
