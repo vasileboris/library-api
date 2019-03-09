@@ -1,4 +1,4 @@
-package com.espressoprogrammer.library.api;
+package com.espressoprogrammer.library.rest;
 
 import com.espressoprogrammer.library.dto.Book;
 import com.espressoprogrammer.library.service.BooksService;

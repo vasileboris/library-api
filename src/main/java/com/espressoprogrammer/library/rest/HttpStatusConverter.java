@@ -1,4 +1,4 @@
-package com.espressoprogrammer.library.api;
+package com.espressoprogrammer.library.rest;
 
 import com.espressoprogrammer.library.service.BooksException;
 import com.espressoprogrammer.library.service.ReadingSessionsException;
