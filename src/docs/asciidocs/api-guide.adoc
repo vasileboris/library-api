@@ -443,3 +443,13 @@ include::{snippets}/reading-sessions-controller-test/delete-missing-date-reading
 ==== Example response
 
 include::{snippets}/reading-sessions-controller-test/delete-missing-date-reading-session/http-response.adoc[]
+
+=== Get reading session progress
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/get-user-reading-session-progress/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/get-user-reading-session-progress/http-response.adoc[]

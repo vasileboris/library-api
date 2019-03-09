@@ -2,6 +2,7 @@ package com.espressoprogrammer.library.api;
 
 import com.espressoprogrammer.library.dto.DateReadingSession;
 import com.espressoprogrammer.library.dto.ReadingSession;
+import com.espressoprogrammer.library.dto.ReadingSessionProgress;
 import com.espressoprogrammer.library.service.ReadingSessionsException;
 import com.espressoprogrammer.library.service.ReadingSessionsService;
 import org.junit.Before;
@@ -19,12 +20,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestDateReadingSession;
 import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestDateReadingSessionJson;
 import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestReadingSession;
 import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestReadingSessionJson;
+import static com.espressoprogrammer.library.util.LibraryTestUtil.getTestReadingSessionProgress;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -450,4 +453,53 @@ public class ReadingSessionsControllerTest {
             .andExpect(status().isNotFound())
             .andDo(document("{class-name}/{method-name}"));
     }
+
+    @Test
+    public void getUserReadingSessionProgress() throws Exception {
+        String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
+        ReadingSessionProgress expectedReadingSessionProgressTemplate = getTestReadingSessionProgress(uuid + "-one-reading-progress.json");
+        String estimatedFinishDate = LocalDate.now().plusDays(expectedReadingSessionProgressTemplate.getEstimatedDaysLeft().intValue()).toString();
+        ReadingSessionProgress expectedReadingSessionProgress = expectedReadingSessionProgressTemplate.copy(
+                expectedReadingSessionProgressTemplate.getBookUuid(),
+                expectedReadingSessionProgressTemplate.getLastReadPage(),
+                expectedReadingSessionProgressTemplate.getPagesTotal(),
+                expectedReadingSessionProgressTemplate.getReadPercentage(),
+                expectedReadingSessionProgressTemplate.getAveragePagesPerDay(),
+                expectedReadingSessionProgressTemplate.getEstimatedReadDaysLeft(),
+                expectedReadingSessionProgressTemplate.getEstimatedDaysLeft(),
+                estimatedFinishDate,
+                expectedReadingSessionProgressTemplate.getDeadline());
+        when(readingSessionsService.getUserReadingSessionProgress(JOHN_DOE_USER, BOOK_UUID, uuid)).thenReturn(expectedReadingSessionProgress);
+
+        this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/progress",
+                JOHN_DOE_USER, BOOK_UUID, uuid))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("bookUuid", is("1e4014b1-a551-4310-9f30-590c3140b695")))
+                .andExpect(jsonPath("lastReadPage", is(100)))
+                    .andExpect(jsonPath("pagesTotal", is(400)))
+                .andExpect(jsonPath("readPercentage", is(25)))
+                .andExpect(jsonPath("averagePagesPerDay", is(100)))
+                .andExpect(jsonPath("estimatedReadDaysLeft", is(3)))
+                .andExpect(jsonPath("estimatedDaysLeft", is(3)))
+                .andExpect(jsonPath("estimatedFinishDate", is(estimatedFinishDate)))
+                .andExpect(jsonPath("deadline", is("2019-03-31")))
+                .andDo(document("{class-name}/{method-name}",
+                        pathParameters(
+                                parameterWithName("user").description("User id"),
+                                parameterWithName("bookUuid").description("Book uuid"),
+                                parameterWithName("uuid").description("Reading session uuid")),
+                        responseFields(
+                                fieldWithPath("bookUuid").description("Book uuid"),
+                                fieldWithPath("lastReadPage").description("Last page that was read"),
+                                fieldWithPath("pagesTotal").description("Total pages of the book"),
+                                fieldWithPath("readPercentage").description("Reading progress in percentage"),
+                                fieldWithPath("averagePagesPerDay").description("Pages read average"),
+                                fieldWithPath("estimatedReadDaysLeft").description("How many remaining reading days are estimated"),
+                                fieldWithPath("estimatedDaysLeft").description("How many remaining calendar days are estimated"),
+                                fieldWithPath("estimatedFinishDate").description("Estimated finish date."),
+                                fieldWithPath("deadline").description("The deadline of the reading session")
+                        )));
+    }
+
 }
