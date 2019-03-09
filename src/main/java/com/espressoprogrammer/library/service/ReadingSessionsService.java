@@ -229,31 +229,35 @@ public class ReadingSessionsService {
             }
 
             dateReadingSessions.sort(Comparator.comparing(DateReadingSession::getDate));
-
             DateReadingSession firstDateReadingSession = dateReadingSessions.get(0);
             LocalDate firstReadDate = LocalDate.parse(firstDateReadingSession.getDate());
-
             DateReadingSession lastDateReadingSession = dateReadingSessions.get(dateReadingSessions.size() - 1);
             LocalDate lastReadDate = LocalDate.parse(lastDateReadingSession.getDate());
-            int lastReadPage = lastDateReadingSession.getLastReadPage();
+
+            dateReadingSessions.sort(Comparator.comparing(DateReadingSession::getLastReadPage));
+            DateReadingSession lastReadPageSession = dateReadingSessions.get(dateReadingSessions.size() - 1);
+            int lastReadPage = lastReadPageSession.getLastReadPage();
 
             BigDecimal averagePagesPerDay = new BigDecimal(lastReadPage)
                     .divide(new BigDecimal(dateReadingSessions.size()), RoundingMode.HALF_UP);
 
             Book book = optionalBook.get();
+
+            BigDecimal readPercentage = new BigDecimal(lastReadPage)
+                .multiply(new BigDecimal(100))
+                .divide(new BigDecimal(book.getPages()), RoundingMode.HALF_UP);
+
             int remainingPages = book.getPages() - lastReadPage;
             if(remainingPages < averagePagesPerDay.intValue()) {
                 remainingPages = averagePagesPerDay.intValue();
             }
             BigDecimal estimatedReadDaysLeft = new BigDecimal(remainingPages)
                     .divide(averagePagesPerDay, RoundingMode.HALF_UP);
+
             long readPeriodDays = ChronoUnit.DAYS.between(firstReadDate, lastReadDate) + 1;
             BigDecimal multiplyFactor = new BigDecimal(readPeriodDays)
                     .divide(new BigDecimal(dateReadingSessions.size()), RoundingMode.HALF_UP);
             BigDecimal estimatedDaysLeft = estimatedReadDaysLeft.multiply(multiplyFactor);
-            BigDecimal readPercentage = new BigDecimal(lastReadPage)
-                    .multiply(new BigDecimal(100))
-                    .divide(new BigDecimal(book.getPages()), RoundingMode.HALF_UP);
 
             ReadingSessionProgress readingSessionProgress = new ReadingSessionProgress(book.getUuid(),
                     lastReadPage,
