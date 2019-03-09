@@ -80,6 +80,9 @@ public class ReadingSessionsController {
                 bookUuid,
                 persistedReadingSession.getUuid()));
             return new ResponseEntity(persistedReadingSession, httpHeaders, HttpStatus.CREATED);
+        } catch (BooksException ex) {
+            logger.error("Error on adding new reading session", ex);
+            return new ResponseEntity(httpStatusConverter.from(ex));
         } catch (ReadingSessionsException ex) {
             logger.error("Error on adding new reading session", ex);
             return new ResponseEntity(httpStatusConverter.from(ex));

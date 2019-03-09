@@ -17,6 +17,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -52,8 +53,13 @@ public class ReadingSessionsService {
         return userBooks.get(0);
     }
 
-    public ReadingSession createUserReadingSession(String user, String bookUuid, ReadingSession readingSession) throws ReadingSessionsException {
+    public ReadingSession createUserReadingSession(String user, String bookUuid, ReadingSession readingSession) throws BooksException, ReadingSessionsException {
         logger.debug("Add new reading session for user {}", user);
+
+        Optional<Book> optionalBook = booksDao.getUserBook(user, bookUuid);
+        if(!optionalBook.isPresent()) {
+            throw new BooksException(BooksException.Reason.BOOK_NOT_FOUND);
+        }
 
         List<ReadingSession> userReadingSessions = readingSessionsDao.getUserReadingSessions(user, bookUuid);
         if(!userReadingSessions.isEmpty()) {
@@ -62,12 +68,10 @@ public class ReadingSessionsService {
 
         ReadingSession createdReadingSession = readingSession;
         if(!CollectionUtils.isEmpty(createdReadingSession.getDateReadingSessions())) {
-            List<DateReadingSession> createdDateReadingSessions = new ArrayList<>(createdReadingSession.getDateReadingSessions());
-            createdDateReadingSessions.sort((drs1, drs2) -> drs1.getDate().compareTo(drs2.getDate()));
-            createdReadingSession = new ReadingSession(readingSession.getUuid(),
-                    readingSession.getBookUuid(),
+            createdReadingSession = new ReadingSession(null,
+                    bookUuid,
                     readingSession.getDeadline(),
-                    createdDateReadingSessions);
+                    Collections.emptyList());
         }
 
         return readingSessionsDao.createUserReadingSession(user, bookUuid, createdReadingSession);

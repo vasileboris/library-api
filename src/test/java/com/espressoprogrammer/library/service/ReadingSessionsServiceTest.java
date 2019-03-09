@@ -88,8 +88,17 @@ public class ReadingSessionsServiceTest {
 
     @Test
     public void createUserReadingSession() throws Exception {
+        Book book = getTestBook(BOOK_UUID + ".json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.of(book));
+
         ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + "-request.json");
-        when(readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession)).thenReturn(getTestReadingSession(READING_SESSION_UUID + ".json"));
+        ReadingSession actualReadingSessionRequest = readingSession.copy(
+                readingSession.getUuid(),
+                readingSession.getBookUuid(),
+                readingSession.getDeadline(),
+                Collections.emptyList());
+        when(readingSessionsDao.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, actualReadingSessionRequest))
+                .thenReturn(getTestReadingSession(READING_SESSION_UUID + ".json"));
 
         ReadingSession actualReadingSession = readingSessionsService.createUserReadingSession(JOHN_DOE_USER, BOOK_UUID, readingSession);
         assertThat(actualReadingSession).isEqualTo(getTestReadingSession(READING_SESSION_UUID + ".json"));
@@ -97,6 +106,9 @@ public class ReadingSessionsServiceTest {
 
     @Test
     public void createAdditionalUserReadingSession() throws Exception {
+        Book book = getTestBook(BOOK_UUID + ".json");
+        when(booksDao.getUserBook(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Optional.of(book));
+
         when(readingSessionsDao.getUserReadingSessions(JOHN_DOE_USER, BOOK_UUID)).thenReturn(Arrays.asList(getTestReadingSession(READING_SESSION_UUID + ".json")));
 
         try {
