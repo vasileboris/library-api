@@ -366,6 +366,16 @@ include::{snippets}/reading-sessions-controller-test/create-date-reading-session
 
 include::{snippets}/reading-sessions-controller-test/create-date-reading-session/http-response.adoc[]
 
+=== Add invalid date reading session for a user
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/create-invalid-date-reading-session/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/create-invalid-date-reading-session/http-response.adoc[]
+
 === Add existing date reading session for a user
 
 ==== Example request
@@ -421,6 +431,16 @@ include::{snippets}/reading-sessions-controller-test/update-date-reading-session
 ==== Example response
 
 include::{snippets}/reading-sessions-controller-test/update-date-reading-session/http-response.adoc[]
+
+=== Update invalid date reading session
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/update-invalid-date-reading-session/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/update-invalid-date-reading-session/http-response.adoc[]
 
 === Update missing date reading session
 

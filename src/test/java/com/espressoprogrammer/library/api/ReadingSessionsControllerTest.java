@@ -325,6 +325,22 @@ public class ReadingSessionsControllerTest {
     }
 
     @Test
+    public void createInvalidDateReadingSession() throws Exception {
+        DateReadingSession dateReadingSession = getTestDateReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-invalid-date-reading-session.json");
+        when(readingSessionsService.createDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", dateReadingSession))
+                .thenThrow(new ReadingSessionsException(ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID));
+
+        this.mockMvc.perform(post("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions",
+                JOHN_DOE_USER,
+                BOOK_UUID,
+                "1e4014b1-a551-4310-9f30-590c3140b695")
+                .content(getTestReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-invalid-date-reading-session.json"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isForbidden())
+                .andDo(document("{class-name}/{method-name}"));
+    }
+
+    @Test
     public void createDateReadingSessionExistingDate() throws Exception {
         DateReadingSession dateReadingSession = getTestDateReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-existing-date-reading-session.json");
         when(readingSessionsService.createDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", dateReadingSession))
@@ -404,6 +420,24 @@ public class ReadingSessionsControllerTest {
                     fieldWithPath("lastReadPage").description("Last page that was read"),
                     fieldWithPath("bookmark").description("Where to start next")
                 )));
+    }
+
+    @Test
+    public void updateInvalidDateReadingSession() throws Exception {
+        ReadingSession readingSession = getTestReadingSession("1e4014b1-a551-4310-9f30-590c3140b695.json");
+        when(readingSessionsService.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695")).thenReturn(readingSession);
+
+        DateReadingSession dateReadingSession = getTestDateReadingSession("1e4014b1-a551-4310-9f30-590c3140b695-invalid-date-reading-session.json");
+        String date = "2017-01-01";
+        when(readingSessionsService.updateDateReadingSession(JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date, dateReadingSession))
+                .thenThrow(new ReadingSessionsException(ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID));
+
+        this.mockMvc.perform(put("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/date-reading-sessions/{date}",
+                JOHN_DOE_USER, BOOK_UUID, "1e4014b1-a551-4310-9f30-590c3140b695", date)
+                .content(getTestDateReadingSessionJson("1e4014b1-a551-4310-9f30-590c3140b695-invalid-date-reading-session.json"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isForbidden())
+                .andDo(document("{class-name}/{method-name}"));
     }
 
     @Test
