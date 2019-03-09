@@ -502,4 +502,15 @@ public class ReadingSessionsControllerTest {
                         )));
     }
 
+    @Test
+    public void getUserReadingSessionProgressForMissingBook() throws Exception {
+        String uuid = "1e4014b1-a551-4310-9f30-590c3140b695";
+        when(readingSessionsService.getUserReadingSessionProgress(JOHN_DOE_USER, BOOK_UUID, uuid))
+                .thenThrow(new ReadingSessionsException(ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND));
+
+        this.mockMvc.perform(get("/users/{user}/books/{bookUuid}/reading-sessions/{uuid}/progress",
+                JOHN_DOE_USER, BOOK_UUID, uuid))
+                .andExpect(status().isNotFound())
+                .andDo(document("{class-name}/{method-name}"));
+    }
 }

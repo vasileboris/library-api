@@ -236,6 +236,9 @@ public class ReadingSessionsController {
 
             ReadingSessionProgress readingSessionProgress = readingSessionsService.getUserReadingSessionProgress(user, bookUuid, uuid);
             return new ResponseEntity<>(readingSessionProgress, HttpStatus.OK);
+        } catch (BooksException ex) {
+            logger.error("Error on looking for reading session progress", ex);
+            return new ResponseEntity(httpStatusConverter.from(ex));
         } catch (ReadingSessionsException ex) {
             logger.error("Error on looking for reading session progress", ex);
             return new ResponseEntity(httpStatusConverter.from(ex));
