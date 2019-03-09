@@ -180,6 +180,82 @@ public class ReadingSessionsServiceTest {
     }
 
     @Test
+    public void createDateReadingSessionNullDate() throws Exception {
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID,READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
+
+        DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-new-date-reading-session.json");
+        DateReadingSession invalidDateReadingSession = dateReadingSession.copy(null,
+                dateReadingSession.getLastReadPage(),
+                dateReadingSession.getBookmark());
+        try {
+            readingSessionsService.createDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, invalidDateReadingSession);
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch(ReadingSessionsException ex) {
+            assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        }
+    }
+
+    @Test
+    public void createDateReadingSessionInvalidDate() throws Exception {
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID,READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
+
+        DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-new-date-reading-session.json");
+        DateReadingSession invalidDateReadingSession = dateReadingSession.copy("2019-99-99",
+                dateReadingSession.getLastReadPage(),
+                dateReadingSession.getBookmark());
+        try {
+            readingSessionsService.createDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, invalidDateReadingSession);
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch(ReadingSessionsException ex) {
+            assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        }
+    }
+
+    @Test
+    public void createDateReadingSessionNullLastReadPage() throws Exception {
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID,READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
+
+        DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-new-date-reading-session.json");
+        DateReadingSession invalidDateReadingSession = dateReadingSession.copy(dateReadingSession.getDate(),
+                null,
+                dateReadingSession.getBookmark());
+        try {
+            readingSessionsService.createDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, invalidDateReadingSession);
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch(ReadingSessionsException ex) {
+            assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        }
+    }
+
+    @Test
+    public void createDateReadingSessionZeroLastReadPage() throws Exception {
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID,READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
+
+        DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-new-date-reading-session.json");
+        DateReadingSession invalidDateReadingSession = dateReadingSession.copy(dateReadingSession.getDate(),
+                0,
+                dateReadingSession.getBookmark());
+        try {
+            readingSessionsService.createDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, invalidDateReadingSession);
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch(ReadingSessionsException ex) {
+            assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        }
+    }
+
+    @Test
     public void createDateReadingSessionExistingDate() throws Exception {
         ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
         when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER,
@@ -231,6 +307,86 @@ public class ReadingSessionsServiceTest {
         DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-update-date-reading-session-request.json");
         String actualDate = readingSessionsService.updateDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, date, dateReadingSession);
         assertThat(actualDate).isEqualTo(date);
+    }
+
+    @Test
+    public void updateDateReadingSessionNullDate() throws Exception {
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID,READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
+
+        String date = "2017-01-01";
+        DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-update-date-reading-session-request.json");
+        DateReadingSession invalidDateReadingSession = dateReadingSession.copy(null,
+                dateReadingSession.getLastReadPage(),
+                dateReadingSession.getBookmark());
+        try {
+            readingSessionsService.updateDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, date, invalidDateReadingSession);
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch(ReadingSessionsException ex) {
+            assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        }
+    }
+
+    @Test
+    public void updateDateReadingSessionInvalidDate() throws Exception {
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID,READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
+
+        String date = "2017-01-01";
+        DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-update-date-reading-session-request.json");
+        DateReadingSession invalidDateReadingSession = dateReadingSession.copy("2019-99-99",
+                dateReadingSession.getLastReadPage(),
+                dateReadingSession.getBookmark());
+        try {
+            readingSessionsService.updateDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, date, invalidDateReadingSession);
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch(ReadingSessionsException ex) {
+            assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        }
+    }
+
+    @Test
+    public void updateDateReadingSessionNullLastReadPage() throws Exception {
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID,READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
+
+        String date = "2017-01-01";
+        DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-update-date-reading-session-request.json");
+        DateReadingSession invalidDateReadingSession = dateReadingSession.copy(dateReadingSession.getDate(),
+                null,
+                dateReadingSession.getBookmark());
+        try {
+            readingSessionsService.updateDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, date, invalidDateReadingSession);
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch(ReadingSessionsException ex) {
+            assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        }
+    }
+
+    @Test
+    public void updateDateReadingSessionZeroLastReadPage() throws Exception {
+        ReadingSession readingSession = getTestReadingSession(READING_SESSION_UUID + ".json");
+        when(readingSessionsDao.getUserReadingSession(JOHN_DOE_USER, BOOK_UUID,READING_SESSION_UUID)).thenReturn(Optional.of(readingSession));
+
+        String date = "2017-01-01";
+        DateReadingSession dateReadingSession = getTestDateReadingSession(READING_SESSION_UUID + "-update-date-reading-session-request.json");
+        DateReadingSession invalidDateReadingSession = dateReadingSession.copy(dateReadingSession.getDate(),
+                0,
+                dateReadingSession.getBookmark());
+        try {
+            readingSessionsService.updateDateReadingSession(JOHN_DOE_USER, BOOK_UUID, READING_SESSION_UUID, date, invalidDateReadingSession);
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch(ReadingSessionsException ex) {
+            assertThat(ex.getReason()).isEqualTo(ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        }
     }
 
     @Test

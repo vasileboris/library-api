@@ -98,7 +98,7 @@ public class BooksService {
                 && !isEmpty(book.getAuthors())
                 && book.getAuthors().stream().filter(author -> isEmpty(author)).count() == 0
                 && null != book.getPages()
-                && book.getPages() >= 1;
+                && book.getPages() > 0;
     }
 
     private boolean hasTheBook(String user, Book book) {

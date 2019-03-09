@@ -25,6 +25,7 @@ public class HttpStatusConverter {
         switch (ex.getReason()) {
             case READING_SESSION_ALREADY_EXISTS:
             case DATE_READING_SESSION_ALREADY_EXISTS:
+            case DATE_READING_SESSION_INVALID:
                 return HttpStatus.FORBIDDEN;
             case READING_SESSION_NOT_FOUND:
             case DATE_READING_SESSION_NOT_FOUND:

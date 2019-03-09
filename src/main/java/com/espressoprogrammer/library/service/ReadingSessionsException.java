@@ -6,7 +6,8 @@ public class ReadingSessionsException extends Exception {
         READING_SESSION_NOT_FOUND,
         DATE_READING_SESSION_NOT_FOUND,
         READING_SESSION_ALREADY_EXISTS,
-        DATE_READING_SESSION_ALREADY_EXISTS
+        DATE_READING_SESSION_ALREADY_EXISTS,
+        DATE_READING_SESSION_INVALID
     }
 
     private Reason reason;

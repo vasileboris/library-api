@@ -12,18 +12,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
+
+import static org.springframework.util.StringUtils.isEmpty;
 
 @Service
 public class ReadingSessionsService {
+    private static final String ISO_DATE_REGEXP = "[\\d]{4}-[\\d]{2}-[\\d]{2}";
+    private static final String ISO_DATE_PATTERN = "yyyy-MM-dd";
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -31,6 +39,13 @@ public class ReadingSessionsService {
 
     @Autowired
     private ReadingSessionsDao readingSessionsDao;
+
+    private DateTimeFormatter isoDateFormatter;
+
+    @PostConstruct
+    public void init() {
+        isoDateFormatter = DateTimeFormatter.ofPattern(ISO_DATE_PATTERN);
+    }
 
     public List<ReadingSession> getUserReadingSessions(String user, String bookUuid)  {
         logger.debug("Look for reading sessions for user {}", user);
@@ -102,6 +117,10 @@ public class ReadingSessionsService {
     public DateReadingSession createDateReadingSession(String user, String bookUuid, String uuid, DateReadingSession dateReadingSession) throws ReadingSessionsException {
         logger.debug("Add new date reading session for user {} with uuid {} ", user, uuid);
 
+        if(!isValidDateReadingSession(dateReadingSession)) {
+            throw new ReadingSessionsException(ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        }
+
         Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, bookUuid, uuid);
         if(!optionalReadingSession.isPresent()) {
             throw new ReadingSessionsException(ReadingSessionsException.Reason.READING_SESSION_NOT_FOUND);
@@ -147,6 +166,10 @@ public class ReadingSessionsService {
 
     public String updateDateReadingSession(String user, String bookUuid, String uuid, String date, DateReadingSession dateReadingSession) throws ReadingSessionsException {
         logger.debug("Update date reading session for user {} with uuid {} and date {}", user, uuid, date);
+
+        if(!isValidDateReadingSession(dateReadingSession)) {
+            throw new ReadingSessionsException(ReadingSessionsException.Reason.DATE_READING_SESSION_INVALID);
+        }
 
         Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, bookUuid, uuid);
         if(!optionalReadingSession.isPresent()) {
@@ -270,6 +293,23 @@ public class ReadingSessionsService {
                     readingSession.getDeadline());
 
             return readingSessionProgress;
+    }
+
+    private boolean isValidDateReadingSession(DateReadingSession dateReadingSession) {
+        return !isEmpty(dateReadingSession.getDate())
+                && Pattern.matches(ISO_DATE_REGEXP, dateReadingSession.getDate())
+                && isISODate(dateReadingSession.getDate())
+                && null != dateReadingSession.getLastReadPage()
+                && dateReadingSession.getLastReadPage() > 0;
+    }
+
+    private boolean isISODate(String date) {
+        try {
+            LocalDate.parse(date, isoDateFormatter);
+        } catch(Exception ex) {
+            return false;
+        }
+        return true;
     }
 
 }
