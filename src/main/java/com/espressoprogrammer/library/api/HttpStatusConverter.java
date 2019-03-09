@@ -12,6 +12,7 @@ public class HttpStatusConverter {
         switch (ex.getReason()) {
             case BOOK_ALREADY_EXISTS:
             case BOOK_HAS_READING_SESSION:
+            case BOOK_INVALID:
                 return HttpStatus.FORBIDDEN;
             case BOOK_NOT_FOUND:
                 return HttpStatus.NOT_FOUND;

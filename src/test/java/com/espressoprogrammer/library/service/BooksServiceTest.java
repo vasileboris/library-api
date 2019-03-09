@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +58,153 @@ public class BooksServiceTest {
 
         Book actualBook = booksService.createUserBook(JOHN_DOE_USER, bookRequest);
         assertThat(actualBook).isEqualTo(book);
+    }
+
+    @Test
+    public void createUserBookNullTitle() throws Exception {
+        Book bookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
+        Book invalidBookRequest = bookRequest.copy(bookRequest.getUuid(),
+                bookRequest.getIsbn10(),
+                bookRequest.getIsbn13(),
+                null,
+                bookRequest.getAuthors(),
+                bookRequest.getImage(),
+                bookRequest.getPages());
+
+        try {
+            booksService.createUserBook(JOHN_DOE_USER, invalidBookRequest);
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        }
+    }
+
+    @Test
+    public void createUserBookEmptyTitle() throws Exception {
+        Book bookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
+        Book invalidBookRequest = bookRequest.copy(bookRequest.getUuid(),
+                bookRequest.getIsbn10(),
+                bookRequest.getIsbn13(),
+                "",
+                bookRequest.getAuthors(),
+                bookRequest.getImage(),
+                bookRequest.getPages());
+
+        try {
+            booksService.createUserBook(JOHN_DOE_USER, invalidBookRequest);
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        }
+    }
+
+    @Test
+    public void createUserBookEmptyAuthors() throws Exception {
+        Book bookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
+        Book invalidBookRequest = bookRequest.copy(bookRequest.getUuid(),
+                bookRequest.getIsbn10(),
+                bookRequest.getIsbn13(),
+                bookRequest.getTitle(),
+                Collections.emptyList(),
+                bookRequest.getImage(),
+                bookRequest.getPages());
+
+        try {
+            booksService.createUserBook(JOHN_DOE_USER, invalidBookRequest);
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        }
+    }
+
+    @Test
+    public void createUserBookNullAuthor() throws Exception {
+        Book bookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
+        Book invalidBookRequest = bookRequest.copy(bookRequest.getUuid(),
+                bookRequest.getIsbn10(),
+                bookRequest.getIsbn13(),
+                bookRequest.getTitle(),
+                Arrays.asList("Author", null),
+                bookRequest.getImage(),
+                bookRequest.getPages());
+
+        try {
+            booksService.createUserBook(JOHN_DOE_USER, invalidBookRequest);
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        }
+    }
+
+    @Test
+    public void createUserBookEmptyAuthor() throws Exception {
+        Book bookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
+        Book invalidBookRequest = bookRequest.copy(bookRequest.getUuid(),
+                bookRequest.getIsbn10(),
+                bookRequest.getIsbn13(),
+                bookRequest.getTitle(),
+                Arrays.asList("Author", ""),
+                bookRequest.getImage(),
+                bookRequest.getPages());
+
+        try {
+            booksService.createUserBook(JOHN_DOE_USER, invalidBookRequest);
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        }
+    }
+
+    @Test
+    public void createUserBookNullPages() throws Exception {
+        Book bookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
+        Book invalidBookRequest = bookRequest.copy(bookRequest.getUuid(),
+                bookRequest.getIsbn10(),
+                bookRequest.getIsbn13(),
+                bookRequest.getTitle(),
+                bookRequest.getAuthors(),
+                bookRequest.getImage(),
+                null);
+
+        try {
+            booksService.createUserBook(JOHN_DOE_USER, invalidBookRequest);
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        }
+    }
+
+    @Test
+    public void createUserBookZeroPages() throws Exception {
+        Book bookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
+        Book invalidBookRequest = bookRequest.copy(bookRequest.getUuid(),
+                bookRequest.getIsbn10(),
+                bookRequest.getIsbn13(),
+                bookRequest.getTitle(),
+                bookRequest.getAuthors(),
+                bookRequest.getImage(),
+                0);
+
+        try {
+            booksService.createUserBook(JOHN_DOE_USER, invalidBookRequest);
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        } catch(BooksException ex) {
+            assertThat(ex.getReason()).isEqualTo(Reason.BOOK_INVALID);
+        } catch (Exception ex) {
+            fail("It should fail with " + Reason.BOOK_INVALID);
+        }
     }
 
     @Test

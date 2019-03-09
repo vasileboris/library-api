@@ -5,7 +5,8 @@ public class BooksException extends Exception {
     public enum Reason {
         BOOK_ALREADY_EXISTS,
         BOOK_NOT_FOUND,
-        BOOK_HAS_READING_SESSION
+        BOOK_HAS_READING_SESSION,
+        BOOK_INVALID
     }
 
     private Reason reason;

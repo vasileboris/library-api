@@ -9,11 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import static org.springframework.util.StringUtils.isEmpty;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.util.List;
 import java.util.Optional;
-
 
 @Service
 public class BooksService {
@@ -33,6 +33,10 @@ public class BooksService {
 
     public Book createUserBook(String user, Book book) throws BooksException {
         logger.debug("Add new book for user {}", user);
+
+        if(!isValidBook(book)) {
+            throw new BooksException(Reason.BOOK_INVALID);
+        }
 
         if(hasTheBook(user, book)) {
             throw new BooksException(Reason.BOOK_ALREADY_EXISTS);
@@ -54,6 +58,10 @@ public class BooksService {
 
     public String updateUserBook(String user, String uuid, Book book) throws BooksException {
         logger.debug("Update book for user {} with uuid {} ", user, uuid);
+
+        if(!isValidBook(book)) {
+            throw new BooksException(Reason.BOOK_INVALID);
+        }
 
         if(hasTheBook(user, book)) {
             throw new BooksException(Reason.BOOK_ALREADY_EXISTS);
@@ -85,6 +93,14 @@ public class BooksService {
         return optionalUuid.get();
     }
 
+    private boolean isValidBook(Book book) {
+        return !isEmpty(book.getTitle())
+                && !isEmpty(book.getAuthors())
+                && book.getAuthors().stream().filter(author -> isEmpty(author)).count() == 0
+                && null != book.getPages()
+                && book.getPages() >= 1;
+    }
+
     private boolean hasTheBook(String user, Book book) {
         List<Book> existingBooks = booksDao.getUserBooks(user);
         for(Book existingBook : existingBooks) {
@@ -100,8 +116,8 @@ public class BooksService {
     }
 
     private boolean haveTheSameISBN(Book book, Book existingBook) {
-        return (!StringUtils.isEmpty(existingBook.getIsbn10()) && existingBook.getIsbn10().equals(book.getIsbn10()))
-                || (!StringUtils.isEmpty(existingBook.getIsbn13()) && existingBook.getIsbn13().equals(book.getIsbn13()));
+        return (!isEmpty(existingBook.getIsbn10()) && existingBook.getIsbn10().equals(book.getIsbn10()))
+                || (!isEmpty(existingBook.getIsbn13()) && existingBook.getIsbn13().equals(book.getIsbn13()));
     }
 
 }
