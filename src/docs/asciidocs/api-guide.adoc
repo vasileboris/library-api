@@ -58,7 +58,7 @@ include::{snippets}/books-controller-test/create-user-book/response-fields.adoc[
 
 include::{snippets}/books-controller-test/create-user-book/http-response.adoc[]
 
-=== Add an invalid book
+=== Create a book with invalid request
 
 ==== Example request
 
@@ -123,6 +123,16 @@ include::{snippets}/books-controller-test/update-user-book/http-request.adoc[]
 ==== Example response
 
 include::{snippets}/books-controller-test/update-user-book/http-response.adoc[]
+
+=== Update a book with invalid request
+
+==== Example request
+
+include::{snippets}/books-controller-test/update-invalid-user-book/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/books-controller-test/update-invalid-user-book/http-response.adoc[]
 
 === Update a book with ISBN of an existing book
 

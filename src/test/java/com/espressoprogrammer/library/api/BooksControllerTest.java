@@ -214,6 +214,19 @@ public class BooksControllerTest {
     }
 
     @Test
+    public void updateInvalidUserBook() throws Exception {
+        Book updateBook = getTestBook("f2e10e37-b0fc-4eff-93aa-3dff682cc388.json");
+        Book updateBookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-invalid-request.json");
+        when(booksService.updateUserBook(JOHN_DOE_USER, updateBook.getUuid(), updateBookRequest)).thenThrow(new BooksException(Reason.BOOK_INVALID));
+
+        this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, updateBook.getUuid())
+                .content(getTestBookJson("1e4014b1-a551-4310-9f30-590c3140b695-invalid-request.json"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isForbidden())
+                .andDo(document("{class-name}/{method-name}"));
+    }
+
+    @Test
     public void updateExistingUserBook() throws Exception {
         Book updateBook = getTestBook("f2e10e37-b0fc-4eff-93aa-3dff682cc388.json");
         Book updateBookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
