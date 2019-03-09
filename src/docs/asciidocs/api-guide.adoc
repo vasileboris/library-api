@@ -463,3 +463,23 @@ include::{snippets}/reading-sessions-controller-test/get-user-reading-session-pr
 ==== Example response
 
 include::{snippets}/reading-sessions-controller-test/get-user-reading-session-progress-for-missing-book/http-response.adoc[]
+
+=== Get reading session progress for missing reading sessions
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/get-user-reading-session-progress-for-missing-reading-sessions/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/get-user-reading-session-progress-for-missing-reading-sessions/http-response.adoc[]
+
+=== Get reading session progress for missing date reading sessions
+
+==== Example request
+
+include::{snippets}/reading-sessions-controller-test/get-user-reading-session-progress-for-missing-date-reading-sessions/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/reading-sessions-controller-test/get-user-reading-session-progress-for-missing-date-reading-sessions/http-response.adoc[]
