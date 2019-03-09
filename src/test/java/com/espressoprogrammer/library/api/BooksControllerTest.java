@@ -125,6 +125,18 @@ public class BooksControllerTest {
     }
 
     @Test
+    public void createInvalidUserBook() throws Exception {
+        Book bookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-invalid-request.json");
+        when(booksService.createUserBook(JOHN_DOE_USER, bookRequest)).thenThrow(new BooksException(Reason.BOOK_INVALID));
+
+        this.mockMvc.perform(post("/users/{user}/books", JOHN_DOE_USER)
+                .content(getTestBookJson("1e4014b1-a551-4310-9f30-590c3140b695-invalid-request.json"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(status().isForbidden())
+                .andDo(document("{class-name}/{method-name}"));
+    }
+
+    @Test
     public void createExistingUserBook() throws Exception {
         Book bookRequest = getTestBook("1e4014b1-a551-4310-9f30-590c3140b695-request.json");
         when(booksService.createUserBook(JOHN_DOE_USER, bookRequest)).thenThrow(new BooksException(Reason.BOOK_ALREADY_EXISTS));
@@ -132,7 +144,8 @@ public class BooksControllerTest {
         this.mockMvc.perform(post("/users/{user}/books", JOHN_DOE_USER)
             .content(getTestBookJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(status().isForbidden());
+            .andExpect(status().isForbidden())
+            .andDo(document("{class-name}/{method-name}"));
     }
 
     @Test
@@ -209,7 +222,8 @@ public class BooksControllerTest {
         this.mockMvc.perform(put("/users/{user}/books/{uuid}", JOHN_DOE_USER, updateBook.getUuid())
             .content(getTestBookJson("1e4014b1-a551-4310-9f30-590c3140b695-request.json"))
             .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(status().isForbidden());
+            .andExpect(status().isForbidden())
+            .andDo(document("{class-name}/{method-name}"));
     }
 
     @Test

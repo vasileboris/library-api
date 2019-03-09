@@ -58,15 +58,21 @@ include::{snippets}/books-controller-test/create-user-book/response-fields.adoc[
 
 include::{snippets}/books-controller-test/create-user-book/http-response.adoc[]
 
+=== Add an invalid book
+
+==== Example request
+
+include::{snippets}/books-controller-test/create-invalid-user-book/http-request.adoc[]
+
+==== Example response
+
+include::{snippets}/books-controller-test/create-invalid-user-book/http-response.adoc[]
+
 === Add an existing book
 
 ==== Example request
 
 include::{snippets}/books-controller-test/create-existing-user-book/http-request.adoc[]
-
-==== Response fields
-
-include::{snippets}/books-controller-test/create-existing-user-book/response-fields.adoc[]
 
 ==== Example response
 
@@ -123,10 +129,6 @@ include::{snippets}/books-controller-test/update-user-book/http-response.adoc[]
 ==== Example request
 
 include::{snippets}/books-controller-test/update-existing-user-book/http-request.adoc[]
-
-==== Response fields
-
-include::{snippets}/books-controller-test/update-existing-user-book/response-fields.adoc[]
 
 ==== Example response
 
