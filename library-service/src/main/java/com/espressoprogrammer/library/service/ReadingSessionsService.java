@@ -233,66 +233,69 @@ public class ReadingSessionsService {
     }
 
     public ReadingSessionProgress getUserReadingSessionProgress(String user, String bookUuid, String uuid) throws BooksException, ReadingSessionsException {
-            logger.debug("Look for reading session progress for user {} with uuid {} ", user, uuid);
+        logger.debug("Look for reading session progress for user {} with uuid {} ", user, uuid);
 
-            Optional<Book> optionalBook = booksDao.getUserBook(user, bookUuid);
-            if(!optionalBook.isPresent()) {
-                throw new BooksException(BooksException.Reason.BOOK_NOT_FOUND);
-            }
+        Optional<Book> optionalBook = booksDao.getUserBook(user, bookUuid);
+        if(!optionalBook.isPresent()) {
+            throw new BooksException(BooksException.Reason.BOOK_NOT_FOUND);
+        }
 
-            Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, bookUuid, uuid);
-            if(!optionalReadingSession.isPresent()) {
-                throw new ReadingSessionsException(ReadingSessionsException.Reason.READING_SESSION_NOT_FOUND);
-            }
+        Optional<ReadingSession> optionalReadingSession = readingSessionsDao.getUserReadingSession(user, bookUuid, uuid);
+        if(!optionalReadingSession.isPresent()) {
+            throw new ReadingSessionsException(ReadingSessionsException.Reason.READING_SESSION_NOT_FOUND);
+        }
 
-            ReadingSession readingSession = optionalReadingSession.get();
-            List<DateReadingSession> dateReadingSessions = new ArrayList<>(readingSession.getDateReadingSessions());
-            if(dateReadingSessions.isEmpty()) {
-                throw new ReadingSessionsException(ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND);
-            }
+        ReadingSession readingSession = optionalReadingSession.get();
+        List<DateReadingSession> dateReadingSessions = new ArrayList<>(readingSession.getDateReadingSessions());
+        if(dateReadingSessions.isEmpty()) {
+            throw new ReadingSessionsException(ReadingSessionsException.Reason.DATE_READING_SESSION_NOT_FOUND);
+        }
 
-            dateReadingSessions.sort(Comparator.comparing(DateReadingSession::getDate));
-            DateReadingSession firstDateReadingSession = dateReadingSessions.get(0);
-            LocalDate firstReadDate = LocalDate.parse(firstDateReadingSession.getDate());
-            DateReadingSession lastDateReadingSession = dateReadingSessions.get(dateReadingSessions.size() - 1);
-            LocalDate lastReadDate = LocalDate.parse(lastDateReadingSession.getDate());
+        dateReadingSessions.sort(Comparator.comparing(DateReadingSession::getDate));
+        DateReadingSession firstDateReadingSession = dateReadingSessions.get(0);
+        LocalDate firstReadDate = LocalDate.parse(firstDateReadingSession.getDate());
+        DateReadingSession lastDateReadingSession = dateReadingSessions.get(dateReadingSessions.size() - 1);
+        LocalDate lastReadDate = LocalDate.parse(lastDateReadingSession.getDate());
 
-            dateReadingSessions.sort(Comparator.comparing(DateReadingSession::getLastReadPage));
-            DateReadingSession lastReadPageSession = dateReadingSessions.get(dateReadingSessions.size() - 1);
-            int lastReadPage = lastReadPageSession.getLastReadPage();
+        dateReadingSessions.sort(Comparator.comparing(DateReadingSession::getLastReadPage));
+        DateReadingSession lastReadPageSession = dateReadingSessions.get(dateReadingSessions.size() - 1);
+        int lastReadPage = lastReadPageSession.getLastReadPage();
 
-            BigDecimal averagePagesPerDay = new BigDecimal(lastReadPage)
-                    .divide(new BigDecimal(dateReadingSessions.size()), RoundingMode.HALF_UP);
+        BigDecimal averagePagesPerDay = new BigDecimal(lastReadPage)
+                .divide(new BigDecimal(dateReadingSessions.size()), RoundingMode.HALF_UP);
 
-            Book book = optionalBook.get();
+        Book book = optionalBook.get();
 
-            BigDecimal readPercentage = new BigDecimal(lastReadPage)
-                .multiply(new BigDecimal(100))
-                .divide(new BigDecimal(book.getPages()), RoundingMode.HALF_UP);
+        BigDecimal readPercentage = new BigDecimal(lastReadPage)
+            .multiply(new BigDecimal(100))
+            .divide(new BigDecimal(book.getPages()), RoundingMode.HALF_UP);
 
-            int remainingPages = book.getPages() - lastReadPage;
-            if(remainingPages > 0 && remainingPages < averagePagesPerDay.intValue()) {
-                remainingPages = averagePagesPerDay.intValue();
-            }
-            BigDecimal estimatedReadDaysLeft = new BigDecimal(remainingPages)
-                    .divide(averagePagesPerDay, RoundingMode.HALF_UP);
+        int remainingPages = book.getPages() - lastReadPage;
+        if(remainingPages > 0 && remainingPages < averagePagesPerDay.intValue()) {
+            remainingPages = averagePagesPerDay.intValue();
+        }
+        BigDecimal estimatedReadDaysLeft = new BigDecimal(remainingPages)
+                .divide(averagePagesPerDay, RoundingMode.HALF_UP);
 
-            long readPeriodDays = ChronoUnit.DAYS.between(firstReadDate, lastReadDate) + 1;
-            BigDecimal multiplyFactor = new BigDecimal(readPeriodDays)
-                    .divide(new BigDecimal(dateReadingSessions.size()), RoundingMode.HALF_UP);
-            BigDecimal estimatedDaysLeft = estimatedReadDaysLeft.multiply(multiplyFactor);
+        long readPeriodDays = ChronoUnit.DAYS.between(firstReadDate, lastReadDate) + 1;
+        BigDecimal multiplyFactor = new BigDecimal(readPeriodDays)
+                .divide(new BigDecimal(dateReadingSessions.size()), RoundingMode.HALF_UP);
+        BigDecimal estimatedDaysLeft = estimatedReadDaysLeft.multiply(multiplyFactor);
+        String estimatedFinishDate = estimatedReadDaysLeft.intValue() > 0
+                ? LocalDate.now().plusDays(estimatedDaysLeft.intValue()).toString()
+                : null;
 
-            ReadingSessionProgress readingSessionProgress = new ReadingSessionProgress(book.getUuid(),
-                    lastReadPage,
-                    book.getPages(),
-                    readPercentage.intValue(),
-                    averagePagesPerDay.intValue(),
-                    estimatedReadDaysLeft.intValue(),
-                    estimatedDaysLeft.intValue(),
-                    LocalDate.now().plusDays(estimatedDaysLeft.intValue()).toString(),
-                    readingSession.getDeadline());
+        ReadingSessionProgress readingSessionProgress = new ReadingSessionProgress(book.getUuid(),
+                lastReadPage,
+                book.getPages(),
+                readPercentage.intValue(),
+                averagePagesPerDay.intValue(),
+                estimatedReadDaysLeft.intValue(),
+                estimatedDaysLeft.intValue(),
+                estimatedFinishDate,
+                readingSession.getDeadline());
 
-            return readingSessionProgress;
+        return readingSessionProgress;
     }
 
     private boolean isValidDateReadingSession(DateReadingSession dateReadingSession) {
