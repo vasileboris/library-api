@@ -271,7 +271,7 @@ public class ReadingSessionsService {
                 .divide(new BigDecimal(book.getPages()), RoundingMode.HALF_UP);
 
             int remainingPages = book.getPages() - lastReadPage;
-            if(remainingPages < averagePagesPerDay.intValue()) {
+            if(remainingPages > 0 && remainingPages < averagePagesPerDay.intValue()) {
                 remainingPages = averagePagesPerDay.intValue();
             }
             BigDecimal estimatedReadDaysLeft = new BigDecimal(remainingPages)
