@@ -55,7 +55,7 @@ public class FilesystemBooksDao extends FilesystemAbstractDao<Book> implements B
     }
 
     private Predicate<String> createSearchPredicate(String value) {
-        return s -> value.contains(s);
+        return s -> value.toLowerCase().contains(s.toLowerCase());
     }
 
     @Override
