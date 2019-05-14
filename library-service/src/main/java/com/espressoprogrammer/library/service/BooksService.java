@@ -85,6 +85,7 @@ public class BooksService {
             }
         }
 
+        //TODO - Delete empty reading sessions
         Optional<String> optionalUuid = booksDao.deleteUserBook(user, uuid);
         if(!optionalUuid.isPresent()) {
             throw new BooksException(Reason.BOOK_NOT_FOUND);
