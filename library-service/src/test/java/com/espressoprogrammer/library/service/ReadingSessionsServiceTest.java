@@ -449,7 +449,14 @@ public class ReadingSessionsServiceTest {
                 expectedReadingSessionProgressTemplate.getEstimatedDaysLeft(),
                 LocalDate.now().plusDays(expectedReadingSessionProgressTemplate.getEstimatedDaysLeft().intValue()).toString(),
                 expectedReadingSessionProgressTemplate.getDeadline());
-        assertThat(actualReadingSessionProgress).isEqualTo(expectedReadingSessionProgress);
+
+        assertThat(actualReadingSessionProgress.getLastReadPage()).isEqualTo(expectedReadingSessionProgress.getLastReadPage());
+        assertThat(actualReadingSessionProgress.getPagesTotal()).isEqualTo(expectedReadingSessionProgress.getPagesTotal());
+        assertThat(actualReadingSessionProgress.getReadPercentage()).isEqualTo(expectedReadingSessionProgress.getReadPercentage());
+        assertThat(actualReadingSessionProgress.getAveragePagesPerDay()).isEqualTo(expectedReadingSessionProgress.getAveragePagesPerDay());
+        assertThat(actualReadingSessionProgress.getEstimatedReadDaysLeft()).isEqualTo(expectedReadingSessionProgress.getEstimatedReadDaysLeft());
+        assertThat(actualReadingSessionProgress.getEstimatedDaysLeft()).isGreaterThanOrEqualTo(expectedReadingSessionProgress.getEstimatedDaysLeft());
+        assertThat(actualReadingSessionProgress.getEstimatedFinishDate()).isGreaterThanOrEqualTo(expectedReadingSessionProgress.getEstimatedFinishDate());
     }
 
     @Test
@@ -471,7 +478,14 @@ public class ReadingSessionsServiceTest {
                 expectedReadingSessionProgressTemplate.getEstimatedDaysLeft(),
                 LocalDate.now().plusDays(expectedReadingSessionProgressTemplate.getEstimatedDaysLeft().intValue()).toString(),
                 expectedReadingSessionProgressTemplate.getDeadline());
-        assertThat(actualReadingSessionProgress).isEqualTo(expectedReadingSessionProgress);
+
+        assertThat(actualReadingSessionProgress.getLastReadPage()).isEqualTo(expectedReadingSessionProgress.getLastReadPage());
+        assertThat(actualReadingSessionProgress.getPagesTotal()).isEqualTo(expectedReadingSessionProgress.getPagesTotal());
+        assertThat(actualReadingSessionProgress.getReadPercentage()).isEqualTo(expectedReadingSessionProgress.getReadPercentage());
+        assertThat(actualReadingSessionProgress.getAveragePagesPerDay()).isEqualTo(expectedReadingSessionProgress.getAveragePagesPerDay());
+        assertThat(actualReadingSessionProgress.getEstimatedReadDaysLeft()).isEqualTo(expectedReadingSessionProgress.getEstimatedReadDaysLeft());
+        assertThat(actualReadingSessionProgress.getEstimatedDaysLeft()).isGreaterThanOrEqualTo(expectedReadingSessionProgress.getEstimatedDaysLeft());
+        assertThat(actualReadingSessionProgress.getEstimatedFinishDate()).isGreaterThanOrEqualTo(expectedReadingSessionProgress.getEstimatedFinishDate());
     }
 
     @Test
@@ -493,7 +507,14 @@ public class ReadingSessionsServiceTest {
                 expectedReadingSessionProgressTemplate.getEstimatedDaysLeft(),
                 LocalDate.now().plusDays(expectedReadingSessionProgressTemplate.getEstimatedDaysLeft().intValue()).toString(),
                 expectedReadingSessionProgressTemplate.getDeadline());
-        assertThat(actualReadingSessionProgress).isEqualTo(expectedReadingSessionProgress);
+
+        assertThat(actualReadingSessionProgress.getLastReadPage()).isEqualTo(expectedReadingSessionProgress.getLastReadPage());
+        assertThat(actualReadingSessionProgress.getPagesTotal()).isEqualTo(expectedReadingSessionProgress.getPagesTotal());
+        assertThat(actualReadingSessionProgress.getReadPercentage()).isEqualTo(expectedReadingSessionProgress.getReadPercentage());
+        assertThat(actualReadingSessionProgress.getAveragePagesPerDay()).isEqualTo(expectedReadingSessionProgress.getAveragePagesPerDay());
+        assertThat(actualReadingSessionProgress.getEstimatedReadDaysLeft()).isEqualTo(expectedReadingSessionProgress.getEstimatedReadDaysLeft());
+        assertThat(actualReadingSessionProgress.getEstimatedDaysLeft()).isGreaterThanOrEqualTo(expectedReadingSessionProgress.getEstimatedDaysLeft());
+        assertThat(actualReadingSessionProgress.getEstimatedFinishDate()).isGreaterThanOrEqualTo(expectedReadingSessionProgress.getEstimatedFinishDate());
     }
 
     @Test
@@ -515,7 +536,14 @@ public class ReadingSessionsServiceTest {
                 expectedReadingSessionProgressTemplate.getEstimatedDaysLeft(),
                 LocalDate.now().plusDays(expectedReadingSessionProgressTemplate.getEstimatedDaysLeft().intValue()).toString(),
                 expectedReadingSessionProgressTemplate.getDeadline());
-        assertThat(actualReadingSessionProgress).isEqualTo(expectedReadingSessionProgress);
+
+        assertThat(actualReadingSessionProgress.getLastReadPage()).isEqualTo(expectedReadingSessionProgress.getLastReadPage());
+        assertThat(actualReadingSessionProgress.getPagesTotal()).isEqualTo(expectedReadingSessionProgress.getPagesTotal());
+        assertThat(actualReadingSessionProgress.getReadPercentage()).isEqualTo(expectedReadingSessionProgress.getReadPercentage());
+        assertThat(actualReadingSessionProgress.getAveragePagesPerDay()).isEqualTo(expectedReadingSessionProgress.getAveragePagesPerDay());
+        assertThat(actualReadingSessionProgress.getEstimatedReadDaysLeft()).isEqualTo(expectedReadingSessionProgress.getEstimatedReadDaysLeft());
+        assertThat(actualReadingSessionProgress.getEstimatedDaysLeft()).isGreaterThanOrEqualTo(expectedReadingSessionProgress.getEstimatedDaysLeft());
+        assertThat(actualReadingSessionProgress.getEstimatedFinishDate()).isGreaterThanOrEqualTo(expectedReadingSessionProgress.getEstimatedFinishDate());
     }
 
     @Test
@@ -537,7 +565,14 @@ public class ReadingSessionsServiceTest {
                 expectedReadingSessionProgressTemplate.getEstimatedDaysLeft(),
                 LocalDate.now().plusDays(expectedReadingSessionProgressTemplate.getEstimatedDaysLeft().intValue()).toString(),
                 expectedReadingSessionProgressTemplate.getDeadline());
-        assertThat(actualReadingSessionProgress).isEqualTo(expectedReadingSessionProgress);
+
+        assertThat(actualReadingSessionProgress.getLastReadPage()).isEqualTo(expectedReadingSessionProgress.getLastReadPage());
+        assertThat(actualReadingSessionProgress.getPagesTotal()).isEqualTo(expectedReadingSessionProgress.getPagesTotal());
+        assertThat(actualReadingSessionProgress.getReadPercentage()).isEqualTo(expectedReadingSessionProgress.getReadPercentage());
+        assertThat(actualReadingSessionProgress.getAveragePagesPerDay()).isEqualTo(expectedReadingSessionProgress.getAveragePagesPerDay());
+        assertThat(actualReadingSessionProgress.getEstimatedReadDaysLeft()).isEqualTo(expectedReadingSessionProgress.getEstimatedReadDaysLeft());
+        assertThat(actualReadingSessionProgress.getEstimatedDaysLeft()).isGreaterThanOrEqualTo(expectedReadingSessionProgress.getEstimatedDaysLeft());
+        assertThat(actualReadingSessionProgress.getEstimatedFinishDate()).isGreaterThanOrEqualTo(expectedReadingSessionProgress.getEstimatedFinishDate());
     }
 
     @Test
@@ -559,7 +594,14 @@ public class ReadingSessionsServiceTest {
                 expectedReadingSessionProgressTemplate.getEstimatedDaysLeft(),
                 LocalDate.now().plusDays(expectedReadingSessionProgressTemplate.getEstimatedDaysLeft().intValue()).toString(),
                 expectedReadingSessionProgressTemplate.getDeadline());
-        assertThat(actualReadingSessionProgress).isEqualTo(expectedReadingSessionProgress);
+
+        assertThat(actualReadingSessionProgress.getLastReadPage()).isEqualTo(expectedReadingSessionProgress.getLastReadPage());
+        assertThat(actualReadingSessionProgress.getPagesTotal()).isEqualTo(expectedReadingSessionProgress.getPagesTotal());
+        assertThat(actualReadingSessionProgress.getReadPercentage()).isEqualTo(expectedReadingSessionProgress.getReadPercentage());
+        assertThat(actualReadingSessionProgress.getAveragePagesPerDay()).isEqualTo(expectedReadingSessionProgress.getAveragePagesPerDay());
+        assertThat(actualReadingSessionProgress.getEstimatedReadDaysLeft()).isEqualTo(expectedReadingSessionProgress.getEstimatedReadDaysLeft());
+        assertThat(actualReadingSessionProgress.getEstimatedDaysLeft()).isGreaterThanOrEqualTo(expectedReadingSessionProgress.getEstimatedDaysLeft());
+        assertThat(actualReadingSessionProgress.getEstimatedFinishDate()).isGreaterThanOrEqualTo(expectedReadingSessionProgress.getEstimatedFinishDate());
     }
 
     @Test

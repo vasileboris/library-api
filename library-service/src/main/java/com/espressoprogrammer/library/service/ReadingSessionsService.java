@@ -256,6 +256,10 @@ public class ReadingSessionsService {
         LocalDate firstReadDate = LocalDate.parse(firstDateReadingSession.getDate());
         DateReadingSession lastDateReadingSession = dateReadingSessions.get(dateReadingSessions.size() - 1);
         LocalDate lastReadDate = LocalDate.parse(lastDateReadingSession.getDate());
+        LocalDate today = LocalDate.now();
+        if(today.compareTo(lastReadDate) > 0) {
+            lastReadDate = today;
+        }
 
         dateReadingSessions.sort(Comparator.comparing(DateReadingSession::getLastReadPage));
         DateReadingSession lastReadPageSession = dateReadingSessions.get(dateReadingSessions.size() - 1);
@@ -281,7 +285,7 @@ public class ReadingSessionsService {
         BigDecimal multiplyFactor = new BigDecimal(readPeriodDays)
                 .divide(new BigDecimal(dateReadingSessions.size()), RoundingMode.HALF_UP);
         BigDecimal estimatedDaysLeft = estimatedReadDaysLeft.multiply(multiplyFactor);
-        String estimatedFinishDate = estimatedReadDaysLeft.intValue() > 0
+        String estimatedFinishDate = estimatedDaysLeft.intValue() > 0
                 ? LocalDate.now().plusDays(estimatedDaysLeft.intValue()).toString()
                 : null;
 
