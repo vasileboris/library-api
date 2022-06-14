@@ -67,6 +67,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.espressoprogrammer</groupId>
             <artifactId>library-test-data</artifactId>
             <version>${project.version}</version>
